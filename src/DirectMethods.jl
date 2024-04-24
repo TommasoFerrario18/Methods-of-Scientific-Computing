@@ -1,7 +1,10 @@
 module DirectMethods
 
+include("Utils.jl")
+
 using LinearAlgebra
 using SparseArrays
+using .Utils
 
 """
     BackwardSubstitution(A, b)
@@ -25,7 +28,7 @@ function BackwardSubstitution(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float
     n = size(A)[1]
     x = zeros(n)
 
-    check_sizes(A, b)
+    Utils.check_sizes(A, b)
 
     if A[n, n] == 0
         error("Matrix A have a zero in the diagonal")
@@ -62,11 +65,11 @@ Solves the linear system `Ax = b` using forward substitution.
 - Throws an error if `A` has a zero in the diagonal.
 
 """
-function ForwardSubstitution(A::SparseMatrixCSC{Float64, Int64}, b::Vector{<:Real})::Vector{<:Real}
+function ForwardSubstitution(A::SparseMatrixCSC{Float64,Int64}, b::Vector{<:Real})::Vector{<:Real}
     n = size(A)[1]
     x = zeros(n)
 
-    check_sizes(A, b)
+    Utils.check_sizes(A, b)
 
     if A[1, 1] == 0
         error("Matrix A have a zero in the diagonal")
@@ -85,12 +88,75 @@ function ForwardSubstitution(A::SparseMatrixCSC{Float64, Int64}, b::Vector{<:Rea
     return x
 end
 
-function check_sizes(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float64})
-    if size(A)[1] != size(b)[1] || size(A)[2] != size(A)[1]
-        error("Matrix A and vector b must have the same number of rows")
+"""
+    GaussReduction(A, b, pivot="partial")
+
+Solves a system of linear equations using Gaussian elimination with optional pivoting.
+
+# Arguments
+- `A::SparseMatrixCSC{Float64,Int64}`: The coefficient matrix of the system.
+- `b::Vector{Float64}`: The right-hand side vector of the system.
+- `pivot::String="partial"`: The type of pivoting to use. Options are "partial" (partial pivoting) or "total" (total pivoting).
+
+# Returns
+- `x::Vector{Float64}`: The solution vector of the system.
+
+"""
+function GaussReduction(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float64},
+    pivot::String="partial")::Vector{Float64}
+    n = size(A)[1]
+
+    Utils.check_sizes(A, b)
+
+    U = copy(A)
+    new_b = copy(b)
+
+    columns_swap = Int32[]
+
+    for k = 1:n-1
+        pivot_matrix = U[k:n, k:n]
+
+        if pivot == "partial"
+            s = Utils.PartialPivot(pivot_matrix)
+            Utils.swapRow(U, k, (k - 1 + s))
+            Utils.swapVectorPosition(new_b, k, (k - 1 + s))
+        else
+            row, col = Utils.TotalPivot(pivot_matrix)
+            # Scambio le righe -> scambiare i termini noti anche
+            Utils.swapRow(U, k, (k - 1 + row))
+            Utils.swapVectorPosition(new_b, k, (k - 1 + row))
+            # Scambio le colonne -> scambiare le incognite
+            Utils.swapColumn(U, k, (k - 1 + col))
+            push!(columns_swap, (k, (k - 1 + col)))
+        end
+
+        for i = k+1:n
+            m = U[i, k] / U[k, k]
+
+            U[i, :] = U[i, :] - (m .* U[k, :])
+
+            new_b[i] = new_b[i] - m * new_b[k]
+        end
     end
+
+    x = BackwardSubstitution(U, new_b)
+
+    for (i, j) in columns_swap
+        temp = x[i]
+        x[i] = x[j]
+        x[j] = temp
+    end
+
+    return x
 end
 
+function PALUDecomposition()
+    # TODO
+end
+
+function PALU()
+    # TODO
+end
 
 """
     CholeskyDecomposition(A::SparseMatrixCSC{Float64,Int64})::SparseMatrixCSC{Float64,Int64}
