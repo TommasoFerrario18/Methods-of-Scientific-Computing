@@ -5,7 +5,7 @@ using Plots
 using Statistics
 
 """
-    read_sparse_matrix(file_path::String)::SparseMatrixCSC{Float64,Int64}
+    read_sparse_matrix(file_path::String)::SparseMatrixCSC{Float64,UInt32}
 
 Reads a sparse matrix from a file.
 
@@ -13,11 +13,11 @@ Reads a sparse matrix from a file.
 - `file_path::String`: The path to the file containing the sparse matrix.
 
 # Returns
-- `SparseMatrixCSC{Float64,Int64}`: The sparse matrix read from the file.
+- `SparseMatrixCSC{Float64,UInt32}`: The sparse matrix read from the file.
 """
-function read_sparse_matrix(file_path::String)::SparseMatrixCSC{Float64,Int64}
-    rows_index = Int64[]
-    cols_index = Int64[]
+function read_sparse_matrix(file_path::String)::SparseMatrixCSC{Float64,UInt32}
+    rows_index = UInt32[]
+    cols_index = UInt32[]
     values = Float64[]
 
     try
@@ -28,8 +28,8 @@ function read_sparse_matrix(file_path::String)::SparseMatrixCSC{Float64,Int64}
                 continue
             end
             row, col, value = split(line)
-            push!(rows_index, parse(Int64, row))
-            push!(cols_index, parse(Int64, col))
+            push!(rows_index, parse(UInt32, row))
+            push!(cols_index, parse(UInt32, col))
             push!(values, parse(Float64, value))
         end
 
@@ -39,40 +39,6 @@ function read_sparse_matrix(file_path::String)::SparseMatrixCSC{Float64,Int64}
     end
 
     return sparse(rows_index, cols_index, values)
-end
-
-"""
-    plot_results(times, memory, errors)
-
-Plot the results of a Cholesky decomposition algorithm.
-
-# Arguments
-- `times`: An array of time values for each iteration.
-- `memory`: An array of memory usage values for each iteration.
-- `errors`: An array of error values for each iteration.
-
-# Returns
-- Nothing
-
-"""
-function plot_results(times, memory, errors)
-    println("Statistics| mean | std | min | max")
-    println("Time: ", round(mean(times), digits=3), " s", " | ", round(std(times),
-            digits=3), " s", " | ", round(minimum(times), digits=3), " s", " | ",
-        round(maximum(times), digits=3), " s")
-    println("Memory: ", round(mean(memory), digits=3), " bytes", " | ",
-        round(std(memory), digits=3), " bytes", " | ", round(minimum(memory),
-            digits=3), " bytes", " | ", round(maximum(memory), digits=3), " bytes")
-    println("Error: ", round(mean(errors), digits=3), " | ", round(std(errors),
-            digits=3), " | ", round(minimum(errors), digits=3), " | ",
-        round(maximum(errors), digits=3))
-
-    p1 = plot(times, label="Time", title="Cholesky Decomposition", xlabel="Iteration",
-        ylabel="Time (s)", linewidth=2, legend=:topleft)
-    p2 = plot(memory, label="Memory", title="Cholesky Decomposition", xlabel="Iteration", ylabel="Memory (bytes)")
-    p3 = plot(errors, label="Error", title="Cholesky Decomposition", xlabel="Iteration", ylabel="Error")
-
-    plot(p1, p2, p3)
 end
 
 """
@@ -87,7 +53,7 @@ Finds the row with the largest absolute value in the first column of matrix `A`.
 - The row with the largest absolute value in the first column of `A`.
 
 """
-function PartialPivot(A::SparseMatrixCSC{Float64,Int64})::Int64
+function PartialPivot(A::SparseMatrixCSC{Float64,UInt32})::UInt32
     n = size(A)[1]
     max = 0
     s = 0
@@ -114,7 +80,7 @@ Finds the row with the largest absolute value in matrix `A`.
 - The row with the largest absolute value in `A`.
 
 """
-function TotalPivot(A::SparseMatrixCSC{Float64,Int64})
+function TotalPivot(A::SparseMatrixCSC{Float64,UInt32})
     n = size(A)[1]
     max = 0
     row = 0
@@ -147,7 +113,7 @@ Swaps rows `i` and `j` in matrix `A`.
 - Throws an error if `i` or `j` is out of bounds.
 
 """
-function swapRow(A::SparseMatrixCSC{Float64,Int64}, i::Integer, j::Integer)
+function swapRow(A::SparseMatrixCSC{Float64,UInt32}, i::Integer, j::Integer)
     n = size(A)[1]
 
     if i > n || j > n || i < 1 || j < 1
@@ -172,7 +138,7 @@ Swaps columns `i` and `j` in matrix `A`.
 # Errors
 - Throws an error if `i` or `j` is out of bounds.
 """
-function swapColumn(A::SparseMatrixCSC{Float64,Int64}, i::Integer, j::Integer)
+function swapColumn(A::SparseMatrixCSC{Float64,UInt32}, i::Integer, j::Integer)
     n = size(A)[1]
 
     if i > n || j > n || i < 1 || j < 1
@@ -223,7 +189,7 @@ Checks if the matrix `A` and vector `b` have the same number of rows.
 - Throws an error if `A` and `b` do not have the same number of rows.
 
 """
-function check_sizes(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float64})
+function check_sizes(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64})
     if size(A)[1] != size(b)[1] || size(A)[2] != size(A)[1]
         error("Matrix A and vector b must have the same number of rows")
     end

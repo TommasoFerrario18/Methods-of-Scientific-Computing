@@ -6,7 +6,7 @@ using LinearAlgebra
 using .Utils
 using .DirectMethods
 
-function evaluate(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float64})
+function evaluate(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64})
     times = []
     memory = []
     errors = []

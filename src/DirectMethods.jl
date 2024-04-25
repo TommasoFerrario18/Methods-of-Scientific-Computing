@@ -24,7 +24,7 @@ Solves the linear system `Ax = b` using backward substitution.
 - Throws an error if `A` has a zero in the diagonal.
 
 """
-function BackwardSubstitution(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float64})::Vector{Float64}
+function BackwardSubstitution(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64})::Vector{Float64}
     n = size(A)[1]
     x = zeros(n)
 
@@ -65,7 +65,7 @@ Solves the linear system `Ax = b` using forward substitution.
 - Throws an error if `A` has a zero in the diagonal.
 
 """
-function ForwardSubstitution(A::SparseMatrixCSC{Float64,Int64}, b::Vector{<:Real})::Vector{<:Real}
+function ForwardSubstitution(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{<:Real})::Vector{<:Real}
     n = size(A)[1]
     x = zeros(n)
 
@@ -94,7 +94,7 @@ end
 Solves a system of linear equations using Gaussian elimination with optional pivoting.
 
 # Arguments
-- `A::SparseMatrixCSC{Float64,Int64}`: The coefficient matrix of the system.
+- `A::SparseMatrixCSC{Float64,UInt32}`: The coefficient matrix of the system.
 - `b::Vector{Float64}`: The right-hand side vector of the system.
 - `pivot::String="partial"`: The type of pivoting to use. Options are "partial" (partial pivoting) or "total" (total pivoting).
 
@@ -102,7 +102,7 @@ Solves a system of linear equations using Gaussian elimination with optional piv
 - `x::Vector{Float64}`: The solution vector of the system.
 
 """
-function GaussReduction(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float64},
+function GaussReduction(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     pivot::String="partial")::Vector{Float64}
     n = size(A)[1]
 
@@ -111,7 +111,7 @@ function GaussReduction(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float64},
     U = copy(A)
     new_b = copy(b)
 
-    columns_swap = Int32[]
+    columns_swap = UInt32[]
 
     for k = 1:n-1
         pivot_matrix = U[k:n, k:n]
@@ -150,36 +150,102 @@ function GaussReduction(A::SparseMatrixCSC{Float64,Int64}, b::Vector{Float64},
     return x
 end
 
-function PALUDecomposition()
-    # TODO
-end
-
-function PALU()
-    # TODO
-end
-
 """
-    CholeskyDecomposition(A::SparseMatrixCSC{Float64,Int64})::SparseMatrixCSC{Float64,Int64}
+    PALUDecomposition(A::SparseMatrixCSC{Float64,UInt32}) -> Tuple{SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32}}
 
-Perform Cholesky decomposition on a given sparse matrix `A` and return the 
-resulting lower triangular matrix.
+Perform the PALU decomposition of a square sparse matrix A.
 
 # Arguments
-- `A::SparseMatrixCSC{Float64,Int64}`: The input sparse matrix.
+- `A::SparseMatrixCSC{Float64,UInt32}`: The input sparse matrix.
 
 # Returns
-- `SparseMatrixCSC{Float64,Int64}`: The lower triangular matrix resulting from 
-the Cholesky decomposition.
+- `Tuple{SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32}}`: A tuple containing the lower triangular matrix L, the upper triangular matrix U, and the permutation matrix P.
 
 """
-function CholeskyDecomposition(A::SparseMatrixCSC{Float64,Int64})::SparseMatrixCSC{Float64,Int64}
+function PALUDecomposition(A::SparseMatrixCSC{Float64,UInt32})::Tuple{SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32}}
+    # TODO: implementare pivot totale
     n = size(A)[1]
     if n != size(A)[2]
         error("Matrix A must be square")
     end
 
-    rows_index = Int64[]
-    cols_index = Int64[]
+    U = copy(A)
+    L = spzeros(n, n)
+    P = sparse(collect(1:n), collect(1:n), ones(n)) # Serve per tenere traccia delle permutazioni
+
+    for k = 1:n-1
+        pivot_matrix = U[k:n, k:n]
+
+        s = Utils.PartialPivot(pivot_matrix)
+
+        Utils.swapRow(U, k, (k - 1 + s))
+        Utils.swapRow(L, k, (k - 1 + s))
+        Utils.swapRow(P, k, (k - 1 + s))
+
+        for i = k+1:n
+            m = U[i, k] / U[k, k]
+            L[i, k] = m
+            U[i, :] = U[i, :] - m * U[k, :]
+        end
+    end
+
+    L = L + I
+    return L, U, P
+end
+
+"""
+    PALU(A::SparseMatrixCSC{Float64,UInt32}, b::Matrix{Float64})::Matrix{Float64}
+
+Performs the PALU decomposition and solves the linear system `Ax = b` using forward and backward substitution.
+
+# Arguments
+- `A`: The coefficient matrix `A` of the linear system, represented as a sparse matrix in Compressed Sparse Column (CSC) format.
+- `b`: The right-hand side vector `b` of the linear system.
+
+# Returns
+- The solution vector `x` of the linear system.
+
+"""
+function PALU(A::SparseMatrixCSC{Float64,UInt32}, b::Matrix{Float64})::Matrix{Float64}
+    if size(b)[1] != size(A)[1]
+        error("Matrix A and vector b must have the same number of rows")
+    end
+
+    L, U, P = PALUDecomposition(A)
+
+    res = zeros(size(b))
+
+    for i = 1:size(b)[2]
+        y = ForwardSubstitution(L, P * b[:, i])
+        x = BackwardSubstitution(U, y)
+        res[:, i] = x
+    end
+
+    return res
+end
+
+"""
+    CholeskyDecomposition(A::SparseMatrixCSC{Float64,UInt32})::SparseMatrixCSC{Float64,UInt32}
+
+Perform Cholesky decomposition on a given sparse matrix `A` and return the 
+resulting lower triangular matrix.
+
+# Arguments
+- `A::SparseMatrixCSC{Float64,UInt32}`: The input sparse matrix.
+
+# Returns
+- `SparseMatrixCSC{Float64,UInt32}`: The lower triangular matrix resulting from 
+the Cholesky decomposition.
+
+"""
+function CholeskyDecomposition(A::SparseMatrixCSC{Float64,UInt32})::SparseMatrixCSC{Float64,UInt32}
+    n = size(A)[1]
+    if n != size(A)[2]
+        error("Matrix A must be square")
+    end
+
+    rows_index = UInt32[]
+    cols_index = UInt32[]
     values = Float64[]
 
     R = zeros(n, n)
@@ -212,19 +278,19 @@ function CholeskyDecomposition(A::SparseMatrixCSC{Float64,Int64})::SparseMatrixC
 end
 
 """
-    Cholesky(A::SparseMatrixCSC{Float64,Int64}, b::Vector{<:Real})::Vector{<:Real}
+    Cholesky(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{<:Real})::Vector{<:Real}
 
 Solves the linear system `Ax = b` using the Cholesky decomposition method.
 
 # Arguments
-- `A`: The input sparse matrix `A` of type `SparseMatrixCSC{Float64,Int64}`.
+- `A`: The input sparse matrix `A` of type `SparseMatrixCSC{Float64,UInt32}`.
 - `b`: The input vector `b` of type `Vector{<:Real}`.
 
 # Returns
 - The solution vector `x` of type `Vector{<:Real}`.
 
 """
-function Cholesky(A::SparseMatrixCSC{Float64,Int64}, b::Vector{<:Real})::Vector{<:Real}
+function Cholesky(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{<:Real})::Vector{<:Real}
     R = CholeskyDecomposition(A)
     y = ForwardSubstitution(Float64.(conj(R')), b)
     return BackwardSubstitution(R, y)
