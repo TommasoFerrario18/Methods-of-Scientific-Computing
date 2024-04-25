@@ -41,7 +41,7 @@ Prints the statistics of the time, memory, and error measurements.
 - `nothing`
 
 """
-function ShowStats(times::Array{Float64,1}, memory::Array{Int64,1}, errors::Array{Float64,1})
+function ShowStats(times::Vector{Float64}, memory::Vector{Int64}, errors::Vector{Float64})
     stats_times = [mean(times), median(times), std(times), minimum(times), maximum(times)]
     stats_memory = [mean(memory), median(memory), std(memory), minimum(memory), maximum(memory)]
     stats_errors = [mean(errors), median(errors), std(errors), minimum(errors), maximum(errors)]
@@ -70,7 +70,7 @@ Generates visualizations of the results of a Cholesky decomposition analysis.
 # Returns
 - `nothing`
 """
-function Visualizations(times::Array{Float64,1}, memory::Array{Int64,1}, errors::Array{Float64,1})
+function Visualizations(times::Vector{Float64}, memory::Vector{Int64}, errors::Vector{Float64})
     ShowStats(times, memory, errors)
     plot_results(times, memory, errors)
 

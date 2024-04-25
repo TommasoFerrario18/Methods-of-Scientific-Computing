@@ -1,10 +1,14 @@
 include("Utils.jl")
+include("Analysis.jl")
 include("DirectMethods.jl")
+include("IterativeMethods.jl")
 
 using SparseArrays
 using LinearAlgebra
 using .Utils
+using .Analysis
 using .DirectMethods
+using .IterativeMethods
 
 function evaluate(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64})
     times = []
@@ -13,10 +17,13 @@ function evaluate(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64})
 
     xe = ones(size(b))
 
+    N = 5000
+
     for i = 1:10
-        x = DirectMethods.Cholesky(A, b)
-        push!(times, @elapsed DirectMethods.Cholesky(A, b))
-        push!(memory, @allocated DirectMethods.Cholesky(A, b))
+        println("Iteration: ", i)
+        x, k = IterativeMethods.Gradient(A, b, zeros(size(b)), 1e-6, UInt16.(N))
+        push!(times, @elapsed IterativeMethods.Gradient(A, b, zeros(size(b)), 1e-6, UInt16.(N)))
+        push!(memory, @allocated IterativeMethods.Gradient(A, b, zeros(size(b)), 1e-6, UInt16.(N)))
         push!(errors, (norm(x - xe) / norm(xe)))
     end
 
@@ -31,4 +38,4 @@ b = A * ones(size(A)[1])
 
 times, memory, errors = evaluate(A, b)
 
-Utils.plot_results(times, memory, errors)
+Analysis.Visualizations(Float64.(times), Int64.(memory), Float64.(errors))
