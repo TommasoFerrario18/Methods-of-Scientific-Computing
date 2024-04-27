@@ -387,11 +387,11 @@ function Gradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     x = copy(x0)
 
     while k < maxIter
-        r = b - A * x
+        r = b - A * x # Residuo del passo k
         y = A * r
         alpha = dot(r, r) / dot(r, y)
 
-        xk = x + alpha * r
+        xk = x + alpha * r # Aggiornamento della soluzione per il passo k+1
         if stoppingCriterion(x, xk, x0, tol)
             println("Converged in $k iterations")
             return xk, k
@@ -414,21 +414,21 @@ function ConjugateGradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64
 
     k = 0
     x = copy(x0)
-    r = b - A * x
-    d = copy(r)
+    r = b - A * x # Residuo del passo k
+    d = copy(r) # Direzione di discesa
 
     while k < maxIter
-        r = b - A * x
-        y = A * d
-        z = A * r
+        r = b - A * x # Residuo del passo k
+        y = A * d 
+        # z = A * r
         alpha = dot(d, r) / dot(d, y)
-        xk = x + alpha * d
+        xk = x + alpha * d # Aggiornamento delle iterazioni
 
         rk = b - A * xk
         w = A * rk
 
         beta = dot(d, w) / dot(d, y)
-        d = rk - beta * d
+        d = rk - beta * d # Aggiornamento della direzione di discesa
 
         if stoppingCriterion(x, xk, x0, tol)
             println("Converged in $k iterations")
