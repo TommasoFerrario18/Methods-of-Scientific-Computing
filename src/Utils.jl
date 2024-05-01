@@ -194,4 +194,23 @@ function check_sizes(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64})
         error("Matrix A and vector b must have the same number of rows")
     end
 end
+
+"""
+    optimal_alpha_richardson(P::SparseMatrixCSC{Float64,UInt32})::Float64
+
+Computes the optimal value of the relaxation parameter `alpha` for the Richardson method.
+
+# Arguments
+- `P`: The preconditioner matrix.
+
+# Returns
+- The optimal value of the relaxation parameter `alpha`.
+
+"""
+function optimal_alpha_richardson(P::SparseMatrixCSC{Float64,UInt32})::Float64
+    max_eg = maximum(eigvals(Matrix(P)))
+    min_eg = minimum(eigvals(Matrix(P)))
+
+    return 2 / (max_eg + min_eg)
+end
 end

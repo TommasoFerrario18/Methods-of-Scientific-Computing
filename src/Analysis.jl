@@ -18,13 +18,11 @@ Plot the results of a Cholesky decomposition analysis.
 - `nothing`
 
 """
-function plot_results(times, memory, errors)
-    p1 = plot(times, label="Time", title="Cholesky Decomposition", xlabel="Iteration",
-        ylabel="Time (s)", linewidth=2, legend=:topleft)
-    p2 = plot(memory, label="Memory", title="Cholesky Decomposition", xlabel="Iteration", ylabel="Memory (bytes)")
-    p3 = plot(errors, label="Error", title="Cholesky Decomposition", xlabel="Iteration", ylabel="Error")
-
-    plot(p1, p2, p3)
+function plot_results(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64}, title::String)
+    p1 = plot(times,  label="Time",   title=title, xlabel="Iteration", ylabel="Time (s)")
+    p2 = plot(memory, label="Memory", title=title, xlabel="Iteration", ylabel="Memory (MB)")
+    p3 = plot(errors, label="Error",  title=title, xlabel="Iteration", ylabel="Error")
+    plot(p1, p2, p3, layout=(3,1), size=(800, 800))
 end
 
 """
@@ -71,9 +69,9 @@ Generates visualizations of the time, memory, and error measurements.
 - `nothing`
 
 """
-function Visualizations(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64})
+function Visualizations(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64}, title::String)
     ShowStats(times, memory, errors)
-    plot_results(times, memory, errors)
+    plot_results(times, memory, errors, title)
 
 end
 

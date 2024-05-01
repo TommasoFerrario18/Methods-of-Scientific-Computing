@@ -314,13 +314,19 @@ Solve a linear system using the Richardson method with relaxation.
 """
 function RichardsonJacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     x0::Vector{Float64}, tol::Float64, maxIter::UInt16, w::Float64,
-    stoppingCriterion::Function=IncreaseStoppingCriteria, alpha::Float64=1.0)::Tuple{Vector{Float64},UInt16}
-    if alpha <= 0
+    stoppingCriterion::Function=IncreaseStoppingCriteria, alpha::Float64=1.0,
+    choose_alpha::Bool=false)::Tuple{Vector{Float64},UInt16}
+    if choose_alpha
+        P = sparse(I, size(A)[1], size(A)[2])
+
+        for i = 1:size(A)[1]
+            P[i, i] = w / A[i, i]
+        end
+
+        alpha = Utils.optimal_alpha_richardson(P)
+    elseif alpha <= 0
         throw(ArgumentError("The parameter alpha must be positive"))
     end
-
-    # TODO: Inserire la possibilità di calcolare alpha ottimale, su scelta 
-    # TODO: dell'utente perchè è un calcolo costoso
 
     return RelaxedJacobi(A, b, x0, tol, maxIter, w, stoppingCriterion, alpha)
 end
@@ -346,13 +352,23 @@ Solve a linear system using the Richardson method with relaxation.
 """
 function RichardsonGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     x0::Vector{Float64}, tol::Float64, maxIter::UInt16, w::Float64,
-    stoppingCriterion::Function=IncreaseStoppingCriteria, alpha::Float64=1.0)::Tuple{Vector{Float64},UInt16}
-    if alpha <= 0
-        throw(ArgumentError("The parameter alpha must be positive"))
+    stoppingCriterion::Function=IncreaseStoppingCriteria, alpha::Float64=1.0,
+    choose_alpha::Bool=false)::Tuple{Vector{Float64},UInt16}
+    if w <= 0 || w >= 2
+        throw(ArgumentError("The relaxation factor must be in the interval (0, 2)"))
     end
 
-    # TODO: Inserire la possibilità di calcolare alpha ottimale, su scelta 
-    # TODO: dell'utente perchè è un calcolo costoso
+    if choose_alpha
+        P = tril(A)
+
+        for i = 1:size(A)[1]
+            P[i, i] = P[i, i] / w
+        end
+
+        alpha = Utils.optimal_alpha_richardson(inv(P))
+    elseif alpha <= 0
+        throw(ArgumentError("The parameter alpha must be positive"))
+    end
 
     return RelaxedGaussSeidel(A, b, x0, tol, maxIter, w, stoppingCriterion,
         alpha)
@@ -403,6 +419,23 @@ function Gradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     return x, k
 end
 
+"""
+    ConjugateGradient(A, b, x0, tol, maxIter, stoppingCriterion)
+
+Solve a linear system using the Conjugate Gradient method.
+
+# Arguments
+- `A::SparseMatrixCSC{Float64,UInt32}`: The matrix of the linear system.
+- `b::Vector{Float64}`: The right-hand side of the linear system.
+- `x0::Vector{Float64}`: The initial solution vector.
+- `tol::Float64`: The tolerance value.
+- `maxIter::UInt16`: The maximum number of iterations.
+- `stoppingCriterion::Function`: The stopping criterion function.
+
+# Returns
+- `Tuple{Vector{Float64},UInt16}`: The solution vector and the number of iterations.
+
+"""
 function ConjugateGradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     x0::Vector{Float64}, tol::Float64, maxIter::UInt16, stoppingCriterion::Function=IncreaseStoppingCriteria)::Tuple{Vector{Float64},UInt16}
 
@@ -419,7 +452,7 @@ function ConjugateGradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64
 
     while k < maxIter
         r = b - A * x # Residuo del passo k
-        y = A * d 
+        y = A * d
         # z = A * r
         alpha = dot(d, r) / dot(d, y)
         xk = x + alpha * d # Aggiornamento delle iterazioni
