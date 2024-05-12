@@ -67,7 +67,7 @@ Solves the linear system `Ax = b` using forward substitution.
 """
 function ForwardSubstitution(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{<:Real})::Vector{<:Real}
     n = size(A)[1]
-    x = zeros(n)
+    x = similar(b)
 
     Utils.check_sizes(A, b)
 
@@ -78,11 +78,12 @@ function ForwardSubstitution(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{<:Rea
     x[1] = b[1] / A[1, 1]
 
     for i = 2:n
-        if A[i, i] == 0
+        diag = A[i, i]
+        if diag == 0
             error("Matrix A have a zero in the diagonal")
         end
 
-        x[i] = (b[i] - (dot(A[i, :], x))) / A[i, i]
+        x[i] = (b[i] - (dot(A[i, :], x))) / diag
     end
 
     return x

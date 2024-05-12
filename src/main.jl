@@ -6,36 +6,15 @@ include("IterativeMethods.jl")
 using SparseArrays
 using LinearAlgebra
 using DataFrames
+using CSV
 using .Utils
 using .Analysis
 using .DirectMethods
 using .IterativeMethods
 
-function evaluate(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64})
-    times = []
-    memory = []
-    errors = []
-
-    xe = ones(size(b))
+function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vector{Float64}, tol::Vector{Float64})::Tuple{DataFrame,DataFrame,DataFrame}
+    maxIter = UInt16.(2000)
     x0 = zeros(size(b))
-    N = UInt16.(size(A)[1])
-
-    for i = 1:30
-        println("Iteration: ", i)
-        start = time()
-        x, k = IterativeMethods.ConjugateGradient(A, b, x0, 1e-6, N)
-        push!(times, time() - start)
-        push!(memory, (@allocated IterativeMethods.ConjugateGradient(A, b, x0, 1e-6, N)) / 1e6)
-        push!(errors, (norm(x - xe) / norm(xe)))
-    end
-
-    return times, memory, errors
-end
-
-function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x::Vector{Float64}, tol::Vector{Float64})::Tuple{DataFrame,DataFrame,DataFrame}
-    maxIter = UInt16.(20000)
-    x0 = zeros(size(b))
-    xe = ones(size(b))
 
     times_df = DataFrame(Jacobi=Float64[], GaussSeidel=Float64[], Gradient=Float64[], ConjugateGradient=Float64[])
     memory_df = DataFrame(Jacobi=Float64[], GaussSeidel=Float64[], Gradient=Float64[], ConjugateGradient=Float64[])
@@ -48,43 +27,58 @@ function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x::Vect
         memory_row = []
         errors_row = []
 
-        println("Jacobi")
+        print("Jacobi: \t -> \t")
         start = time()
         x, k = IterativeMethods.Jacobi(A, b, x0, t, maxIter)
         push!(times_row, time() - start)
         push!(memory_row, (@allocated IterativeMethods.Jacobi(A, b, x0, t, maxIter)) / 1e6)
         push!(errors_row, (norm(x - xe) / norm(xe)))
+        if k < maxIter
+            println("Iterations: ", k)
+        end
 
-        println("GaussSeidel")
+
+        print("GaussSeidel: \t -> \t")
         start = time()
         x, k = IterativeMethods.GaussSeidel(A, b, x0, t, maxIter)
         push!(times_row, time() - start)
         push!(memory_row, (@allocated IterativeMethods.GaussSeidel(A, b, x0, t, maxIter)) / 1e6)
         push!(errors_row, (norm(x - xe) / norm(xe)))
+        if k < maxIter
+            println("Iterations: ", k)
+        end
 
-        println("Gradient")
+        print("Gradient: \t -> \t")
         start = time()
         x, k = IterativeMethods.Gradient(A, b, x0, t, maxIter)
         push!(times_row, time() - start)
         push!(memory_row, (@allocated IterativeMethods.Gradient(A, b, x0, t, maxIter)) / 1e6)
         push!(errors_row, (norm(x - xe) / norm(xe)))
+        if k < maxIter
+            println("Iterations: ", k)
+        end
 
-        println("ConjugateGradient")
+        print("ConjugateGradient: \t -> \t")
         start = time()
         x, k = IterativeMethods.ConjugateGradient(A, b, x0, t, maxIter)
         push!(times_row, time() - start)
         push!(memory_row, (@allocated IterativeMethods.ConjugateGradient(A, b, x0, t, maxIter)) / 1e6)
         push!(errors_row, (norm(x - xe) / norm(xe)))
+        if k < maxIter
+            println("Iterations: ", k)
+        end
 
         push!(times_df, times_row)
         push!(memory_df, memory_row)
         push!(errors_df, errors_row)
     end
 
+    CSV.write("./results/times.csv", times_df)
+    CSV.write("./results/memory.csv", memory_df)
+    CSV.write("./results/errors.csv", errors_df)
+
     return times_df, memory_df, errors_df
 end
-
-
 
 path_to_matrix = "./data/spa2.mtx"
 

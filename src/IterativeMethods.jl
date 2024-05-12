@@ -81,20 +81,22 @@ function RelaxedJacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     x = copy(x0)
     xk = zeros(n)
 
-    P = sparse(1.0 * I, n, n)
-    
-    for i = 1:n
-        P[i, i] = w / A[i, i]
-    end
+    r = similar(b)
+
+    P = spdiagm(0 => w ./ diag(A))
 
     while k < maxIter
-        xk = x + alpha * P * (b - A * x) + (1 - w) * x
+        # xk = x + alpha * P * (b - A * x) + (1 - w) * x
+        mul!(r, A, x)
+        r = b - r
+        mul!(xk, P, r)
+        xk = x + alpha .* xk + (1 - w) .* x
 
         if RemainingStoppingCriteria(A, xk, b, tol)
             return xk, k
         end
 
-        x = copy(xk)
+        copyto!(x, xk)
         k += 1
     end
     println("The method did not converge")
@@ -194,25 +196,29 @@ function RelaxedGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float6
 
     k = 0
     x = copy(x0)
-    xk = zeros(n)
+    xk = similar(x)
 
     P = tril(A)
 
     for i = 1:n
-        P[i, i] = w / P[i, i]
+        P[i, i] = P[i, i] / w
     end
+    r = similar(b)
+    y = similar(b)
 
     while k < maxIter
-        r = b - A * x
+        mul!(r, A, x)
+        r .-= b
         y = DirectMethods.ForwardSubstitution(P, r)
 
-        xk = x + alpha * y + (1 - w) * x
+        # xk = x + alpha * y + (1 - w) * x
+        xk = x + y
 
         if RemainingStoppingCriteria(A, xk, b, tol)
             return xk, k
         end
 
-        x = copy(xk)
+        copyto!(x, xk)
         k += 1
     end
     println("The method did not converge")
@@ -384,16 +390,21 @@ function Gradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     k = 0
     x = copy(x0)
 
+    r = similar(b)
+    y = similar(b)
+
     while k < maxIter
-        r = b - A * x # Residuo del passo k
-        y = A * r
+        mul!(r, A, x)
+        r = b .- r
+        mul!(y, A, r)
         alpha = dot(r, r) / dot(r, y)
 
-        xk = x + alpha * r # Aggiornamento della soluzione per il passo k+1
-        if RemainingStoppingCriteria(A, xk, b, tol)
+        @. x += alpha * r # Aggiornamento delle iterazioni
+
+        if RemainingStoppingCriteria(A, x, b, tol)
             return xk, k
         end
-        x = copy(xk)
+
         k += 1
     end
     println("The method did not converge")
@@ -430,25 +441,29 @@ function ConjugateGradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64
     r = b - A * x # Residuo del passo k
     d = copy(r) # Direzione di discesa
 
+    y = similar(b)
+    w = similar(b)
+
     while k < maxIter
-        r = b - A * x # Residuo del passo k
-        y = A * d
+        mul!(r, A, x)
+        r = b - r # Residuo del passo k
+        mul!(y, A, d)
         # z = A * r
         alpha = dot(d, r) / dot(d, y)
-        xk = x + alpha * d # Aggiornamento delle iterazioni
 
-        rk = b - A * xk
-        w = A * rk
+        mul!(x, alpha, d, 1.0, x) # Aggiornamento delle iterazioni
+        
+        rk = b - A * x
+        mul!(w, A, rk)
 
         beta = dot(d, w) / dot(d, y)
-        d = rk - beta * d # Aggiornamento della direzione di discesa
 
-        if RemainingStoppingCriteria(A, xk, b, tol)
-            println("Converged in $k iterations")
-            return xk, k
+        @. d = rk - beta * d # Aggiornamento della direzione di discesa
+
+        if RemainingStoppingCriteria(A, x, b, tol)
+            return x, k
         end
 
-        x = copy(xk)
         k += 1
     end
     return x, k
