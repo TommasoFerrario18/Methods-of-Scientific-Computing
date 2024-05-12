@@ -203,16 +203,17 @@ function RelaxedGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float6
     for i = 1:n
         P[i, i] = P[i, i] / w
     end
+
     r = similar(b)
     y = similar(b)
 
     while k < maxIter
         mul!(r, A, x)
-        r .-= b
+        r = b - r
         y = DirectMethods.ForwardSubstitution(P, r)
 
         # xk = x + alpha * y + (1 - w) * x
-        xk = x + y
+        xk = x + alpha .* y
 
         if RemainingStoppingCriteria(A, xk, b, tol)
             return xk, k
@@ -402,7 +403,7 @@ function Gradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
         @. x += alpha * r # Aggiornamento delle iterazioni
 
         if RemainingStoppingCriteria(A, x, b, tol)
-            return xk, k
+            return x, k
         end
 
         k += 1
@@ -451,14 +452,16 @@ function ConjugateGradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64
         # z = A * r
         alpha = dot(d, r) / dot(d, y)
 
-        mul!(x, alpha, d, 1.0, x) # Aggiornamento delle iterazioni
+        @. x += alpha .* d
         
-        rk = b - A * x
+        mul!(r, A, x)
+        rk = b - r
+
         mul!(w, A, rk)
 
         beta = dot(d, w) / dot(d, y)
 
-        @. d = rk - beta * d # Aggiornamento della direzione di discesa
+        @. d = rk - beta .* d # Aggiornamento della direzione di discesa
 
         if RemainingStoppingCriteria(A, x, b, tol)
             return x, k

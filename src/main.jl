@@ -1,6 +1,5 @@
 include("Utils.jl")
 include("Analysis.jl")
-include("DirectMethods.jl")
 include("IterativeMethods.jl")
 
 using SparseArrays
@@ -9,7 +8,6 @@ using DataFrames
 using CSV
 using .Utils
 using .Analysis
-using .DirectMethods
 using .IterativeMethods
 
 function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vector{Float64}, tol::Vector{Float64})::Tuple{DataFrame,DataFrame,DataFrame}
@@ -97,9 +95,5 @@ tol = [1e-5, 1e-7, 1e-9, 1e-11]
 
 times_df, memory_df, errors_df = run_all(A, b, x, tol)
 
-println("Times")
-println(times_df)
-println("Memory")
-println(memory_df)
-println("Errors")
-println(errors_df)
+println("Done!")
+Utils.Visualizations(times_df, memory_df, errors_df)
