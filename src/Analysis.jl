@@ -79,6 +79,7 @@ function Visualizations(times::DataFrame, memory::DataFrame, errors::DataFrame)
     algo = ["Jacobi", "GaussSeidel", "Gradient", "ConjugateGradient"]
 
     for i in eachindex(algo)
+        println(algo[i])
         Visualizations(times[:,i], memory[:,i], errors[:,i], algo[i])
     end
 end

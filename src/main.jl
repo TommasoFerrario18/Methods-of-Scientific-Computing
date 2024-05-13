@@ -11,7 +11,7 @@ using .Analysis
 using .IterativeMethods
 
 function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vector{Float64}, tol::Vector{Float64})::Tuple{DataFrame,DataFrame,DataFrame}
-    maxIter = UInt16.(2000)
+    maxIter = UInt16.(20000)
     x0 = zeros(size(b))
 
     times_df = DataFrame(Jacobi=Float64[], GaussSeidel=Float64[], Gradient=Float64[], ConjugateGradient=Float64[])
@@ -34,7 +34,6 @@ function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vec
         if k < maxIter
             println("Iterations: ", k)
         end
-
 
         print("GaussSeidel: \t -> \t")
         start = time()
@@ -78,7 +77,7 @@ function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vec
     return times_df, memory_df, errors_df
 end
 
-path_to_matrix = "./data/spa2.mtx"
+path_to_matrix = "./data/spa1.mtx"
 
 # Read the sparse matrix from the file.
 A = Utils.read_sparse_matrix(path_to_matrix)
@@ -96,4 +95,4 @@ tol = [1e-5, 1e-7, 1e-9, 1e-11]
 times_df, memory_df, errors_df = run_all(A, b, x, tol)
 
 println("Done!")
-Utils.Visualizations(times_df, memory_df, errors_df)
+Analysis.Visualizations(times_df, memory_df, errors_df)

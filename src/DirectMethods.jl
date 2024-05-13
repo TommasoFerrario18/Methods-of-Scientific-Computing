@@ -67,7 +67,7 @@ Solves the linear system `Ax = b` using forward substitution.
 """
 function ForwardSubstitution(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{<:Real})::Vector{<:Real}
     n = size(A)[1]
-    x = similar(b)
+    x = zeros(n)
 
     Utils.check_sizes(A, b)
 

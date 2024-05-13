@@ -196,9 +196,9 @@ function RelaxedGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float6
 
     k = 0
     x = copy(x0)
-    xk = similar(x)
+    xk = copy(x0)
 
-    P = tril(A)
+    P = sparse(tril(A))
 
     for i = 1:n
         P[i, i] = P[i, i] / w
