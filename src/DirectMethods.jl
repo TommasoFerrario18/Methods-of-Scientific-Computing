@@ -78,11 +78,12 @@ function ForwardSubstitution(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{<:Rea
     x[1] = b[1] / A[1, 1]
 
     for i = 2:n
-        if A[i, i] == 0
+        diag = A[i, i]
+        if diag == 0
             error("Matrix A have a zero in the diagonal")
         end
 
-        x[i] = (b[i] - (dot(A[i, :], x))) / A[i, i]
+        x[i] = (b[i] - (dot(A[i, :], x))) / diag
     end
 
     return x
@@ -162,8 +163,7 @@ Perform the PALU decomposition of a square sparse matrix A.
 - `Tuple{SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32}}`: A tuple containing the lower triangular matrix L, the upper triangular matrix U, and the permutation matrix P.
 
 """
-function PALUDecomposition(A::SparseMatrixCSC{Float64,UInt32})::Tuple{SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32}}
-    # TODO: implementare pivot totale
+function PALUDecomposition(A::SparseMatrixCSC{Float64,UInt32}, pivoting::String="partial")::Tuple{SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32},SparseMatrixCSC{Float64,UInt32}}
     n = size(A)[1]
     if n != size(A)[2]
         error("Matrix A must be square")
@@ -171,16 +171,27 @@ function PALUDecomposition(A::SparseMatrixCSC{Float64,UInt32})::Tuple{SparseMatr
 
     U = copy(A)
     L = spzeros(n, n)
-    P = sparse(collect(1:n), collect(1:n), ones(n)) # Serve per tenere traccia delle permutazioni
+    P = sparse(I, n, n) # Serve per tenere traccia delle permutazioni
 
     for k = 1:n-1
         pivot_matrix = U[k:n, k:n]
+        if pivoting == "partial"
+            s = Utils.PartialPivot(pivot_matrix)
 
-        s = Utils.PartialPivot(pivot_matrix)
+            Utils.swapRow(U, k, (k - 1 + s))
+            Utils.swapRow(L, k, (k - 1 + s))
+            Utils.swapRow(P, k, (k - 1 + s))
+        elseif pivoting == "total"
+            row, col = Utils.TotalPivot(pivot_matrix)
 
-        Utils.swapRow(U, k, (k - 1 + s))
-        Utils.swapRow(L, k, (k - 1 + s))
-        Utils.swapRow(P, k, (k - 1 + s))
+            Utils.swapRow(U, k, (k - 1 + row))
+            Utils.swapRow(L, k, (k - 1 + row))
+            Utils.swapRow(P, k, (k - 1 + row))
+
+            Utils.swapColumn(U, k, (k - 1 + col))
+            Utils.swapColumn(L, k, (k - 1 + col))
+            Utils.swapColumn(P, k, (k - 1 + col))
+        end
 
         for i = k+1:n
             m = U[i, k] / U[k, k]

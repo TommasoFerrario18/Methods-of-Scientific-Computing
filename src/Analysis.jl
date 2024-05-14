@@ -10,38 +10,36 @@ using DataFrames
 Plot the results of a Cholesky decomposition analysis.
 
 # Arguments
-- `times::Array{Float64,1}`: Array of time measurements for each iteration.
-- `memory::Array{Int64,1}`: Array of memory usage measurements for each iteration.
-- `errors::Array{Float64,1}`: Array of error measurements for each iteration.
+- `times::Vector{Float64}`: Array of time measurements for each iteration.
+- `memory::Vector{Float64}`: Array of memory usage measurements for each iteration.
+- `errors::Vector{Float64}`: Array of error measurements for each iteration.
 
 # Returns
 - `nothing`
 
 """
-function plot_results(times, memory, errors)
-    p1 = plot(times, label="Time", title="Cholesky Decomposition", xlabel="Iteration",
-        ylabel="Time (s)", linewidth=2, legend=:topleft)
-    p2 = plot(memory, label="Memory", title="Cholesky Decomposition", xlabel="Iteration", ylabel="Memory (bytes)")
-    p3 = plot(errors, label="Error", title="Cholesky Decomposition", xlabel="Iteration", ylabel="Error")
-
-    plot(p1, p2, p3)
+function plot_results(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64}, title::String)
+    p1 = plot(times,  label="Time",   title=title, xlabel="Iteration", ylabel="Time (s)")
+    p2 = plot(memory, label="Memory", title=title, xlabel="Iteration", ylabel="Memory (MB)")
+    p3 = plot(errors, label="Error",  title=title, xlabel="Iteration", ylabel="Error")
+    plot(p1, p2, p3, layout=(3,1), size=(800, 800))
 end
 
 """
-    ShowStats(times::Array{Float64,1}, memory::Array{Int64,1}, errors::Array{Float64,1})
+    ShowStats(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64})
 
 Prints the statistics of the time, memory, and error measurements.
 
 # Arguments
-- `times::Array{Float64,1}`: Array of time measurements for each iteration.
-- `memory::Array{Int64,1}`: Array of memory usage measurements for each iteration.
-- `errors::Array{Float64,1}`: Array of error measurements for each iteration.
+- `times::Vector{Float64}`: Array of time measurements for each iteration.
+- `memory::Vector{Float64}`: Array of memory usage measurements for each iteration.
+- `errors::Vector{Float64}`: Array of error measurements for each iteration.
 
 # Returns
 - `nothing`
 
 """
-function ShowStats(times::Vector{Float64}, memory::Vector{Int64}, errors::Vector{Float64})
+function ShowStats(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64})
     stats_times = [mean(times), median(times), std(times), minimum(times), maximum(times)]
     stats_memory = [mean(memory), median(memory), std(memory), minimum(memory), maximum(memory)]
     stats_errors = [mean(errors), median(errors), std(errors), minimum(errors), maximum(errors)]
@@ -58,22 +56,32 @@ function ShowStats(times::Vector{Float64}, memory::Vector{Int64}, errors::Vector
 end
 
 """
-    Visualizations(times::Array{Float64,1}, memory::Array{Int64,1}, errors::Array{Float64,1})
+    Visualizations(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64})
 
-Generates visualizations of the results of a Cholesky decomposition analysis.
+Generates visualizations of the time, memory, and error measurements.
 
 # Arguments
-- `times::Array{Float64,1}`: Array of time measurements for each iteration.
-- `memory::Array{Int64,1}`: Array of memory usage measurements for each iteration.
-- `errors::Array{Float64,1}`: Array of error measurements for each iteration.
+- `times::Vector{Float64}`: Array of time measurements for each iteration.
+- `memory::Vector{Float64}`: Array of memory usage measurements for each iteration.
+- `errors::Vector{Float64}`: Array of error measurements for each iteration.
 
 # Returns
 - `nothing`
+
 """
-function Visualizations(times::Vector{Float64}, memory::Vector{Int64}, errors::Vector{Float64})
+function Visualizations(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64}, title::String)
     ShowStats(times, memory, errors)
-    plot_results(times, memory, errors)
+    plot_results(times, memory, errors, title)
 
 end
 
+function Visualizations(times::DataFrame, memory::DataFrame, errors::DataFrame)
+    algo = ["Jacobi", "GaussSeidel", "Gradient", "ConjugateGradient"]
+
+    for i in eachindex(algo)
+        println(algo[i])
+        Visualizations(times[:,i], memory[:,i], errors[:,i], algo[i])
+    end
 end
+
+end #
