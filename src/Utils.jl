@@ -3,6 +3,7 @@ module Utils
 using SparseArrays
 using Plots
 using Statistics
+using Random
 
 """
     read_sparse_matrix(file_path::String)::SparseMatrixCSC{Float64,UInt32}
@@ -213,4 +214,9 @@ function optimal_alpha_richardson(P::SparseMatrixCSC{Float64,UInt32})::Float64
 
     return 2 / (max_eg + min_eg)
 end
+
+function gen_random_matrix(rows::Integer, cols::Integer)::Matrix{Float64}
+    return rand(MersenneTwister(0), Float64, rows, cols)
+end
+
 end
