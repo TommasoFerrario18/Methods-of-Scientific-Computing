@@ -44,11 +44,30 @@ Check if the stopping criteria for an iterative method has been reached.
 """
 function RemainingStoppingCriteria(A::SparseMatrixCSC{Float64,UInt32},
     x::Vector{Float64}, b::Vector{Float64}, tol::Float64)::Bool
-    return norm((A * x) - b) / norm(b) < tol
+    return RemainingStoppingCriteria((b - (A * x)), b, tol)
 end
 
 """
-    RelaxedJacobi(A, b, x0, tol, maxIter, w, stoppingCriterion, alpha)
+    RemainingStoppingCriteria(r::Vector{Float64}, b::Vector{Float64}, tol::Float64)
+
+Check if the stopping criteria for an iterative method has been reached.
+
+# Arguments
+- `r::Vector{Float64}`: The residual vector.
+- `b::Vector{Float64}`: The right-hand side of the linear system.
+- `tol::Float64`: The tolerance value.
+
+# Returns
+- `Bool`: `true` if the stopping criteria has been reached, `false` otherwise.
+
+"""
+function RemainingStoppingCriteria(r::Vector{Float64}, b::Vector{Float64}, tol::Float64)::Bool
+    return norm(r) / norm(b) < tol
+end
+
+
+"""
+    RelaxedJacobi(A, b, x0, tol, maxIter, w, alpha)
 
 Solve a linear system using the Jacobi method with relaxation.
 
@@ -77,22 +96,28 @@ function RelaxedJacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
         throw(ArgumentError("The relaxation factor must be in the interval (0, 1]"))
     end
 
+    # Number of iterations
     k = 0
-    x = copy(x0)
-    xk = zeros(n)
 
-    r = similar(b)
+    # Solution vector
+    x = copy(x0)  # Current solution vector
+    xk = zeros(n) # Next solution vector
 
+    # Residual vector
+    r = zeros(n)
+
+    # Diagonal matrix of A and inverted
     P = spdiagm(0 => w ./ diag(A))
 
     while k < maxIter
+        # Update the solution vector using relaxation:
         # xk = x + alpha * P * (b - A * x) + (1 - w) * x
         mul!(r, A, x)
         r = b - r
         mul!(xk, P, r)
         xk = x + alpha .* xk + (1 - w) .* x
 
-        if RemainingStoppingCriteria(A, xk, b, tol)
+        if RemainingStoppingCriteria(r, b, tol)
             return xk, k
         end
 
@@ -104,7 +129,7 @@ function RelaxedJacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
 end
 
 """
-    Jacobi(A, b, x0, tol, maxIter, stoppingCriterion)
+    Jacobi(A, b, x0, tol, maxIter)
 
 Solve a linear system using the Jacobi method.
 
@@ -124,49 +149,9 @@ function Jacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     return RelaxedJacobi(A, b, x0, tol, maxIter, 1.0)
 end
 
-"""
-    Jacobi(A, b, tol, maxIter, stoppingCriterion)
-
-Solve a linear system using the Jacobi method.
-
-# Arguments
-- `A::SparseMatrixCSC{Float64,UInt32}`: The matrix of the linear system.
-- `b::Vector{Float64}`: The right-hand side of the linear system.
-- `tol::Float64`: The tolerance value.
-- `maxIter::UInt16`: The maximum number of iterations.
-
-# Returns
-- `Tuple{Vector{Float64},UInt16}`: The solution vector and the number of iterations.
 
 """
-function Jacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
-    tol::Float64, maxIter::UInt16)::Tuple{Vector{Float64},UInt16}
-    return RelaxedJacobi(A, b, zeros(size(b)), tol, maxIter, 1.0)
-end
-
-"""
-    Jacobi(A, b, tol, maxIter, w, stoppingCriterion)
-
-Solve a linear system using the Jacobi method with relaxation.
-
-# Arguments
-- `A::SparseMatrixCSC{Float64,UInt32}`: The matrix of the linear system.
-- `b::Vector{Float64}`: The right-hand side of the linear system.
-- `tol::Float64`: The tolerance value.
-- `maxIter::UInt16`: The maximum number of iterations.
-- `w::Float64`: The relaxation factor.
-
-# Returns
-- `Tuple{Vector{Float64},UInt16}`: The solution vector and the number of iterations.
-
-"""
-function RelaxedJacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
-    tol::Float64, maxIter::UInt16, w::Float64)::Tuple{Vector{Float64},UInt16}
-    return RelaxedJacobi(A, b, zeros(size(b)), tol, maxIter, w)
-end
-
-"""
-    RelaxedGaussSeidel(A, b, x0, tol, maxIter, w, stoppingCriterion, alpha)
+    RelaxedGaussSeidel(A, b, x0, tol, maxIter, w, alpha)
 
 Solve a linear system using the Gauss-Seidel method with relaxation.
 
@@ -194,10 +179,14 @@ function RelaxedGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float6
         throw(ArgumentError("The relaxation factor must be in the interval (0, 2)"))
     end
 
+    # Number of iterations
     k = 0
-    x = copy(x0)
-    xk = copy(x0)
 
+    # Solution vector
+    x = copy(x0)  # Current solution vector
+    xk = copy(x0) # Next solution vector
+
+    # Compute the lower triangular matrix of A
     P = sparse(tril(A))
 
     for i = 1:n
@@ -212,10 +201,11 @@ function RelaxedGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float6
         r = b - r
         y = DirectMethods.ForwardSubstitution(P, r)
 
+        # Update the solution vector using relaxation:
         # xk = x + alpha * y + (1 - w) * x
-        xk = x + alpha .* y
+        xk = x + alpha .* y + (1 - w) .* x
 
-        if RemainingStoppingCriteria(A, xk, b, tol)
+        if RemainingStoppingCriteria(r, b, tol)
             return xk, k
         end
 
@@ -227,7 +217,7 @@ function RelaxedGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float6
 end
 
 """
-    GaussSeidel(A, b, x0, tol, maxIter, stoppingCriterion)
+    GaussSeidel(A, b, x0, tol, maxIter)
 
 Solve a linear system using the Gauss-Seidel method.
 
@@ -248,48 +238,7 @@ function GaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x0:
 end
 
 """
-    GaussSeidel(A, b, tol, maxIter, stoppingCriterion)
-
-Solve a linear system using the Gauss-Seidel method.
-
-# Arguments
-- `A::SparseMatrixCSC{Float64,UInt32}`: The matrix of the linear system.
-- `b::Vector{Float64}`: The right-hand side of the linear system.
-- `tol::Float64`: The tolerance value.
-- `maxIter::UInt16`: The maximum number of iterations.
-
-# Returns
-- `Tuple{Vector{Float64},UInt16}`: The solution vector and the number of iterations.
-
-"""
-function GaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, tol::Float64,
-    maxIter::UInt16)::Tuple{Vector{Float64},UInt16}
-    return RelaxedGaussSeidel(A, b, zeros(size(b)), tol, maxIter, 1.0)
-end
-
-"""
-    GaussSeidel(A, b, tol, maxIter, w, stoppingCriterion)
-
-Solve a linear system using the Gauss-Seidel method with relaxation.
-
-# Arguments
-- `A::SparseMatrixCSC{Float64,UInt32}`: The matrix of the linear system.
-- `b::Vector{Float64}`: The right-hand side of the linear system.
-- `tol::Float64`: The tolerance value.
-- `maxIter::UInt16`: The maximum number of iterations.
-- `w::Float64`: The relaxation factor.
-
-# Returns
-- `Tuple{Vector{Float64},UInt16}`: The solution vector and the number of iterations.
-
-"""
-function RelaxedGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, tol::Float64,
-    maxIter::UInt16, w::Float64)::Tuple{Vector{Float64},UInt16}
-    return RelaxedGaussSeidel(A, b, zeros(size(b)), tol, maxIter, w)
-end
-
-"""
-    RichardsonJacobi(A, b, x0, tol, maxIter, w, stoppingCriterion, alpha)
+    RichardsonJacobi(A, b, x0, tol, maxIter, w, alpha)
 
 Solve a linear system using the Richardson method with relaxation.
 
@@ -317,7 +266,9 @@ function RichardsonJacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}
         end
 
         alpha = Utils.optimal_alpha_richardson(P)
-    elseif alpha <= 0
+    end
+
+    if alpha <= 0
         throw(ArgumentError("The parameter alpha must be positive"))
     end
 
@@ -325,7 +276,7 @@ function RichardsonJacobi(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}
 end
 
 """
-    RichardsonGaussSeidel(A, b, x0, tol, maxIter, w, stoppingCriterion, alpha)
+    RichardsonGaussSeidel(A, b, x0, tol, maxIter, w, alpha)
 
 Solve a linear system using the Richardson method with relaxation.
 
@@ -345,9 +296,6 @@ Solve a linear system using the Richardson method with relaxation.
 function RichardsonGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
     x0::Vector{Float64}, tol::Float64, maxIter::UInt16, w::Float64, alpha::Float64=1.0,
     choose_alpha::Bool=false)::Tuple{Vector{Float64},UInt16}
-    if w <= 0 || w >= 2
-        throw(ArgumentError("The relaxation factor must be in the interval (0, 2)"))
-    end
 
     if choose_alpha
         P = tril(A)
@@ -357,7 +305,9 @@ function RichardsonGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Flo
         end
 
         alpha = Utils.optimal_alpha_richardson(inv(P))
-    elseif alpha <= 0
+    end
+
+    if alpha <= 0
         throw(ArgumentError("The parameter alpha must be positive"))
     end
 
@@ -365,7 +315,7 @@ function RichardsonGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Flo
 end
 
 """
-    Gradient(A, b, x0, tol, maxIter, stoppingCriterion)
+    Gradient(A, b, x0, tol, maxIter)
 
 Solve a linear system using the Gradient method.
 
@@ -413,7 +363,7 @@ function Gradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
 end
 
 """
-    ConjugateGradient(A, b, x0, tol, maxIter, stoppingCriterion)
+    ConjugateGradient(A, b, x0, tol, maxIter)
 
 Solve a linear system using the Conjugate Gradient method.
 
@@ -447,13 +397,12 @@ function ConjugateGradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64
 
     while k < maxIter
         mul!(r, A, x)
-        r = b - r # Residuo del passo k
+        r = b - r
         mul!(y, A, d)
-        # z = A * r
         alpha = dot(d, r) / dot(d, y)
 
         @. x += alpha .* d
-        
+
         mul!(r, A, x)
         rk = b - r
 
@@ -461,7 +410,7 @@ function ConjugateGradient(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64
 
         beta = dot(d, w) / dot(d, y)
 
-        @. d = rk - beta .* d # Aggiornamento della direzione di discesa
+        @. d = rk - beta .* d
 
         if RemainingStoppingCriteria(A, x, b, tol)
             return x, k
