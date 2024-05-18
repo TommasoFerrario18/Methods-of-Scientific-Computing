@@ -1,13 +1,14 @@
 include("Utils.jl")
-include("Analysis.jl")
+include("Visualization.jl")
 include("IterativeMethods.jl")
 
 using SparseArrays
 using LinearAlgebra
 using DataFrames
 using CSV
+using Plots
 using .Utils
-using .Analysis
+using .Visualization
 using .IterativeMethods
 
 function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vector{Float64}, tol::Vector{Float64}, file_name::String)::Tuple{DataFrame,DataFrame,DataFrame}
@@ -77,7 +78,7 @@ function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vec
     return times_df, memory_df, errors_df
 end
 
-path_to_matrix = ["./data/spa1.mtx", "./data/spa2.mtx", "./data/vem1.mtx", "./data/vem2.mtx"] 
+path_to_matrix = ["./data/spa1.mtx", "./data/spa2.mtx", "./data/vem1.mtx", "./data/vem2.mtx"]
 
 # Read the sparse matrix from the file.
 for path in path_to_matrix
