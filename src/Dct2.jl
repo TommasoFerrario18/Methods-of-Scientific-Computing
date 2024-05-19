@@ -2,6 +2,9 @@
 module Dct2
 
 using LinearAlgebra
+using Plots
+using FileIO
+using Images
 
 
 
@@ -9,9 +12,10 @@ function Gen_ortogonal_cos_base(dim::Integer)::Matrix{Float64}
     base = zeros(dim,dim)
     
 
-    for i in 1:dim
-        for k in 1:dim
-            base[i, k] = cos(k * pi * (2 * (i - 1) + 1) / (2 * dim))
+    for k in 1:dim 
+        for i in 1:dim
+            base[i, k] = cos((k-1) * pi * (2 * (i-1) + 1) / (2 * dim))
+            #base[i, k] = cos((k-1) * pi * ((i-1) + 1/2)/ dim) libreria
         end
     end
 
@@ -21,72 +25,84 @@ end
 function Test_ortogonal_cos_base(mat::Matrix{Float64})::Bool
     N = size(mat)[1]
     #sum =0
-    if sum(mat[:,1]) != N
-        print("F")
+    # println("-- Testing cos base --")
+    # println("Check sum of all components in W0: " * string(sum(mat[:,1])))
+    if sum(mat[:,1]) - N >= 10e-3
         return false
     end 
     
     for i in 2:N
-        sum = 0
-        for j in 1:N
-            sum += mat[j,i]
-        end
-        if sum != 0
+        # println("Check sum of all components in Wi: " * string(sum(mat[:,i])))
+        if sum(mat[:,i]) >= 10e-3
             return false
         end
     end
 
     for i in 1:N
         for j in i+1:N
-            if i != j & dot(mat[:,i], mat[:,j]) != 0
+            if i != j && dot(mat[:,i], mat[:,j]) >= 10e-3
                 return false 
-            elseif i == j & i == 0 & dot(mat[:,i], mat[:,j]) != N
+            elseif i == j && i == 0 && dot(mat[:,i], mat[:,j]) - N >= 10e-3
                 return false 
-            elseif i == j & i != 0 & dot(mat[:,i], mat[:,j]) != N/2
+            elseif i == j && i != 0 && dot(mat[:,i], mat[:,j]) - N/2 >= 10e-3
                 return false 
             end
         end
     end
 
     return true
-end 
+end
 
-
-function Map_vector_from_canonic_base_to_ortogonal_cos_base(
+function Get_coefficients(
         vector::Vector{Float64}, 
         ortogonal_cos_base_matrix::Matrix{Float64})
-    coefficients =  collect(transpose(vector)) * ortogonal_cos_base_matrix   
-    for (index, coef) in enumerate(coefficients)
-        if index == 1
-            coef /= length(vector)
+
+    coefficients = transpose(ortogonal_cos_base_matrix) * vector   
+    
+    for i in eachindex(coefficients)
+        if i == 1
+            coefficients[i] = coefficients[i] / (length(vector))
         else 
-            coef /= length(vector)/2
+            coefficients[i] = coefficients[i] / (length(vector)/2)
         end
     end
-    """
-    println(coefficients)
-    print(typeof(coefficients))
-    println(ortogonal_cos_base_matrix)
-    print(typeof(ortogonal_cos_base_matrix))
-    """
-    return coefficients * ortogonal_cos_base_matrix 
+
+    return 2 * coefficients
 end
 
-function Dct(vector::Vector{Float64})
+function Dct(vector::Vector{Float64})::Vector{Float64}
     base = Gen_ortogonal_cos_base(length(vector))
-    println("Check BASE ")
-    println(Test_ortogonal_cos_base(base))
-    println("base")
-    println(base)
-    vector_cos_base = Map_vector_from_canonic_base_to_ortogonal_cos_base(vector,base)
-    return vector_cos_base
+    return Get_coefficients(vector, base)
 end
-"""
 
-function Dct2(matrix::Matrix{Float64})::Matrix{Float64}
+function DctII(matrix::Matrix{Float64})::Matrix{Float64}
+    dct1::Matrix{Float64}
 
+    for row in eachrow(matrix)
+        vcat(dct1, Dct(row))
+    end
+
+    ris::Matrix{Float64}
+    
+    for col in eachcol(dct1)
+        hcat(ris, Dct(col))
+    end
+
+    return ris
 end
-"""
+
+function LoadBtmImage(path::String)
+    abs_path = abspath(path) 
+    img = load(File{format"BMP"}(abs_path), )
+
+    return Gray.(img)
+end
+
+function GenBtmImage()
+    save("gray.bmp", colorview(Gray, rand(16,16)))
+    print("fatto")
+end
+
 
 
 end
