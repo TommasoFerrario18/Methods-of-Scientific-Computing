@@ -8,48 +8,34 @@ using Plots
 using FFTW
 
 
-
-function TestDct()
-
-    par(x) = -x^2 + 4x
-    
-    input = Float64[]
-    for i in 0:0.1:4
-        push!(input, par(i))
+function TestTimeDct()
+    dims = 4:1000:4000
+    time_dct = []
+    time_fft = []
+    for i in dims
+        M = Utils.gen_random_matrix(i, i)
+        push!(time_dct, @elapsed Dct2.DctII(M))
+        push!(time_fft, @elapsed FFTW.dct(M))
+        println(time_dct)
+        println(time_fft)
     end
-
-
-    for i in 0:0.1:4
-        push!(input, par(4-i))
-    end
-    
-    binput = bar(input, title="Target Function")
-    savefig(binput,"target.png")
-    
-    
-    base = Dct2.Gen_ortogonal_cos_base(length(input))
-    coef = Dct2.Get_coefficients(input, base)
-    
-    
-    bcoef = bar(coef, title="Coefficients computed in a custom way")
-    savefig(bcoef,"dct_coeff_custom.png")
-    
-    lcoef = FFTW.dct(input)
-    blcoef = bar(lcoef, title="Coefficients computed using std library")
-    savefig(blcoef,"dct_coeff_library.png")
-    
-    btargetlibrary = bar(transpose(base) * lcoef, title="Approx Target Function using custom coefficients")
-    savefig(btargetlibrary,"target_library.png")
-    
-    btargetcustom = bar(transpose(base) * coef, title="Approx Target Function using std library coefficients")
-    savefig(btargetcustom,"target_custom.png")
-
-    println(norm(coef - lcoef))
+    plot(dims, [time_dct, time_fft])
 end
 
-TestDct()
 
 input = Float64[231, 32, 233, 161, 24, 71, 140, 245]
+input2 = Float64[
+    231 32 233 161 24 71 140 245;
+    247 40 248 245 124 204 36 107;
+    234 202 245 167 9 217 239 173;
+    193 190 100 167 43 180 8 70;
+    11 24 210 177 81 243 8 112;
+    97 195 203 47 125 114 165 181;
+    193 70 174 167 41 30 127 245;
+    87 149 57 192 65 129 178 228
+]
+println(typeof(input2))
+println(sum(FFTW.dct(input) - Dct2.Dct(input)))
+println(sum(FFTW.dct(input2) - Dct2.DctII(input2)))
 
-println(FFTW.dct(input))
-println(Dct2.Dct(input))
+#TestTimeDct()

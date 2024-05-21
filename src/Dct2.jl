@@ -1,21 +1,23 @@
-
 module Dct2
+
+include("Utils.jl")
 
 using LinearAlgebra
 using Plots
 using FileIO
 using Images
+using FFTW
+using .Utils
+using Distributed
 
 
 
 function Gen_ortogonal_cos_base(dim::Integer)::Matrix{Float64}
-    base = zeros(dim,dim)
-    
+    base = zeros(dim,dim) 
 
     for k in 1:dim 
         for i in 1:dim
-            base[i, k] = cos((k-1) * pi * (2 * (i-1) + 1) / (2 * dim))
-            #base[i, k] = cos((k-1) * pi * ((i-1) + 1/2)/ dim) libreria
+            base[k, i] = cos((k-1) * pi * (2 * (i-1) + 1) / (2 * dim))
         end
     end
 
@@ -57,17 +59,17 @@ function Get_coefficients(
         vector::Vector{Float64}, 
         ortogonal_cos_base_matrix::Matrix{Float64})
 
-    coefficients = transpose(ortogonal_cos_base_matrix) * vector   
-    
+    coefficients = ortogonal_cos_base_matrix * vector   
+
     for i in eachindex(coefficients)
         if i == 1
-            coefficients[i] = coefficients[i] / (length(vector))
+            coefficients[i] = coefficients[i] / sqrt(length(vector))
         else 
-            coefficients[i] = coefficients[i] / (length(vector)/2)
+            coefficients[i] = coefficients[i] / sqrt(length(vector)/2)
         end
     end
 
-    return 2 * coefficients
+    return coefficients
 end
 
 function Dct(vector::Vector{Float64})::Vector{Float64}
@@ -76,33 +78,63 @@ function Dct(vector::Vector{Float64})::Vector{Float64}
 end
 
 function DctII(matrix::Matrix{Float64})::Matrix{Float64}
-    dct1::Matrix{Float64}
+    base = Gen_ortogonal_cos_base(size(matrix)[1])
 
-    for row in eachrow(matrix)
-        vcat(dct1, Dct(row))
+    for i in axes(matrix, 1) 
+        matrix[i,:] = Get_coefficients(matrix[i,:], base)
     end
 
-    ris::Matrix{Float64}
+    for i in axes(matrix, 2) 
+        matrix[:,i] = Get_coefficients(matrix[:,i], base)
+    end
+
+    return matrix
+end
+
+function ResizeMatrix(img::Matrix{UInt8}, F::Int64)::Matrix{UInt8}
+    return img[1:size(img)[1] - (size(img)[1]% F), 1:size(img)[2] - (size(img)[2]% F)]
+end
+
+function Compress(c::Matrix{Float64}, d::Int64)::Matrix{Float64}
+    for ii in axes(c,1)
+        for jj in axes(c,2)
+            if ii + jj - 2 >= d
+                c[ii, jj] = 0
+            end
+        end
+    end
+    return c
+end
+
+function Normalize(c::Matrix{Float64})::Matrix{UInt8}
+    c = round.(c)
+    for i in eachindex(c)
+        if c[i] > 255
+            c[i] = 255
+        elseif c[i] < 0
+            c[i] = 0
+        end
+    end
+    return c
+end
+
+function ApplyDct2OnImage(img::Matrix{UInt8}, F::Int64, d::Int64)::Matrix{UInt8}
+    img = ResizeMatrix(img, F)
+
+    c = zero(rand(F,F))
+
+    for i in 0:div(size(img)[1], F)-1
+        for j in 0:div(size(img)[2], F)-1
+            c = img[i * F + 1 : i * F + F, j * F + 1 : j * F + F]
+            c = FFTW.dct(c)
+            c = Dct2.Compress(c, d)
+            c = FFTW.idct(c)
+            c = Dct2.Normalize(c)
+            img[i * F + 1 : i * F + F, j * F + 1 : j * F + F] = c
+        end
+    end
     
-    for col in eachcol(dct1)
-        hcat(ris, Dct(col))
-    end
-
-    return ris
+    return img
 end
-
-function LoadBtmImage(path::String)
-    abs_path = abspath(path) 
-    img = load(File{format"BMP"}(abs_path), )
-
-    return Gray.(img)
-end
-
-function GenBtmImage()
-    save("gray.bmp", colorview(Gray, rand(16,16)))
-    print("fatto")
-end
-
-
 
 end

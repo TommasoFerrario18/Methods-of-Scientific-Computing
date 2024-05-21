@@ -4,6 +4,8 @@ using SparseArrays
 using Plots
 using Statistics
 using Random
+using FileIO
+using Images
 
 """
     read_sparse_matrix(file_path::String)::SparseMatrixCSC{Float64,UInt32}
@@ -217,6 +219,22 @@ end
 
 function gen_random_matrix(rows::Integer, cols::Integer)::Matrix{Float64}
     return rand(MersenneTwister(0), Float64, rows, cols)
+end
+
+function GenBmpImage(row::Int32, col::Int32)::Matrix{Grey{Float32}}
+    return colorview(Gray, rand(row,col))
+end
+
+function LoadBmpImage(path::String)::Matrix{UInt8}
+    abs_path = abspath(path) 
+    img = load(File{format"BMP"}(abs_path))
+
+    return Float32.(Gray.(img)) * 255
+end
+
+function SaveBmpImage(img::Matrix{UInt8}, path::String)
+    abs_path = abspath(path) 
+    save(File(format"BMP", abs_path), img/255)
 end
 
 end
