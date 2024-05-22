@@ -381,4 +381,10 @@ TSWLatexianTemp*
 # glossaries
 *.glstex
 
+# images
+*.png
+*.pdf
+*.bmp
+# CSV
 *.csv
+
