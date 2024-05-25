@@ -217,7 +217,7 @@ function optimal_alpha_richardson(P::SparseMatrixCSC{Float64,UInt32})::Float64
     return 2 / (max_eg + min_eg)
 end
 
-function gen_random_matrix(rows::Integer, cols::Integer)::Matrix{Float64}
+function GenRandomMatrix(rows::Integer, cols::Integer)::Matrix{Float64}
     return rand(MersenneTwister(0), Float64, rows, cols)
 end
 

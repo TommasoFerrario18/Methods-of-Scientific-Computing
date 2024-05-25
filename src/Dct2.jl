@@ -12,7 +12,7 @@ using Distributed
 
 
 
-function Gen_ortogonal_cos_base(dim::Integer)::Matrix{Float64}
+function GenOrtogonalCosBase(dim::Integer)::Matrix{Float64}
     base = zeros(dim,dim) 
 
     for k in 1:dim 
@@ -24,7 +24,7 @@ function Gen_ortogonal_cos_base(dim::Integer)::Matrix{Float64}
     return base
 end
 
-function Test_ortogonal_cos_base(mat::Matrix{Float64})::Bool
+function TestOrtogonalCosBase(mat::Matrix{Float64})::Bool
     N = size(mat)[1]
     #sum =0
     # println("-- Testing cos base --")
@@ -55,7 +55,7 @@ function Test_ortogonal_cos_base(mat::Matrix{Float64})::Bool
     return true
 end
 
-function Get_coefficients(
+function GetCoefficients(
         vector::Vector{Float64}, 
         ortogonal_cos_base_matrix::Matrix{Float64})
 
@@ -73,19 +73,19 @@ function Get_coefficients(
 end
 
 function Dct(vector::Vector{Float64})::Vector{Float64}
-    base = Gen_ortogonal_cos_base(length(vector))
-    return Get_coefficients(vector, base)
+    base = GenOrtogonalCosBase(length(vector))
+    return GetCoefficients(vector, base)
 end
 
 function DctII(matrix::Matrix{Float64})::Matrix{Float64}
-    base = Gen_ortogonal_cos_base(size(matrix)[1])
+    base = GenOrtogonalCosBase(size(matrix)[1])
 
     for i in axes(matrix, 1) 
-        matrix[i,:] = Get_coefficients(matrix[i,:], base)
+        matrix[i,:] = GetCoefficients(matrix[i,:], base)
     end
 
     for i in axes(matrix, 2) 
-        matrix[:,i] = Get_coefficients(matrix[:,i], base)
+        matrix[:,i] = GetCoefficients(matrix[:,i], base)
     end
 
     return matrix
@@ -96,10 +96,10 @@ function ResizeMatrix(img::Matrix{UInt8}, F::Int64)::Matrix{UInt8}
 end
 
 function Compress(c::Matrix{Float64}, d::Int64)::Matrix{Float64}
-    for ii in axes(c,1)
-        for jj in axes(c,2)
-            if ii + jj - 2 >= d
-                c[ii, jj] = 0
+    for i in axes(c,1)
+        for j in axes(c,2)
+            if i + j - 2 >= d
+                c[i, j] = 0
             end
         end
     end
