@@ -1,4 +1,4 @@
-module Analysis
+module Visualization
 
 using Plots
 using Statistics
@@ -19,6 +19,7 @@ Plot the results of a Cholesky decomposition analysis.
 
 """
 function plot_results(times::Vector{Float64}, memory::Vector{Float64}, errors::Vector{Float64}, title::String)
+    println(title)
     p1 = plot(times,  label="Time",   title=title, xlabel="Iteration", ylabel="Time (s)")
     p2 = plot(memory, label="Memory", title=title, xlabel="Iteration", ylabel="Memory (MB)")
     p3 = plot(errors, label="Error",  title=title, xlabel="Iteration", ylabel="Error")

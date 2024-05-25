@@ -385,3 +385,6 @@ TSWLatexianTemp*
 *.png
 *.pdf
 *.bmp
+# CSV
+*.csv
+
