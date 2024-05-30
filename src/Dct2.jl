@@ -91,6 +91,10 @@ function DctII(matrix::Matrix{Float64})::Matrix{Float64}
     return matrix
 end
 
+function DctIILibrary(matrix::Matrix{Float64})::Matrix{Float64}
+    return FFTW.plan_dct(matrix) * matrix;
+end
+
 function ResizeMatrix(img::Matrix{UInt8}, F::Int64)::Matrix{UInt8}
     return img[1:size(img)[1] - (size(img)[1]% F), 1:size(img)[2] - (size(img)[2]% F)]
 end

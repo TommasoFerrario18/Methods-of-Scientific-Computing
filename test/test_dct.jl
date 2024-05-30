@@ -17,7 +17,7 @@ function TestTimeDct()
     for i in 1:max_iter
         M = Utils.GenRandomMatrix(start_dim, start_dim)
         push!(time_dct, @elapsed Dct2.DctII(M))
-        push!(time_fft, @elapsed FFTW.dct(M))
+        push!(time_fft, @elapsed Dct2.DctIILibrary(M))
         push!(list_dims, start_dim)
         start_dim *= 2
     end
