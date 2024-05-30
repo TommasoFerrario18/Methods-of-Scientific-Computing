@@ -128,10 +128,17 @@ function DctII(matrix::Matrix{Float64})::Matrix{Float64}
 
     return matrix
 end
+"""
+    DctIILibrary(matrix::Matrix{Float64})::Matrix{Float64}
 
-function DctIILibrary(matrix::Matrix{Float64})::Matrix{Float64}
-    return FFTW.plan_dct(matrix) * matrix;
-end
+Apply FFT on matrix.
+
+# Arguments
+- matrix::Matrix{Float64}: The input matrix.
+
+# Returns
+- Matrix{Float64}: The transformed matrix.
+"""
 
 function DctIILibrary(matrix::Matrix{Float64})::Matrix{Float64}
     return FFTW.plan_dct(matrix) * matrix;
