@@ -1,4 +1,4 @@
-\documentclass[a4paper, oneside]{report}
+\documentclass{article}
 \usepackage[italian]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}
@@ -8,29 +8,137 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{hyperref}
-\pagestyle{fancy}
-\fancyhead[L,RO]{\slshape \rightmark}
-\fancyfoot[C]{\thepage}
 
-\title{Progetto 1 bis - Mini libreria per sistemi lineari}
+\title{Progetto 1 bis - Libreria per sistemi lineari}
 \author{
     Telemaco Terzi (\href{https://github.com/Tezze2001}{@Tezze2001}) \\\\
     Tommaso Ferrario (\href{https://github.com/TommasoFerrario18}{@TommasoFerrario18})
     }
-\date{April 2024}
-
-\pgfplotsset{compat=1.13}
+\date{Maggio 2024}
+\pgfplotsset{compat=1.18}
 
 \begin{document}
 
 \maketitle
 \newtheorem{teorema}{Teorema}
-\newtheorem{dimostrazione}{Dimostrazione}
 \newtheorem{definizione}{Definizione}
 \newtheorem{esempio}{Esempio}
 
 \tableofcontents
-\chapter{Introduzione}
-\chapter{Struttura della libreria}
-\chapter{Esperimenti}
+\section{Introduzione}
+Per la realizzazione della libreria contenente i metodi per la risoluzione di
+sistemi lineari, è stato scelto di utilizzare \href{https://julialang.org/}{\textbf{Julia}},
+un linguaggio di programmazione open-source, sviluppato per ottenere prestazioni
+elevate e con una sintassi simile a quella di Python e MATLAB. Julia, concepito
+per la manipolazione efficace del calcolo scientifico, offre una vasta gamma di
+librerie per la gestione di matrici e vettori.
+
+In particolare, per lo sviluppo di questo progetto sono state utilizzate due
+librerie della Standard Library di Julia:
+\begin{itemize}
+    \item LinearAlgebra: fornisce funzioni per la manipolazione di matrici e vettori.
+    \item SparseArrays: fornisce funzioni per la gestione di matrici sparse.
+\end{itemize}
+
+L'impiego di quest'ultima libreria è stato fondamentale per ridurre l'occupazione
+di memoria, in quanto le matrici utilizzate negli esperimenti sono matrici sparse.
+Sono state utilizzate le seguenti matrici sparse:
+\begin{itemize}
+    \item \textbf{spa1}: matrice di dimensione 1000x1000 con 182,434 elementi non nulli.
+    \item \textbf{spa2}: matrice di dimensione 3000x3000 con 1,633,298 elementi non nulli.
+    \item \textbf{vem1}: matrice di dimensione 1681x1681 con 13,385 elementi non nulli.
+    \item \textbf{vem2}: matrice di dimensione 2601x2601 con 21,225 elementi non nulli.
+\end{itemize}
+
+Tutti gli esperimenti sono stati eseguiti su un computer con le seguenti caratteristiche:
+\begin{itemize}
+    \item CPU: Intel Core i5-1135G7
+    \item RAM: 16 GB
+    \item Sistema Operativo: Windows 11
+    \item Julia: versione 1.10.2
+\end{itemize}
+
+Per quanto riguarda le misurazioni dei tempi di esecuzione e l'occupazione di
+memoria, sono state utilizzate la funzione \textbf{time}, invocata prima e dopo
+l'esecuzione del codice, e la macro \textbf{@allocated} per misurare l'occupazione
+di memoria. Quest'ultima restituisce la quantità di memoria allocata in byte.
+
+\section{Struttura della libreria}
+La libreria realizzata è composta da tre moduli principali:
+\begin{itemize}
+    \item \textbf{IterativeMethods}: contiene i metodi iterativi per la risoluzione
+          di sistemi lineari.
+    \item \textbf{DirectMethods}: contiene i metodi diretti per la risoluzione
+          di sistemi lineari.
+    \item \textbf{Utils}: contiene le funzioni di utilità per la manipolazione
+          di matrici e vettori.
+\end{itemize}
+
+\subsection{Utils}
+Nel modulo \textbf{Utils} sono presenti le funzioni per svolgere compiti di
+utilità, come la lettura delle matrici da file, le funzioni per i controlli delle
+matrici e per operazioni su di esse, come ad esempio lo scambio di due righe o
+colonne di una matrice.
+
+\subsection{DirectMethods}
+Nel modulo \textbf{DirectMethods} è presente il metodo che effettua la risoluzione
+di un sistema lineare in cui la matrice è triangolare inferiore, tramite il
+metodo di sostituzione in avanti.
+
+Di seguito riportiamo lo pseudocodice del metodo \textbf{forward\_substitution}:
+\begin{verbatim}
+function forward_substitution(A, b)
+    n = size(A, 1)
+    x = zeros(n)
+    x[1] = b[1] / A[1, 1]
+    for i in 2
+        x[i] = (b[i] - dot(A[i, 1], x[1])) / A[i, i]
+    end
+    return x
+end
+\end{verbatim}
+Questo metodo è stato implementato poiché nel metodo di risoluzione di Gauß-Seidel,
+la regola di aggiornamento è la seguente:
+\begin{equation}
+    x^{(k+1)} = x^{(k)} + P^{-1}(b - Ax^{(k)})
+\end{equation}
+dove $P$ è una matrice triangolare inferiore. Pertanto, per evitare di calcolare
+la matrice inversa, si risolve un sistema lineare utilizzando questo metodo.
+
+\subsection{IterativeMethods}
+Nel modulo \textbf{IterativeMethods} sono presenti i metodi iterativi per la
+risoluzione di sistemi lineari. In particolare, sono stati implementati i seguenti
+metodi:
+\begin{itemize}
+    \item \textbf{Jacobi}: metodo di Jacobi per la risoluzione di sistemi lineari.
+    \item \textbf{GaussSeidel}: metodo di Gauß-Seidel per la risoluzione di
+          sistemi lineari.
+    \item \textbf{Gradient}: metodo del gradiente per la risoluzione di sistemi
+          lineari.
+    \item \textbf{ConjugateGradient}: metodo del gradiente coniugato per la
+          risoluzione di sistemi lineari.
+\end{itemize}
+
+Tutti i metodi implementati utilizzano come criterio di arresto il confronto del
+residuo riscalato, calcolato come:
+\begin{equation}
+    \frac{|b - Ax^{(k)}|}{|b|}
+\end{equation}
+dove $x^{(k)}$ è la soluzione al passo $k$ e $b$ è il vettore dei termini noti.
+La tolleranza per questo confronto è un valore fornito dall'utente.
+
+Inoltre, per evitare cicli infiniti, è possibile specificare un numero massimo
+di iterazioni. Il valore predefinito è fissato a 20000 iterazioni.
+
+\section{Risultati sperimentali}
+Implementati i metodi, si è proceduto con la valutazione delle prestazioni di
+ciascuno di essi. In particolare, sono stati eseguiti degli esperimenti sulle 
+matrici precedentemente descritte, utilizzando come vettore dei termini noti un
+vettore di 1 di dimensione pari al numero di righe della matrice.
+
+
+\subsection{Metodo di Jacobi}
+\subsection{Metodo di Gauß-Seidel}
+\subsection{Metodo del gradiente}
+\subsection{Metodo del gradiente coniugato}
 \end{document}
