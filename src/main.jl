@@ -2,83 +2,59 @@ include("Utils.jl")
 include("Visualization.jl")
 include("IterativeMethods.jl")
 
-using SparseArrays
-using LinearAlgebra
-using DataFrames
-using CSV
-using Plots
 using .Utils
 using .Visualization
 using .IterativeMethods
 
-function run_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vector{Float64}, tol::Vector{Float64}, file_name::String)::Tuple{DataFrame,DataFrame,DataFrame}
+using SparseArrays
+using LinearAlgebra
+using JSON
+using Statistics
+
+function test_methods(method::Function, A::SparseMatrixCSC, b::Vector{Float64}, xe::Vector{Float64}, tol::Float64)::Dict
     maxIter = UInt16.(20000)
     x0 = zeros(size(b))
 
-    times_df = DataFrame(Jacobi=Float64[], GaussSeidel=Float64[], Gradient=Float64[], ConjugateGradient=Float64[])
-    memory_df = DataFrame(Jacobi=Float64[], GaussSeidel=Float64[], Gradient=Float64[], ConjugateGradient=Float64[])
-    errors_df = DataFrame(Jacobi=Float64[], GaussSeidel=Float64[], Gradient=Float64[], ConjugateGradient=Float64[])
+    times = []
+    memory = []
+    errors = []
+    iterations = []
 
-    for t in tol
-        println("Tolerance: ", t)
-
-        times_row = []
-        memory_row = []
-        errors_row = []
-
-        print("Jacobi: \t -> \t")
+    println("Method: ", method)
+    for i in 1:10
         start = time()
-        x, k = IterativeMethods.Jacobi(A, b, x0, t, maxIter)
-        push!(times_row, time() - start)
-        push!(memory_row, (@allocated IterativeMethods.Jacobi(A, b, x0, t, maxIter)) / 1e6)
-        push!(errors_row, (norm(x - xe) / norm(xe)))
-        if k < maxIter
-            println("Iterations: ", k)
-        end
+        x, k = method(A, b, x0, tol, maxIter)
+        push!(times, time() - start)
+        push!(memory, (@allocated method(A, b, x0, tol, maxIter)) / 1e6)
+        push!(errors, (norm(x - xe) / norm(xe)))
+        push!(iterations, k)
+    end
+    println("End")
 
-        print("GaussSeidel: \t -> \t")
-        start = time()
-        x, k = IterativeMethods.GaussSeidel(A, b, x0, t, maxIter)
-        push!(times_row, time() - start)
-        push!(memory_row, (@allocated IterativeMethods.GaussSeidel(A, b, x0, t, maxIter)) / 1e6)
-        push!(errors_row, (norm(x - xe) / norm(xe)))
-        if k < maxIter
-            println("Iterations: ", k)
-        end
+    return Dict("times" => mean(times), "std_time" => std(times),
+        "memory" => mean(memory), "std_memory" => std(memory),
+        "errors" => mean(errors), "std_errors" => std(errors),
+        "iterations" => mean(iterations), "std_iterations" => std(iterations))
+end
 
-        print("Gradient: \t -> \t")
-        start = time()
-        x, k = IterativeMethods.Gradient(A, b, x0, t, maxIter)
-        push!(times_row, time() - start)
-        push!(memory_row, (@allocated IterativeMethods.Gradient(A, b, x0, t, maxIter)) / 1e6)
-        push!(errors_row, (norm(x - xe) / norm(xe)))
-        if k < maxIter
-            println("Iterations: ", k)
-        end
+function test_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vector{Float64}, tollerance::Vector{Float64})::Dict
+    results = Dict()
+    methods = [IterativeMethods.Jacobi, IterativeMethods.GaussSeidel, IterativeMethods.Gradient, IterativeMethods.ConjugateGradient]
 
-        print("ConjugateGradient: \t -> \t")
-        start = time()
-        x, k = IterativeMethods.ConjugateGradient(A, b, x0, t, maxIter)
-        push!(times_row, time() - start)
-        push!(memory_row, (@allocated IterativeMethods.ConjugateGradient(A, b, x0, t, maxIter)) / 1e6)
-        push!(errors_row, (norm(x - xe) / norm(xe)))
-        if k < maxIter
-            println("Iterations: ", k)
+    for tol in tollerance
+        results["$tol"] = Dict()
+        for method in methods
+            results["$tol"]["$method"] = test_methods(method, A, b, xe, tol)
         end
-
-        push!(times_df, times_row)
-        push!(memory_df, memory_row)
-        push!(errors_df, errors_row)
     end
 
-    CSV.write("./results/times_$file_name.csv", times_df)
-    CSV.write("./results/memory_$file_name.csv", memory_df)
-    CSV.write("./results/errors_$file_name.csv", errors_df)
-
-    return times_df, memory_df, errors_df
+    return results
 end
 
 path_to_matrix = ["./data/spa1.mtx", "./data/spa2.mtx", "./data/vem1.mtx", "./data/vem2.mtx"]
+tol = [1e-5, 1e-7, 1e-9, 1e-11]
+
+total_results = Dict()
 
 # Read the sparse matrix from the file.
 for path in path_to_matrix
@@ -92,9 +68,9 @@ for path in path_to_matrix
     x = ones(size(A)[1])
     b = A * x
 
-    tol = [1e-5, 1e-7, 1e-9, 1e-11]
+    total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, x, tol)
+end
 
-    times_df, memory_df, errors_df = run_all(A, b, x, tol, String.(chop(split(path, "/")[end], tail=4)))
-
-    println("Done!")
+open("./results/results.json", "w") do f
+    JSON.print(f, total_results)
 end
