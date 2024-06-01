@@ -88,7 +88,7 @@ callback!(
     if !(contents isa Nothing)
         println("Processing image")
         println("Contents: ", contents[1])
-        println("Filename: ", contents[2])
+        #println("Filename: ", contents[2])
 
         img_data = Base64.base64decode(contents[1])
         println("Image data: ", typeof(img_data))
