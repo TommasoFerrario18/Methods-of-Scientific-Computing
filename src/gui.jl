@@ -27,9 +27,7 @@ app.layout = html_div() do
                     "Drag and Drop or ",
                     html_a("Select Files")
                 ]),
-                style=Dict(
-                    
-                    "lineHeight" => "60px",
+                style=Dict("lineHeight" => "60px",
                     "borderWidth" => "1px",
                     "borderStyle" => "dashed",
                     "borderRadius" => "5px",
@@ -52,10 +50,11 @@ app.layout = html_div() do
                         id="Compression index",
                         children=[
                             html_h5("Index of compression\t", style=Dict("display" => "inline-block")),
-                            dcc_input(id="compression-index", type="number", placeholder="Compression index", value=0, min=1, max=100, step=1, style=Dict("display" => "inline-block", "margin" => "10px"))
+                            dcc_input(id="compression-index", type="number", placeholder="Compression index", value=0, min=0, step=1, style=Dict("display" => "inline-block", "margin" => "10px"))
                         ],
                         style=Dict("display" => "inline-block", "width" => "100vg", "padding" => "10px")
                     ),
+                    html_button("Compress", id="compress-button", style=Dict("display" => "inline-block", "margin" => "15px"))
                 ],
                 style=Dict("display" => "flex", "flex-direction" => "row", "justify-content" => "center")
             ),
@@ -75,27 +74,36 @@ app.layout = html_div() do
         ],
         style=Dict("display" => "flex", "flex-direction" => "column")
     )
-    
-    
-    
+
+
+
 end
 
 function parse_contents_fig(contents, filename, date)
     return html_div([
-        html_h5(filename),
-        html_h6(date),
-        # HTML images accept base64 encoded strings in the same format
-        # that is supplied by the upload
-        html_img(src=contents, style=Dict("height" => "auto", "width" => "auto")),
-        html_hr(),
-        html_div("Raw Content"),
-        html_pre(string(first(contents, 100), "..."), style=Dict(
-            "whiteSpace" => "pre-wrap",
-            "wordBreak" => "break-all"
-        ))
-    ],
-    style=Dict("display" => "flex", "flex-direction" => "column", "justify-content" => "center", "padding" => "20px"))
+            html_h5(filename),
+            html_h6(date),
+            # HTML images accept base64 encoded strings in the same format
+            # that is supplied by the upload
+            html_img(src=contents, style=Dict("height" => "auto", "width" => "auto")),
+            html_hr(),
+            html_div("Raw Content"),
+            html_pre(string(first(contents, 100), "..."), style=Dict(
+                "whiteSpace" => "pre-wrap",
+                "wordBreak" => "break-all"
+            ))
+        ],
+        style=Dict("display" => "flex", "flex-direction" => "column", "justify-content" => "center", "padding" => "20px"))
 end
+
+callback!(
+    app,
+    Output("compression-index", "max"),
+    Input("size-block", "value")
+) do value
+    return value * 2 - 2
+end
+
 
 callback!(
     app,
@@ -116,10 +124,12 @@ end
 callback!(
     app,
     Output("processing-image-upload", "children"),
-    Input("size-block", "value"),
-    Input("upload-image", "contents"),
-    State("upload-image", "filename")
-) do size_block, contents, filename
+    Input("compress-button", "n_clicks"),
+    State("size-block", "value"),
+    State("upload-image", "contents"),
+    State("upload-image", "filename"),
+    State("compression-index", "value")
+) do n_clicks, size_block, contents, filename, compression_index
     if !(contents isa Nothing)
         println("Processing image")
 
@@ -135,19 +145,19 @@ callback!(
         img = Utils.LoadBmpImage(temp_filename)
         # Apply the DCT2
         println("Apply compression")
-        out = Dct2.ApplyDct2OnImage(img, size_block, 50)
+        out = Dct2.ApplyDct2OnImage(img, size_block, compression_index)
         # Save the image
         println("Save image compressed")
         Utils.SaveBmpImage(out, "output.bmp")
-        
+
         println("Prepare output")
-        output_img = Utils.LoadBmpImage("output.bmp") 
+        output_img = Utils.LoadBmpImage("output.bmp")
         img_path = "output.bmp"
         img = open(img_path) do file
-            read(file, String)  
+            read(file, String)
         end
         output_code = base64encode(img)
-        
+
         return parse_contents_fig("data:image/bmp;base64,$(output_code)", "output.bmp", now())
     end
 end
