@@ -234,7 +234,7 @@ end
 
 function SaveBmpImage(img::Matrix{UInt8}, path::String)
     abs_path = abspath(path) 
-    save(File(format"BMP", abs_path), img/255)
+    save(File{format"BMP"}(abs_path), img/255)
 end
 
 end

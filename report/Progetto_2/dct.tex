@@ -113,7 +113,7 @@ L'implementazione della compressione si è articolata nel seguente modo:
           in modo tale da avere altezza e larghezza multiple del parametro $f$.
     \item \textbf{implementazione della compressione}: la compressione è stata implementata
           applicando sui sotto-quadrati $f\times f$ dell'immagine la DCT2 della libreria,
-          successivamente sono state azzerate le entry $k,l$ tali che $k+l\ge d$, infine
+          successivamente sono state azzerate le entry $M[k,l]$ tali che $k+l\ge d$, infine
           si applica IDCT2 della libreria e si normalizzano i valori.
     \item \textbf{visualizzazione output}: infine vinee visualizzato l'output
           messo a confronto con l'input.
@@ -124,5 +124,11 @@ righe e le ultime colonne dell'immagine in input in modo da avere le dimensioni
 multiple di $f$.
 
 Mentre, l'\textbf{implementazione della compressione} si articola nell'allocazione
-di una matrice di appoggio $C\in \mathcal{R}^{f\times f}$ che viene inizializzata
-su una sotto matrice $f\times f$ dell'immagine che si vuole elaborare.
+di una matrice di appoggio $C\in \mathbb{R}^{f\times f}$ che viene inizializzata
+con una sotto matrice $f\times f$ dell'immagine che si vuole elaborare. Successivamente
+si applica la DCT2 della libreria, si azzerano i coefficienti $C_{kl}$ tali che 
+$k+1\ge d$, in seguito si applica la IDCT2 della libreria, infine si arrotondano 
+all'intero più vicino i coefficienti e si riportano i varlori superiori a $255$ 
+e inferiori a $0$ nell'intervallo $[0,255]$. Infine, si copia la sottomatrice di 
+appoggio nell'immagine. Questo passo viene ripetuto in tutta l'immagine suddividendola 
+in blocchi $f\times f$ disgiunti.
