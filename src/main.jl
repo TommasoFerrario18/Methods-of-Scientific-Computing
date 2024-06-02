@@ -1,10 +1,10 @@
 include("Utils.jl")
 include("Visualization.jl")
-include("IterativeMethods.jl")
+include("IterativeMethods2.jl")
 
 using .Utils
 using .Visualization
-using .IterativeMethods
+using .IterativeMethods2
 
 using SparseArrays
 using LinearAlgebra
@@ -23,9 +23,9 @@ function test_methods(method::Function, A::SparseMatrixCSC, b::Vector{Float64}, 
     println("Method: ", method)
     for i in 1:10
         start = time()
-        x, k = method(A, b, x0, tol, maxIter)
+        x, k = IterativeMethods2.GenericIterativeMethod(A, b, x0, tol, maxIter, method, 1.0, 1.0)
         push!(times, time() - start)
-        push!(memory, (@allocated method(A, b, x0, tol, maxIter)) / 1e6)
+        push!(memory, (@allocated IterativeMethods2.GenericIterativeMethod(A, b, x0, tol, maxIter, method, 1.0, 1.0)) / 1e6)
         push!(errors, (norm(b - A * x) / norm(b)))
         push!(iterations, k)
     end
@@ -39,7 +39,7 @@ end
 
 function test_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vector{Float64}, tollerance::Vector{Float64})::Dict
     results = Dict()
-    methods = [IterativeMethods.Jacobi, IterativeMethods.GaussSeidel, IterativeMethods.Gradient, IterativeMethods.ConjugateGradient]
+    methods = [IterativeMethods2.JacobiMethod, IterativeMethods2.GaussSeidelMethod, IterativeMethods2.Gradient, IterativeMethods2.ConjugateGradient]
 
     for tol in tollerance
         results["$tol"] = Dict()
@@ -71,6 +71,6 @@ for path in path_to_matrix
     total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, x, tol)
 end
 
-open("./results/results.json", "w") do f
+open("./results/results_2.json", "w") do f
     JSON.print(f, total_results)
 end
