@@ -193,8 +193,8 @@ function RelaxedGaussSeidel(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float6
         P[i, i] = P[i, i] / w
     end
 
-    r = similar(b)
-    y = similar(b)
+    r = copy(b)
+    y = copy(b)
 
     while k < maxIter
         mul!(r, A, x)

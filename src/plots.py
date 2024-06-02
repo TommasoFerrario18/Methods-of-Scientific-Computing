@@ -195,7 +195,6 @@ for idx, matrice in enumerate(matrici):
     axes[idx].set_title(f"Errore - {matrice}")
     axes[idx].set_xlabel("Tolleranza")
     axes[idx].set_ylabel("Errore")
-    axes[idx].set_yscale("log")
 
 
 plt.show()

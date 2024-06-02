@@ -26,7 +26,7 @@ function test_methods(method::Function, A::SparseMatrixCSC, b::Vector{Float64}, 
         x, k = method(A, b, x0, tol, maxIter)
         push!(times, time() - start)
         push!(memory, (@allocated method(A, b, x0, tol, maxIter)) / 1e6)
-        push!(errors, (norm(x - xe) / norm(xe)))
+        push!(errors, (norm(b - A * x) / norm(b)))
         push!(iterations, k)
     end
     println("End")
