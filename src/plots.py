@@ -1,91 +1,200 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
+import numpy as np
+import json
 
 plt.style.use("ggplot")
 
 
-# Funzione per leggere i file CSV e combinarli in un unico DataFrame
-def load_data():
-    new_df = pd.DataFrame(
-        columns=[
-            "metodo",
-            "matrice",
-            "tolleranza",
-            "tempo_risoluzione",
-            "memoria_utilizzata",
-            "errore",
-        ]
-    )
+def read_data():
+    with open("./results/results.json") as f:
+        data = json.load(f)
 
-    metodi = ["Jacobi", "GaussSeidel", "Gradient", "ConjugateGradient"]
-    matrici = ["spa1", "spa2", "vem1", "vem2"]
-    tol = [1e-5, 1e-7, 1e-9, 1e-11]
-
-    for matrice in matrici:
-        times = pd.read_csv(f"./results/times_{matrice}.csv")
-        memory = pd.read_csv(f"./results/memory_{matrice}.csv")
-        error = pd.read_csv(f"./results/errors_{matrice}.csv")
-        for m in metodi:
-            for t in tol:
-                new_df = pd.concat(
-                    [
-                        new_df,
-                        pd.DataFrame(
-                            {
-                                "metodo": m,
-                                "matrice": matrice,
-                                "tolleranza": t,
-                                "tempo_risoluzione": times[m][tol.index(t)],
-                                "memoria_utilizzata": memory[m][tol.index(t)],
-                                "errore": error[m][tol.index(t)],
-                            },
-                            index=[0],
-                        ),
-                    ],
-                    ignore_index=True,
-                )
-
-    return new_df
+    return data
 
 
-data = load_data()
+def theoretical_complexity(method, matrix_size, iterations):
+    if method == "ConjugateGradient":
+        return iterations * matrix_size**2
+    elif method == "Gradient":
+        return iterations * matrix_size**2
+    elif method == "Jacobi":
+        return iterations * matrix_size**2
+    else:
+        return iterations * matrix_size**2
 
-# Visualizza le prime righe del DataFrame
-print(data.head())
 
-# Grafico del tempo di risoluzione rispetto alla tolleranza per ogni metodo e matrice
-g = sns.FacetGrid(data, col="matrice", hue="metodo", col_wrap=4, height=4, sharey=False)
-g.map(sns.lineplot, "tolleranza", "tempo_risoluzione", marker="o")
-g.add_legend()
-g.set_titles(col_template="Matrice: {col_name}")
-g.set(xscale="log", yscale="log")
-g.set_axis_labels("Tolleranza", "Tempo di Risoluzione (s)")
-plt.subplots_adjust(top=0.9)
-g.fig.suptitle("Tempo di Risoluzione vs Tolleranza")
-plt.gca().invert_xaxis()
+def aggiungi_linea_complessita(ax, x, y, label, color):
+    ax.plot(x, y, linestyle="--", label=label, color=color)
+
+
+matrix_sizes = {"spa1": 1000, "vem1": 1681, "spa2": 3000, "vem2": 2601}
+
+colors = list(sns.color_palette("Set1", n_colors=8))
+
+data = read_data()
+
+index = []
+
+for key in data.keys():
+    for key_2 in data[key].keys():
+        for key_3 in data[key][key_2].keys():
+            index.append((key, key_2, key_3))
+
+df = pd.DataFrame(
+    columns=[
+        "std_memory",
+        "errors",
+        "iterations",
+        "std_time",
+        "std_errors",
+        "memory",
+        "times",
+        "std_iterations",
+    ],
+    index=pd.MultiIndex.from_tuples(index),
+)
+
+for key in data.keys():
+    for key_2 in data[key].keys():
+        for key_3 in data[key][key_2].keys():
+            df.loc[(key, key_2, key_3)] = data[key][key_2][key_3]
+
+df.reset_index(inplace=True)
+df.columns = [
+    "matrice",
+    "tolleranza",
+    "metodo",
+    "std_memory",
+    "errors",
+    "iterations",
+    "std_time",
+    "std_errors",
+    "memory",
+    "times",
+    "std_iterations",
+]
+
+df = df.astype(
+    {
+        "std_memory": "float64",
+        "errors": "float64",
+        "iterations": "int64",
+        "std_time": "float64",
+        "std_errors": "float64",
+        "memory": "float64",
+        "times": "float64",
+        "std_iterations": "float64",
+    }
+)
+
+matrici = df["matrice"].unique()
+fig, axes = plt.subplots(nrows=1, ncols=len(matrici))
+
+# Itera attraverso ogni matrice
+for idx, matrice in enumerate(matrici):
+    # Filtra i dati per la matrice corrente
+    df_matrice = df[df["matrice"] == matrice]
+
+    for col, metodo in enumerate(df_matrice["metodo"].unique()):
+        df_metodo = df_matrice[df_matrice["metodo"] == metodo]
+        df_metodo = df_metodo.sort_values(by="tolleranza")
+        sns.lineplot(
+            ax=axes[idx],
+            data=df_metodo,
+            x="tolleranza",
+            y="times",
+            label=metodo,
+            color=colors[col],
+        )
+        axes[idx].fill_between(
+            df_metodo["tolleranza"],
+            df_metodo["times"] - df_metodo["std_time"],
+            df_metodo["times"] + df_metodo["std_time"],
+            alpha=0.3,
+            color=colors[col],
+        )
+        aggiungi_linea_complessita(
+            ax=axes[idx],
+            x=df_metodo["tolleranza"],
+            y=theoretical_complexity(
+                metodo, matrix_sizes[matrice], df_metodo["iterations"]
+            ),
+            label=f"Complessità {metodo}",
+            color=colors[col],
+        )
+
+    axes[idx].set_title(f"Tempo medio - {matrice}")
+    axes[idx].set_xlabel("Tolleranza")
+    axes[idx].set_ylabel("Tempo medio")
+    axes[idx].set_yscale("log")
+    plt.gca().invert_xaxis()
+
 plt.show()
 
-# Grafico della memoria utilizzata rispetto alla tolleranza per ogni metodo e matrice
-g = sns.FacetGrid(data, col="matrice", hue="metodo", col_wrap=4, height=4, sharey=False)
-g.map(sns.lineplot, "tolleranza", "memoria_utilizzata", marker="o")
-g.add_legend()
-g.set_titles(col_template="Matrice: {col_name}")
-g.set(xscale="log")
-g.set_axis_labels("Tolleranza", "Memoria Utilizzata (MB)")
-plt.subplots_adjust(top=0.9)
-g.fig.suptitle("Memoria Utilizzata vs Tolleranza")
-plt.gca().invert_xaxis()
+fig, axes = plt.subplots(nrows=1, ncols=len(matrici))
+
+# Itera attraverso ogni matrice
+for idx, matrice in enumerate(matrici):
+    # Filtra i dati per la matrice corrente
+    df_matrice = df[df["matrice"] == matrice]
+
+    for col, metodo in enumerate(df_matrice["metodo"].unique()):
+        df_metodo = df_matrice[df_matrice["metodo"] == metodo]
+        df_metodo = df_metodo.sort_values(by="tolleranza")
+        sns.lineplot(
+            ax=axes[idx],
+            data=df_metodo,
+            x="tolleranza",
+            y="memory",
+            label=metodo,
+            color=colors[col],
+        )
+        axes[idx].fill_between(
+            df_metodo["tolleranza"],
+            df_metodo["memory"] - df_metodo["std_memory"],
+            df_metodo["memory"] + df_metodo["std_memory"],
+            alpha=0.3,
+            color=colors[col],
+        )
+
+    axes[idx].set_title(f"Memoria utilizzata - {matrice}")
+    axes[idx].set_xlabel("Tolleranza")
+    axes[idx].set_ylabel("Memoria utilizzata")
+    axes[idx].set_yscale("log")
+
 plt.show()
 
-# Grafico dell'errore rispetto alla tolleranza per ogni metodo e matrice
-g = sns.FacetGrid(data, col="matrice", hue="metodo", col_wrap=4, height=4, sharey=False)
-g.map(sns.lineplot, "tolleranza", "errore", marker="o")
-g.add_legend()
-g.set_titles(col_template="Matrice: {col_name}")
-g.set(xscale="log", yscale="log")
-g.set_axis_labels("Tolleranza", "Errore")
-plt.subplots_adjust(top=0.9)
-g.fig.suptitle("Errore vs Tolleranza")
-plt.gca().invert_xaxis()
+fig, axes = plt.subplots(nrows=1, ncols=len(matrici))
+
+# Itera attraverso ogni matrice
+for idx, matrice in enumerate(matrici):
+    # Filtra i dati per la matrice corrente
+    df_matrice = df[df["matrice"] == matrice]
+
+    for col, metodo in enumerate(df_matrice["metodo"].unique()):
+        df_metodo = df_matrice[df_matrice["metodo"] == metodo]
+        df_metodo = df_metodo.sort_values(by="tolleranza")
+        sns.lineplot(
+            ax=axes[idx],
+            data=df_metodo,
+            x="tolleranza",
+            y="errors",
+            label=metodo,
+            color=colors[col],
+        )
+        axes[idx].fill_between(
+            df_metodo["tolleranza"],
+            df_metodo["errors"] - df_metodo["std_errors"],
+            df_metodo["errors"] + df_metodo["std_errors"],
+            alpha=0.3,
+            color=colors[col],
+        )
+
+    axes[idx].set_title(f"Errore - {matrice}")
+    axes[idx].set_xlabel("Tolleranza")
+    axes[idx].set_ylabel("Errore")
+
+
 plt.show()
