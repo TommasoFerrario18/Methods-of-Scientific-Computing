@@ -116,8 +116,7 @@ della sostituzione in avanti. In questo modo, possiamo calcolare la soluzione
 $x^{(k+1)}$ come:
 \begin{equation}
     x^{(k+1)} = x^{(k)} + y
-\end{equation} 
-
+\end{equation}
 \subsection{IterativeMethods}
 Nel modulo \textbf{IterativeMethods} sono presenti i metodi iterativi per la
 risoluzione di sistemi lineari. In particolare, sono stati implementati i seguenti
@@ -143,6 +142,107 @@ La tolleranza per questo confronto è un valore fornito dall'utente.
 Inoltre, per evitare cicli infiniti, è possibile specificare un numero massimo
 di iterazioni. Il valore predefinito è fissato a 20000 iterazioni.
 
+La libreria è stata progettata a partire dalla definizione di una funzione generica
+\textbf{GenericIterativeMethod}, la quale prende in input la matrice $A$, il
+vettore dei termini noti $b$, la tolleranza, il numero massimo di iterazioni, e
+il metodo di aggiornamento della soluzione. Questa funzione implementa una logica
+comune a tutti i metodi iterativi, come rappresentato dal seguente pseudocodice:
+\begin{verbatim}
+function GenericIterativeMethod(A, b, tol, max_iter, update_method)
+    n = size(A, 1)
+    x = zeros(n)
+    r = b - A * x
+    res = norm(r) / norm(b)
+    iter = 0
+    while res > tol
+        x = update_method(A, b, x)
+        r = b - A * x
+        res = norm(r) / norm(b)
+        iter += 1
+        if iter == max_iter
+            print("Numero massimo di iterazioni raggiunto")
+            return x
+        end
+    end
+    return x
+end
+\end{verbatim}
+
+Per ciascun metodo iterativo richiesto, è stato definito un metodo specifico che
+implementa la regola di aggiornamento della soluzione. Questo metodo restituisce
+la soluzione aggiornata al passo $k+1$ e, dato che il criterio di arresto è basato
+sul residuo riscalato, tutti i metodi richiedono il calcolo del residuo. Pertanto,
+è stato deciso di restituire anche il residuo calcolato, per evitare di ricalcolarlo
+ogni volta. La logica di aggiornamento della soluzione sfrutta le funzioni per
+la manipolazione di matrici e vettori fornite dalla libreria \textbf{LinearAlgebra}.
+
+In aggiunta, la libreria contiene metodi di interfaccia che richiamano direttamente
+la funzione generica, passando il metodo di aggiornamento corrispondente al metodo
+iterativo richiesto.
+
+Di seguito sono presentate le implementazioni dei metodi iterativi richiesti.
+
+\subsubsection{Metodo di Jacobi}
+Per il metodo di Jacobi, la regola di aggiornamento della soluzione è la seguente:
+\begin{equation}
+    x^{(k+1)} = x^{(k)} + P^{-1}(b - Ax^{(k)})
+\end{equation}
+In questo caso, il calcolo della matrice inversa $P^{-1}$ è efficiente poiché $P$
+è una matrice diagonale; di conseguenza, basta calcolare il reciproco degli
+elementi sulla diagonale.
+
+Durante la definizione di questo metodo, è stata prevista l'implementazione dei
+metodi \textbf{JOR} e \textbf{Richardson}, introducendo i parametri $\omega$ e
+$\alpha$, con i relativi controlli per verificarne la presenza e gli intervalli
+di valori ammissibili.
+
+\subsubsection{Metodo di Gauß-Seidel}
+Per il metodo di Gauß-Seidel, la regola di aggiornamento della soluzione è la seguente:
+\begin{equation}
+    x^{(k+1)} = x^{(k)} + y
+\end{equation}
+dove $y$ è il vettore ottenuto risolvendo il sistema lineare $Py = b - Ax^{(k)}$.
+Questo è possibile poiché la matrice $P$ è una matrice triangolare inferiore,
+quindi possiamo utilizzare il metodo della sostituzione in avanti per risolvere
+il sistema lineare, evitando il calcolo della matrice inversa.
+
+Anche per questo metodo è stata prevista l'implementazione dei metodi \textbf{SOR}
+e \textbf{Richardson}, introducendo i parametri $\omega$ e $\alpha$, con i relativi
+controlli per verificarne la presenza e gli intervalli di valori ammissibili.
+
+\subsubsection{Metodo del Gradiente}
+Per il metodo del gradiente, la regola di aggiornamento della soluzione è la seguente:
+\begin{equation}
+    x^{(k+1)} = x^{(k)} + \alpha r^{(k)}
+\end{equation}
+dove $r^{(k)}$ è il residuo al passo $k$ e $\alpha$ è il fattore di scala calcolato
+come:
+\begin{equation}
+    \alpha = \frac{\langle r^{(k)}, r^{(k)}\rangle}{\langle r^{(k)}, Ar^{(k)}\rangle}
+\end{equation}
+
+\subsubsection{Metodo del Gradiente Coniugato}
+Questo metodo rappresenta una versione migliorata del metodo del gradiente, in
+cui si evita il problema della convergenza a "zig-zag". La regola di aggiornamento
+della soluzione è la seguente:
+\begin{equation}
+    x^{(k+1)} = x^{(k)} + \alpha d^{(k)}
+\end{equation}
+dove $\alpha$ è il fattore di scala calcolato come:
+\begin{equation}
+    \alpha = \frac{\langle d^{(k)}, r^{(k)}\rangle}{\langle d^{(k)}, Ad^{(k)}\rangle}
+\end{equation}
+e $d^{(k)}$ è la direzione di discesa al passo $k$, calcolata ad ogni iterazione
+con la formula:
+\begin{equation}
+    d^{(k)} = r^{(k)} + \beta_{k-1} d^{(k-1)}
+\end{equation}
+dove $\beta$ è il fattore di scala calcolato come:
+\begin{equation}
+    \beta_k = \frac{\langle d^{(k)T}, (Ar^{(k + 1)})\rangle}{\langle d^{(k)T}, (Ad^{(k)})\rangle}
+\end{equation}
+con $\langle \cdot, \cdot \rangle$ è il prodotto scalare tra due vettori.
+
 \section{Risultati sperimentali}
 Implementati i metodi, si è proceduto con la valutazione delle prestazioni di
 ciascuno di essi. In particolare, sono stati eseguiti degli esperimenti sulle
@@ -158,8 +258,4 @@ l'esecuzione del codice, e la macro \textbf{@allocated} per misurare l'occupazio
 di memoria. Quest'ultima restituisce la quantità di memoria allocata in byte.
 
 
-\subsection{Metodo di Jacobi}
-\subsection{Metodo di Gauß-Seidel}
-\subsection{Metodo del gradiente}
-\subsection{Metodo del gradiente coniugato}
 \end{document}
