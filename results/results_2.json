@@ -1,1 +1,682 @@
-{"spa1":{"1.0e-7":{"ConjugateGradient":{"std_memory":0.0,"errors":8.983747889235417e-8,"iterations":147.0,"std_time":0.05022715628860033,"std_errors":1.3950798784004455e-23,"memory":6.006752,"times":0.11909997463226318,"std_iterations":0.0},"Gradient":{"std_memory":2.995911226518785e-14,"errors":1.0793580987329014e-7,"iterations":5896.0,"std_time":0.12180294291460347,"std_errors":0.0,"memory":143.80081599999997,"times":1.4327999353408813,"std_iterations":0.0},"JacobiMethod":{"std_memory":0.0,"errors":9.040612378983237e-8,"iterations":215.0,"std_time":0.006268107369532039,"std_errors":0.0,"memory":10.661536,"times":0.029200053215026854,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":0.0,"errors":4.697462397722017e-8,"iterations":21.0,"std_time":0.008071909416433369,"std_errors":6.975399392002227e-24,"memory":63.624016,"times":0.3123999834060669,"std_iterations":0.0}},"1.0e-5":{"ConjugateGradient":{"std_memory":9.362222582871203e-16,"errors":9.348492940676605e-6,"iterations":99.0,"std_time":0.024590199153953742,"std_errors":0.0,"memory":4.056032000000001,"times":0.05369997024536133,"std_iterations":0.0},"Gradient":{"std_memory":7.489778066296963e-15,"errors":1.0781389229957381e-5,"iterations":1332.0,"std_time":0.029829928428743564,"std_errors":1.7857022443525702e-21,"memory":32.512240000000006,"times":0.3175999879837036,"std_iterations":0.0},"JacobiMethod":{"std_memory":0.0,"errors":8.9066150234138e-6,"iterations":149.0,"std_time":0.12948123629436442,"std_errors":0.0,"memory":7.442848,"times":0.058500027656555174,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":0.0,"errors":3.5654235192007206e-6,"iterations":14.0,"std_time":0.0729355631683961,"std_errors":4.4642556108814255e-22,"memory":43.16352,"times":0.23859999179840088,"std_iterations":0.0}},"1.0e-11":{"ConjugateGradient":{"std_memory":1.8724445165742407e-15,"errors":8.772966257116741e-12,"iterations":211.0,"std_time":0.0036757364877432253,"std_errors":0.0,"memory":8.607711999999998,"times":0.09119999408721924,"std_iterations":0.0},"Gradient":{"std_memory":5.99182245303757e-14,"errors":1.0788469679991273e-11,"iterations":15264.0,"std_time":0.04840860619049523,"std_errors":1.7029783671880438e-27,"memory":372.23012800000004,"times":3.4395000457763674,"std_iterations":0.0},"JacobiMethod":{"std_memory":3.744889033148481e-15,"errors":9.314757995178044e-12,"iterations":347.0,"std_time":0.004094714797164924,"std_errors":1.7029783671880438e-27,"memory":17.098911999999995,"times":0.04089996814727783,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":1.4979556132593925e-14,"errors":4.374691778861194e-12,"iterations":36.0,"std_time":0.03371717151273175,"std_errors":0.0,"memory":107.46793599999998,"times":0.5588000297546387,"std_iterations":0.0}},"1.0e-9":{"ConjugateGradient":{"std_memory":9.362222582871203e-16,"errors":9.527095035543456e-10,"iterations":188.0,"std_time":0.00779528291975807,"std_errors":0.0,"memory":7.672991999999999,"times":0.08609998226165771,"std_iterations":0.0},"Gradient":{"std_memory":5.99182245303757e-14,"errors":1.0799971908536827e-9,"iterations":10576.0,"std_time":0.053147536269185204,"std_errors":2.179812310000696e-25,"memory":257.91793599999994,"times":2.380999970436096,"std_iterations":0.0},"JacobiMethod":{"std_memory":1.8724445165742407e-15,"errors":9.176626628811788e-10,"iterations":281.0,"std_time":0.0055216455946163435,"std_errors":0.0,"memory":13.880224000000002,"times":0.03939998149871826,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":1.4979556132593925e-14,"errors":3.327175611781577e-10,"iterations":29.0,"std_time":0.057653774921142244,"std_errors":5.44953077500174e-26,"memory":87.00743999999999,"times":0.4488000154495239,"std_iterations":0.0}}},"vem1":{"1.0e-7":{"ConjugateGradient":{"std_memory":0.0,"errors":6.88898619950971e-8,"iterations":49.0,"std_time":0.0005164219199566291,"std_errors":0.0,"memory":3.394528,"times":0.0023999929428100584,"std_iterations":0.0},"Gradient":{"std_memory":1.4979556132593925e-14,"errors":1.1839555019590102e-7,"iterations":1975.0,"std_time":0.005404732293962795,"std_errors":1.3950798784004455e-23,"memory":80.82436800000002,"times":0.06110002994537354,"std_iterations":0.0},"JacobiMethod":{"std_memory":0.0,"errors":9.931237129987423e-8,"iterations":2994.0,"std_time":0.005250447657700253,"std_errors":0.0,"memory":245.157936,"times":0.09330003261566162,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":0.0,"errors":9.893776099493793e-8,"iterations":1499.0,"std_time":0.04646397162975833,"std_errors":1.3950798784004455e-23,"memory":767.545776,"times":8.026700067520142,"std_iterations":0.0}},"1.0e-5":{"ConjugateGradient":{"std_memory":4.681111291435602e-16,"errors":6.072081687973984e-6,"iterations":42.0,"std_time":0.00042165673945014734,"std_errors":0.0,"memory":2.9174080000000004,"times":0.0021999835968017577,"std_iterations":0.0},"Gradient":{"std_memory":0.0,"errors":1.1779589684817782e-5,"iterations":1253.0,"std_time":0.0009188930447126358,"std_errors":1.7857022443525702e-21,"memory":51.297456,"times":0.03279998302459717,"std_iterations":0.0},"JacobiMethod":{"std_memory":2.995911226518785e-14,"errors":9.932099544118944e-6,"iterations":1875.0,"std_time":0.0053333242742785,"std_errors":1.7857022443525702e-21,"memory":153.63268799999997,"times":0.06200003623962402,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":1.198364490607514e-13,"errors":9.838475857267584e-6,"iterations":940.0,"std_time":0.021290624471022482,"std_errors":1.7857022443525702e-21,"memory":481.4093119999999,"times":5.0491999864578245,"std_iterations":0.0}},"1.0e-11":{"ConjugateGradient":{"std_memory":0.0,"errors":3.777860535422545e-12,"iterations":62.0,"std_time":0.0003162132321182884,"std_errors":8.514891835940219e-28,"memory":4.280608,"times":0.003099989891052246,"std_iterations":0.0},"Gradient":{"std_memory":2.995911226518785e-14,"errors":1.1843991988696269e-11,"iterations":3421.0,"std_time":0.0038715102595851675,"std_errors":1.7029783671880438e-27,"memory":139.95998400000002,"times":0.09710001945495605,"std_iterations":0.0},"JacobiMethod":{"std_memory":0.0,"errors":9.929488729970371e-12,"iterations":5232.0,"std_time":0.007777466791360321,"std_errors":1.7029783671880438e-27,"memory":428.208432,"times":0.14139997959136963,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":2.396728981215028e-13,"errors":9.842007999188188e-12,"iterations":2619.0,"std_time":0.320236352284201,"std_errors":1.7029783671880438e-27,"memory":1340.8424159999997,"times":14.11930000782013,"std_iterations":0.0}},"1.0e-9":{"ConjugateGradient":{"std_memory":4.681111291435602e-16,"errors":9.643086359241909e-10,"iterations":56.0,"std_time":0.0009189795288537518,"std_errors":2.179812310000696e-25,"memory":3.8716479999999995,"times":0.0032000303268432616,"std_iterations":0.0},"Gradient":{"std_memory":0.0,"errors":1.1915819217221718e-9,"iterations":2697.0,"std_time":0.0027406140554995426,"std_errors":2.179812310000696e-25,"memory":110.35128,"times":0.07680001258850097,"std_iterations":0.0},"JacobiMethod":{"std_memory":0.0,"errors":9.930374552362708e-10,"iterations":4113.0,"std_time":0.0051164077483101455,"std_errors":0.0,"memory":336.683184,"times":0.11520001888275147,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":2.396728981215028e-13,"errors":9.867854512823922e-10,"iterations":2059.0,"std_time":0.10939763831032547,"std_errors":2.179812310000696e-25,"memory":1054.1940959999997,"times":11.05849997997284,"std_iterations":0.0}}},"spa2":{"1.0e-7":{"ConjugateGradient":{"std_memory":0.0,"errors":9.967613278303455e-8,"iterations":168.0,"std_time":0.011274818070991205,"std_errors":1.3950798784004455e-23,"memory":20.296672,"times":0.760699987411499,"std_iterations":0.0},"Gradient":{"std_memory":2.995911226518785e-14,"errors":1.0801552001303352e-7,"iterations":3508.0,"std_time":71.05508454426867,"std_errors":1.3950798784004455e-23,"memory":253.17758399999997,"times":30.977099990844728,"std_iterations":0.0},"JacobiMethod":{"std_memory":1.8724445165742407e-15,"errors":7.823822006737658e-8,"iterations":68.0,"std_time":0.018785360334502385,"std_errors":1.3950798784004455e-23,"memory":10.316159999999998,"times":0.09399998188018799,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":0.0,"errors":1.578293213208425e-8,"iterations":11.0,"std_time":0.09199246588929408,"std_errors":3.487699696001114e-24,"memory":309.781696,"times":2.07979998588562,"std_iterations":0.0}},"1.0e-5":{"ConjugateGradient":{"std_memory":0.0,"errors":9.819377328896547e-6,"iterations":90.0,"std_time":0.02836841709237092,"std_errors":1.7857022443525702e-21,"memory":10.917952,"times":0.45689997673034666,"std_iterations":0.0},"Gradient":{"std_memory":7.489778066296963e-15,"errors":1.0782452484274368e-5,"iterations":664.0,"std_time":0.01734005492198942,"std_errors":0.0,"memory":48.00003199999999,"times":1.5906999826431274,"std_iterations":0.0},"JacobiMethod":{"std_memory":9.362222582871203e-16,"errors":6.639893575875278e-6,"iterations":48.0,"std_time":0.008435298363726858,"std_errors":8.928511221762851e-22,"memory":7.430400000000001,"times":0.07059996128082276,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":2.995911226518785e-14,"errors":7.847282780990096e-7,"iterations":8.0,"std_time":0.2417719508841202,"std_errors":0.0,"memory":230.68393599999996,"times":1.827899956703186,"std_iterations":0.0}},"1.0e-11":{"ConjugateGradient":{"std_memory":0.0,"errors":9.28186945163527e-12,"iterations":270.0,"std_time":0.041968243850183634,"std_errors":1.7029783671880438e-27,"memory":32.561152,"times":1.2859999895095826,"std_iterations":0.0},"Gradient":{"std_memory":1.198364490607514e-13,"errors":1.0827960346345547e-11,"iterations":9894.0,"std_time":0.4208757621102444,"std_errors":1.7029783671880438e-27,"memory":713.8891679999999,"times":23.760199999809267,"std_iterations":0.0},"JacobiMethod":{"std_memory":3.744889033148481e-15,"errors":6.967205818493174e-12,"iterations":110.0,"std_time":0.0029363729864253494,"std_errors":8.514891835940219e-28,"memory":16.376256000000005,"times":0.1287999391555786,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":5.99182245303757e-14,"errors":1.6980096981823366e-12,"iterations":18.0,"std_time":0.11146322571361295,"std_errors":2.1287229589850547e-28,"memory":494.3431360000001,"times":3.2414000272750854,"std_iterations":0.0}},"1.0e-9":{"ConjugateGradient":{"std_memory":0.0,"errors":8.999842600573621e-10,"iterations":220.0,"std_time":0.042662179192040385,"std_errors":0.0,"memory":26.549152,"times":1.0365000009536742,"std_iterations":0.0},"Gradient":{"std_memory":1.198364490607514e-13,"errors":1.0817348378169816e-9,"iterations":6682.0,"std_time":0.42399015192870887,"std_errors":2.179812310000696e-25,"memory":482.1626400000001,"times":15.91190001964569,"std_iterations":0.0},"JacobiMethod":{"std_memory":0.0,"errors":7.383116299503112e-10,"iterations":89.0,"std_time":0.011096068112230741,"std_errors":1.089906155000348e-25,"memory":13.346208,"times":0.10929999351501465,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":5.99182245303757e-14,"errors":8.522253478405783e-11,"iterations":15.0,"std_time":0.10818624908240075,"std_errors":1.362382693750435e-26,"memory":415.24537599999996,"times":2.7394000053405763,"std_iterations":0.0}}},"vem2":{"1.0e-7":{"ConjugateGradient":{"std_memory":0.0,"errors":9.106916801325091e-8,"iterations":60.0,"std_time":0.001433672398237929,"std_errors":0.0,"memory":6.357408,"times":0.005499982833862304,"std_iterations":0.0},"Gradient":{"std_memory":0.0,"errors":1.1885260751043962e-7,"iterations":3003.0,"std_time":0.02490512294224503,"std_errors":1.3950798784004455e-23,"memory":188.480096,"times":0.18239998817443848,"std_iterations":0.0},"JacobiMethod":{"std_memory":1.198364490607514e-13,"errors":9.9484742626782e-8,"iterations":4552.0,"std_time":0.021978796601840253,"std_errors":0.0,"memory":571.5981599999999,"times":0.33280000686645506,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":2.396728981215028e-13,"errors":9.924123327061589e-8,"iterations":2278.0,"std_time":0.12889111655502922,"std_errors":0.0,"memory":1802.4532960000001,"times":28.62770004272461,"std_iterations":0.0}},"1.0e-5":{"ConjugateGradient":{"std_memory":9.362222582871203e-16,"errors":7.097885167244354e-6,"iterations":52.0,"std_time":0.001523877780404527,"std_errors":1.7857022443525702e-21,"memory":5.520927999999999,"times":0.0061000347137451175,"std_iterations":0.0},"Gradient":{"std_memory":2.995911226518785e-14,"errors":1.1934281876562411e-5,"iterations":1873.0,"std_time":0.01988441700067715,"std_errors":0.0,"memory":117.58841600000002,"times":0.10649998188018799,"std_iterations":0.0},"JacobiMethod":{"std_memory":5.99182245303757e-14,"errors":9.951332353159598e-6,"iterations":2803.0,"std_time":0.01642493733858923,"std_errors":1.7857022443525702e-21,"memory":352.14763200000004,"times":0.1500000238418579,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":2.396728981215028e-13,"errors":9.943093886214076e-6,"iterations":1403.0,"std_time":0.12220311938706295,"std_errors":1.7857022443525702e-21,"memory":1110.2652959999998,"times":17.62660002708435,"std_iterations":0.0}},"1.0e-11":{"ConjugateGradient":{"std_memory":0.0,"errors":6.0196765607273625e-12,"iterations":77.0,"std_time":0.007852080237028988,"std_errors":0.0,"memory":8.134928,"times":0.009099984169006347,"std_iterations":0.0},"Gradient":{"std_memory":0.0,"errors":1.1912329084489324e-11,"iterations":5261.0,"std_time":0.03141141675007164,"std_errors":1.7029783671880438e-27,"memory":330.137984,"times":0.3437000274658203,"std_iterations":0.0},"JacobiMethod":{"std_memory":2.396728981215028e-13,"errors":9.968942133384619e-12,"iterations":8049.0,"std_time":0.04553870383380347,"std_errors":0.0,"memory":1010.3737440000002,"times":0.6059999942779541,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":0.0,"errors":9.938460463294245e-12,"iterations":4027.0,"std_time":0.3214872133911107,"std_errors":1.7029783671880438e-27,"memory":3186.038224,"times":51.36629996299744,"std_iterations":0.0}},"1.0e-9":{"ConjugateGradient":{"std_memory":0.0,"errors":9.489587406767948e-10,"iterations":70.0,"std_time":0.0047889105977892065,"std_errors":2.179812310000696e-25,"memory":7.403008,"times":0.007600045204162598,"std_iterations":0.0},"Gradient":{"std_memory":5.99182245303757e-14,"errors":1.1946244123211074e-9,"iterations":4131.0,"std_time":0.02972018815733402,"std_errors":2.179812310000696e-25,"memory":259.24630400000007,"times":0.24120006561279297,"std_iterations":0.0},"JacobiMethod":{"std_memory":0.0,"errors":9.971839981124831e-10,"iterations":6300.0,"std_time":0.03872467536140425,"std_errors":2.179812310000696e-25,"memory":790.923216,"times":0.4834000110626221,"std_iterations":0.0},"GaussSeidelMethod":{"std_memory":4.793457962430056e-13,"errors":9.905185793230967e-10,"iterations":3153.0,"std_time":0.6334827618236558,"std_errors":2.179812310000696e-25,"memory":2494.6412960000002,"times":40.03929998874664,"std_iterations":0.0}}}}
+{
+    "spa1": {
+        "1.0e-7": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 8.983747889055959e-8,
+                "iterations": 147.0,
+                "std_time": 0.007195686315814432,
+                "std_errors": 1.3950798784004455e-23,
+                "memory": 6.006752,
+                "times": 0.06100001335144043,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 2.995911226518785e-14,
+                "errors": 1.0793580992653148e-7,
+                "iterations": 5896.0,
+                "std_time": 0.03718659633605475,
+                "std_errors": 0.0,
+                "memory": 143.80081599999997,
+                "times": 1.2401999711990357,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 0.0,
+                "errors": 9.040612378983237e-8,
+                "iterations": 215.0,
+                "std_time": 0.010616539500977676,
+                "std_errors": 0.0,
+                "memory": 10.661536,
+                "times": 0.039400029182434085,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 4.697462397722017e-8,
+                "iterations": 21.0,
+                "std_time": 0.10083761024129471,
+                "std_errors": 6.975399392002227e-24,
+                "memory": 63.624016,
+                "times": 0.4059999942779541,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-5": {
+            "ConjugateGradient": {
+                "std_memory": 9.362222582871203e-16,
+                "errors": 9.348492940697054e-6,
+                "iterations": 99.0,
+                "std_time": 0.0681612556928537,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 4.056032000000001,
+                "times": 0.08620002269744872,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 7.489778066296963e-15,
+                "errors": 1.0781389229965405e-5,
+                "iterations": 1332.0,
+                "std_time": 0.07014108583889322,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 32.512240000000006,
+                "times": 0.5350000381469726,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 0.0,
+                "errors": 8.9066150234138e-6,
+                "iterations": 149.0,
+                "std_time": 0.19856173508073507,
+                "std_errors": 0.0,
+                "memory": 7.442848,
+                "times": 0.0870999813079834,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 3.5654235192007206e-6,
+                "iterations": 14.0,
+                "std_time": 0.10737699795600475,
+                "std_errors": 4.4642556108814255e-22,
+                "memory": 43.16352,
+                "times": 0.32539997100830076,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-11": {
+            "ConjugateGradient": {
+                "std_memory": 1.8724445165742407e-15,
+                "errors": 8.770757445983323e-12,
+                "iterations": 211.0,
+                "std_time": 0.024829170905786763,
+                "std_errors": 0.0,
+                "memory": 8.607711999999998,
+                "times": 0.1324000120162964,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 5.99182245303757e-14,
+                "errors": 1.0788378790129732e-11,
+                "iterations": 15264.0,
+                "std_time": 0.19466216242863757,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 372.23012800000004,
+                "times": 4.6985999822616575,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 3.744889033148481e-15,
+                "errors": 9.314757995178044e-12,
+                "iterations": 347.0,
+                "std_time": 0.02095501939653431,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 17.098911999999995,
+                "times": 0.05599997043609619,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 1.4979556132593925e-14,
+                "errors": 4.374691778861194e-12,
+                "iterations": 36.0,
+                "std_time": 0.09455625033271317,
+                "std_errors": 0.0,
+                "memory": 107.46793599999998,
+                "times": 0.8929999828338623,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-9": {
+            "ConjugateGradient": {
+                "std_memory": 9.362222582871203e-16,
+                "errors": 9.529220110698147e-10,
+                "iterations": 188.0,
+                "std_time": 0.01907885080993865,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 7.672991999999999,
+                "times": 0.12799997329711915,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 5.99182245303757e-14,
+                "errors": 1.0799972459474709e-9,
+                "iterations": 10576.0,
+                "std_time": 0.3947865348653412,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 257.91793599999994,
+                "times": 2.511800003051758,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 1.8724445165742407e-15,
+                "errors": 9.176626628811788e-10,
+                "iterations": 281.0,
+                "std_time": 0.006056238446978437,
+                "std_errors": 0.0,
+                "memory": 13.880224000000002,
+                "times": 0.036699962615966794,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 1.4979556132593925e-14,
+                "errors": 3.327175611781577e-10,
+                "iterations": 29.0,
+                "std_time": 0.02341032051637839,
+                "std_errors": 5.44953077500174e-26,
+                "memory": 87.00743999999999,
+                "times": 0.4796000003814697,
+                "std_iterations": 0.0
+            }
+        }
+    },
+    "vem1": {
+        "1.0e-7": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 6.888986200445007e-8,
+                "iterations": 49.0,
+                "std_time": 0.0011005094255163211,
+                "std_errors": 0.0,
+                "memory": 3.394528,
+                "times": 0.0018999814987182618,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 1.4979556132593925e-14,
+                "errors": 1.1839555047697917e-7,
+                "iterations": 1975.0,
+                "std_time": 0.008771215952877635,
+                "std_errors": 0.0,
+                "memory": 80.82436800000002,
+                "times": 0.04760003089904785,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 0.0,
+                "errors": 9.931237129987423e-8,
+                "iterations": 2994.0,
+                "std_time": 0.010066964424545138,
+                "std_errors": 0.0,
+                "memory": 245.157936,
+                "times": 0.09130001068115234,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 9.893776099493793e-8,
+                "iterations": 1499.0,
+                "std_time": 0.15073590405303872,
+                "std_errors": 1.3950798784004455e-23,
+                "memory": 767.545776,
+                "times": 9.794199991226197,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-5": {
+            "ConjugateGradient": {
+                "std_memory": 4.681111291435602e-16,
+                "errors": 6.072081687955045e-6,
+                "iterations": 42.0,
+                "std_time": 0.004275236239300048,
+                "std_errors": 8.928511221762851e-22,
+                "memory": 2.9174080000000004,
+                "times": 0.002499985694885254,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 0.0,
+                "errors": 1.1779589684930633e-5,
+                "iterations": 1253.0,
+                "std_time": 0.011671889664226387,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 51.297456,
+                "times": 0.03970003128051758,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 2.995911226518785e-14,
+                "errors": 9.932099544118944e-6,
+                "iterations": 1875.0,
+                "std_time": 0.0125348891831074,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 153.63268799999997,
+                "times": 0.07929997444152832,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 1.198364490607514e-13,
+                "errors": 9.838475857267584e-6,
+                "iterations": 940.0,
+                "std_time": 0.12265941021736607,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 481.4093119999999,
+                "times": 6.121699976921081,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-11": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 3.7778672984547745e-12,
+                "iterations": 62.0,
+                "std_time": 0.004137878639419457,
+                "std_errors": 8.514891835940219e-28,
+                "memory": 4.280608,
+                "times": 0.0026999950408935548,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 2.995911226518785e-14,
+                "errors": 1.1843717759935693e-11,
+                "iterations": 3421.0,
+                "std_time": 0.003627044242312249,
+                "std_errors": 3.4059567343760876e-27,
+                "memory": 139.95998400000002,
+                "times": 0.08040001392364501,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 0.0,
+                "errors": 9.929488729970371e-12,
+                "iterations": 5232.0,
+                "std_time": 0.011413448844113652,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 428.208432,
+                "times": 0.12760000228881835,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.842007999188188e-12,
+                "iterations": 2619.0,
+                "std_time": 0.08199349026189219,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 1340.8424159999997,
+                "times": 13.754499983787536,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-9": {
+            "ConjugateGradient": {
+                "std_memory": 4.681111291435602e-16,
+                "errors": 9.643086356479132e-10,
+                "iterations": 56.0,
+                "std_time": 0.003489684609596968,
+                "std_errors": 0.0,
+                "memory": 3.8716479999999995,
+                "times": 0.00279998779296875,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 0.0,
+                "errors": 1.1915813544810735e-9,
+                "iterations": 2697.0,
+                "std_time": 0.0074453221046909416,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 110.35128,
+                "times": 0.0689000129699707,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 0.0,
+                "errors": 9.930374552362708e-10,
+                "iterations": 4113.0,
+                "std_time": 0.008083571784307781,
+                "std_errors": 0.0,
+                "memory": 336.683184,
+                "times": 0.09730002880096436,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.867854512823922e-10,
+                "iterations": 2059.0,
+                "std_time": 1.191831915376999,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 1054.1940959999997,
+                "times": 11.626500034332276,
+                "std_iterations": 0.0
+            }
+        }
+    },
+    "spa2": {
+        "1.0e-7": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 9.967613277880257e-8,
+                "iterations": 168.0,
+                "std_time": 0.055667269349853186,
+                "std_errors": 0.0,
+                "memory": 20.296672,
+                "times": 0.8187999725341797,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 2.995911226518785e-14,
+                "errors": 1.0801552003337377e-7,
+                "iterations": 3508.0,
+                "std_time": 0.28831484491017856,
+                "std_errors": 0.0,
+                "memory": 253.17758399999997,
+                "times": 8.573099970817566,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 1.8724445165742407e-15,
+                "errors": 7.823822006737658e-8,
+                "iterations": 68.0,
+                "std_time": 0.009428646695667335,
+                "std_errors": 1.3950798784004455e-23,
+                "memory": 10.316159999999998,
+                "times": 0.08429996967315674,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 1.578293213208425e-8,
+                "iterations": 11.0,
+                "std_time": 0.11155474348437276,
+                "std_errors": 3.487699696001114e-24,
+                "memory": 309.781696,
+                "times": 2.325700068473816,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-5": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 9.819377328908236e-6,
+                "iterations": 90.0,
+                "std_time": 0.014740755372196773,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 10.917952,
+                "times": 0.4488000154495239,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 7.489778066296963e-15,
+                "errors": 1.0782452484264348e-5,
+                "iterations": 664.0,
+                "std_time": 0.1313557315579554,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 48.00003199999999,
+                "times": 1.6648999452590942,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 9.362222582871203e-16,
+                "errors": 6.639893575875278e-6,
+                "iterations": 48.0,
+                "std_time": 0.02611593694142903,
+                "std_errors": 8.928511221762851e-22,
+                "memory": 7.430400000000001,
+                "times": 0.09239997863769531,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 2.995911226518785e-14,
+                "errors": 7.847282780990096e-7,
+                "iterations": 8.0,
+                "std_time": 0.4690652362719113,
+                "std_errors": 0.0,
+                "memory": 230.68393599999996,
+                "times": 1.86969997882843,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-11": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 9.28186349681627e-12,
+                "iterations": 270.0,
+                "std_time": 0.040756921692001194,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 32.561152,
+                "times": 1.5166999578475953,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 1.198364490607514e-13,
+                "errors": 1.0828007540311388e-11,
+                "iterations": 9894.0,
+                "std_time": 2.0342669285803767,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 713.8891679999999,
+                "times": 25.543900036811827,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 3.744889033148481e-15,
+                "errors": 6.967205818493174e-12,
+                "iterations": 110.0,
+                "std_time": 0.007480302492176274,
+                "std_errors": 8.514891835940219e-28,
+                "memory": 16.376256000000005,
+                "times": 0.13680000305175782,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 5.99182245303757e-14,
+                "errors": 1.6980096981823366e-12,
+                "iterations": 18.0,
+                "std_time": 0.17826957972755889,
+                "std_errors": 2.1287229589850547e-28,
+                "memory": 494.3431360000001,
+                "times": 3.5854000091552733,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-9": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 8.999842634251963e-10,
+                "iterations": 220.0,
+                "std_time": 0.06695612564550911,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 26.549152,
+                "times": 1.0926999568939209,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 1.198364490607514e-13,
+                "errors": 1.0817347931217345e-9,
+                "iterations": 6682.0,
+                "std_time": 0.4331379536782833,
+                "std_errors": 0.0,
+                "memory": 482.1626400000001,
+                "times": 16.064400005340577,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 0.0,
+                "errors": 7.383116299503112e-10,
+                "iterations": 89.0,
+                "std_time": 0.007670995309595189,
+                "std_errors": 1.089906155000348e-25,
+                "memory": 13.346208,
+                "times": 0.1128000259399414,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 5.99182245303757e-14,
+                "errors": 8.522253478405783e-11,
+                "iterations": 15.0,
+                "std_time": 0.1543791779777485,
+                "std_errors": 1.362382693750435e-26,
+                "memory": 415.24537599999996,
+                "times": 2.983500027656555,
+                "std_iterations": 0.0
+            }
+        }
+    },
+    "vem2": {
+        "1.0e-7": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 9.106916798427591e-8,
+                "iterations": 60.0,
+                "std_time": 0.005425224563453626,
+                "std_errors": 0.0,
+                "memory": 6.357408,
+                "times": 0.009099960327148438,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 0.0,
+                "errors": 1.18852607363999e-7,
+                "iterations": 3003.0,
+                "std_time": 0.07215229743179041,
+                "std_errors": 2.790159756800891e-23,
+                "memory": 188.480096,
+                "times": 0.27079999446868896,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 1.198364490607514e-13,
+                "errors": 9.9484742626782e-8,
+                "iterations": 4552.0,
+                "std_time": 0.044011259051738943,
+                "std_errors": 0.0,
+                "memory": 571.5981599999999,
+                "times": 0.3688999652862549,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.924123327061589e-8,
+                "iterations": 2278.0,
+                "std_time": 28.649885825487416,
+                "std_errors": 0.0,
+                "memory": 1802.4532960000001,
+                "times": 77.65960001945496,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-5": {
+            "ConjugateGradient": {
+                "std_memory": 9.362222582871203e-16,
+                "errors": 7.0978851672596956e-6,
+                "iterations": 52.0,
+                "std_time": 0.003831132816957935,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 5.520927999999999,
+                "times": 0.006699943542480468,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 2.995911226518785e-14,
+                "errors": 1.1934281876278066e-5,
+                "iterations": 1873.0,
+                "std_time": 0.021266812902744164,
+                "std_errors": 0.0,
+                "memory": 117.58841600000002,
+                "times": 0.13450002670288086,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 5.99182245303757e-14,
+                "errors": 9.951332353159598e-6,
+                "iterations": 2803.0,
+                "std_time": 0.14412989936646683,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 352.14763200000004,
+                "times": 0.13310003280639648,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.943093886214076e-6,
+                "iterations": 1403.0,
+                "std_time": 17.01848718548175,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 1110.2652959999998,
+                "times": 38.00390000343323,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-11": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 6.0196766114541554e-12,
+                "iterations": 77.0,
+                "std_time": 0.007015067910658144,
+                "std_errors": 8.514891835940219e-28,
+                "memory": 8.134928,
+                "times": 0.0070999860763549805,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 0.0,
+                "errors": 1.1912240411845309e-11,
+                "iterations": 5261.0,
+                "std_time": 0.012404810532716795,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 330.137984,
+                "times": 0.25210003852844237,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.968942133384619e-12,
+                "iterations": 8049.0,
+                "std_time": 0.08183480030411731,
+                "std_errors": 0.0,
+                "memory": 1010.3737440000002,
+                "times": 0.8765999794006347,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 9.938460463294245e-12,
+                "iterations": 4027.0,
+                "std_time": 35.69818611121257,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 3186.038224,
+                "times": 74.11330001354217,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-9": {
+            "ConjugateGradient": {
+                "std_memory": 0.0,
+                "errors": 9.489587559410463e-10,
+                "iterations": 70.0,
+                "std_time": 0.006940967891920341,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 7.403008,
+                "times": 0.012800002098083496,
+                "std_iterations": 0.0
+            },
+            "Gradient": {
+                "std_memory": 5.99182245303757e-14,
+                "errors": 1.1946242309913172e-9,
+                "iterations": 4131.0,
+                "std_time": 0.4091859886649037,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 259.24630400000007,
+                "times": 0.4795999526977539,
+                "std_iterations": 0.0
+            },
+            "JacobiMethod": {
+                "std_memory": 0.0,
+                "errors": 9.971839981124831e-10,
+                "iterations": 6300.0,
+                "std_time": 0.07631979195705775,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 790.923216,
+                "times": 0.6364000320434571,
+                "std_iterations": 0.0
+            },
+            "GaussSeidelMethod": {
+                "std_memory": 4.793457962430056e-13,
+                "errors": 9.905185793230967e-10,
+                "iterations": 3153.0,
+                "std_time": 18.678588852440832,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 2494.6412960000002,
+                "times": 87.76540002822875,
+                "std_iterations": 0.0
+            }
+        }
+    }
+}
