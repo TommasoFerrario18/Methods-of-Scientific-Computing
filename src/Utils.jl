@@ -231,21 +231,7 @@ function is_diagonally_dominant(A::AbstractMatrix)
     return true
 end
 
-
-function is_diagonally_dominant(A::AbstractMatrix)
-    n = size(A, 1)
-
-    for i in 1:n
-        sum_off_diagonal = sum(abs(A[i, j]) for j in 1:n if j != i)
-        if abs(A[i, i]) <= sum_off_diagonal
-            return false
-        end
-    end
-
-    return true
-end
-
-function GenRandomMatrix(rows::Integer, cols::Integer)::Matrix{Float64}
+function gen_random_matrix(rows::Integer, cols::Integer)::Matrix{Float64}
     return rand(MersenneTwister(0), Float64, rows, cols)
 end
 
@@ -261,8 +247,8 @@ function LoadBmpImage(path::String)::Matrix{UInt8}
 end
 
 function SaveBmpImage(img::Matrix{UInt8}, path::String)
-    abs_path = abspath(path) 
-    save(File{format"BMP"}(abs_path), img/255)
+    abs_path = abspath(path)
+    save(File(format"BMP", abs_path), img / 255)
 end
 
 end
