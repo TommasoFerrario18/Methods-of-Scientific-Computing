@@ -1,15 +1,18 @@
 \chapter{Progetto 2: Compressione di immagini tramite la DCT}
 
 \section{Introduzione}
+Per la realizzazione della compressione di immagini, è stato scelto di utilizzare 
+\href{https://julialang.org/}{\textbf{Julia}}, un linguaggio di programmazione open-source, 
+sviluppato per ottenere prestazioni elevate e con una sintassi ad alto livello simile 
+a quella di Python e MATLAB. Essendo concepito
+per la manipolazione efficace del calcolo scientifico, offre una vasta gamma di
+librerie per la gestione di matrici, vettori e le loro trasformazioni.
+
 In questo progetto è stata implementata l'equazione della discrete cosine transform $2$ (DCT2).
 La sua implementazione è stata realizzata applicando sequenzialmente sulla matrice
 la discrete cosine transform $1$ (DCT) per righe e poi per colonne. In questo modo
 è stato possibile riutilizzare più efficacemente il codice senza introdurre code
 smells.
-
-L'intero progetto è stato sviluppato in Julia, un linguaggio di programmazione ad
-alto livello usato per il calcolo scientifico con tempi di esecuzione comparabili
-con C/C++.
 
 La libreria della FFT di Julia utilizzata è \href{https://github.com/JuliaMath/FFTW.jl}{FTTW}
 che implementa un binding con la libreria di C, entrambe le librerie sono open source.
@@ -29,7 +32,7 @@ efficiente della DCT, la sua formula è stata riportata nell'equazione \ref{eq:d
 Per prima cosa è stato pensato di utilizzare un approccio basato su operazioni
 tra vettori e matrice, più precisamente è stato pensato di pre-calcolare la matrice
 della base dei coseni, per righe, prima di effettuare il calcolo dei coefficienti.
-Successivamente si effettua un prodotto vettore-matrice per ottenere il vettore
+Successivamente si effettua un prodotto matrice- per ottenere il vettore
 dei coefficienti, infine si applica la normalizzazione su di essi.
 
 Dato un generico vettore $X_k$, per applicare la dct si effettua:
@@ -95,13 +98,27 @@ può vedere il confronto.
     \label{fig:analisi_complex}
 \end{figure}
 
-Come si può notare dal grafico, l'andamento empirico segue quello teorico.
+Come si può notare dal grafico, l'andamento empirico segue quello teorico, ovvero
+la DCT custom segue $\mathcal{O}(N^3)$, mentre la DCT della libreria segue $\mathcal{O}(N^2\log N)$.
+
+In aggiunta, parlando dello spazio occupato, la DCT custom necessita di una matrice 
+$N\times N$ della base dei coseni e alloca un array di dimensione $N$ per salvare 
+i coefficienti, quindi si ottiene una complessità spaziale di $\mathcal{O}(N^2)$.
+
+Si può ridurre la complessità spaziale effettuando tutte le operazioni inplace.
 
 \section{Compressione}
-In questa parte di progetto è stato implementata un'interfaccia web per ottenere
-l'immagine bmp in scala di grigi
+Per l'implementazione del software che comprime l'immagine in scala di grigi, è
+stato pensato di sviluppare l'interfaccia mediante l'utilizzo di un framework per effettuare 
+data visualizzation, il framework scelto è un binding di \href{https://github.com/plotly/dash}{Dash} per Julia. Dash 
+è un framework di Python per data visualizzation interamente open source.
 
 \subsection{Implementazione dell'interfaccia}
+L'interfaccia consiste in una pagina web che chiede in input l'immagine da comprimere
+e i parametri di compressione ($f$ e $d$), in output restituisce il l'immagine compressa.
+
+Nell'interfaccia vengono mostrate entrambe le immagini, sia quella di input sia quella 
+compressa, in modo da confrontare la qualità delle immagini.
 
 \subsection{Implementazione della compressione}
 Dopo l'implementazione della GUI che si occupa di prendere in input l'immagine e
@@ -115,7 +132,7 @@ L'implementazione della compressione si è articolata nel seguente modo:
           applicando sui sotto-quadrati $f\times f$ dell'immagine la DCT2 della libreria,
           successivamente sono state azzerate le entry $M[k,l]$ tali che $k+l\ge d$, infine
           si applica IDCT2 della libreria e si normalizzano i valori.
-    \item \textbf{visualizzazione output}: infine vinee visualizzato l'output
+    \item \textbf{visualizzazione output}: infine viene visualizzato l'output
           messo a confronto con l'input.
 \end{itemize}
 

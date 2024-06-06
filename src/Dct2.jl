@@ -144,6 +144,27 @@ function DctIILibrary(matrix::Matrix{Float64})::Matrix{Float64}
     return FFTW.plan_dct(matrix) * matrix;
 end
 
+function DctIILibrary(matrix::Matrix{UInt8})::Matrix{Float64}
+    return FFTW.plan_dct(matrix) * matrix;
+end
+
+"""
+    IDctIILibrary(matrix::Matrix{Float64})::Matrix{Float64}
+
+Apply FFT on matrix.
+
+# Arguments
+- matrix::Matrix{Float64}: The input matrix.
+
+# Returns
+- Matrix{Float64}: The transformed matrix.
+"""
+
+function IDctIILibrary(matrix::Matrix{Float64})::Matrix{Float64}
+    return FFTW.plan_idct(matrix) * matrix;
+end
+
+
 """
     ResizeMatrix(img::Matrix{UInt8}, F::Int64)::Matrix{UInt8}
 
@@ -227,9 +248,9 @@ function ApplyDct2OnImage(img::Matrix{UInt8}, F::Int64, d::Int64)::Matrix{UInt8}
     for i in 0:div(size(img)[1], F)-1
         for j in 0:div(size(img)[2], F)-1
             c = img[i*F+1:i*F+F, j*F+1:j*F+F]
-            c = FFTW.dct(c)
+            c = Dct2.DctIILibrary(c)
             c = Dct2.Compress(c, d)
-            c = FFTW.idct(c)
+            c = Dct2.IDctIILibrary(c)
             c = Dct2.Normalize(c)
             img[i*F+1:i*F+F, j*F+1:j*F+F] = c
         end
