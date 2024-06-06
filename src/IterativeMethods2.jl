@@ -79,7 +79,7 @@ function GenericIterativeMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Fl
             throw(ArgumentError("The relaxation factor must be in the interval (0, 1]"))
         end
 
-        P = spdiagm(0 => w ./ diag(A))
+        P = spdiagm(0 => w ./ diag(A)) # Generate inverse of P
     elseif method == IterativeMethods2.GaussSeidelMethod
         if w <= 0 || w >= 2
             throw(ArgumentError("The relaxation factor must be in the interval (0, 2)"))
@@ -117,6 +117,7 @@ end
 function JacobiMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x::Vector{Float64}, P::SparseMatrixCSC, w::Float64, alpha::Float64=1.0)::Tuple{Vector{Float64},Vector{Float64}}
     # Update the solution vector using relaxation:
     # xk = x + alpha * P * (b - A * x) + (1 - w) * x
+    # controllare se bisogna correggere.
     r = similar(b)
     mul!(r, A, x)
     r = b - r
@@ -127,6 +128,7 @@ function JacobiMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x:
 end
 
 function GaussSeidelMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x::Vector{Float64}, P::SparseMatrixCSC, w::Float64, alpha::Float64=1.0)::Tuple{Vector{Float64},Vector{Float64}}
+    # sarebbe da correggere
     r = similar(b)
     mul!(r, A, x)
     r = b - r

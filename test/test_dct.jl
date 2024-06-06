@@ -12,8 +12,8 @@ function TestTimeDct()
     start_dim = 40
     max_iter = 5
     list_dims = []
-    time_dct = []
-    time_fft = []
+    time_dct = Float32[]
+    time_fft = Float32[]
     for i in 1:max_iter
         M = Utils.GenRandomMatrix(start_dim, start_dim)
         push!(time_dct, @elapsed Dct2.DctII(M))
@@ -26,12 +26,20 @@ function TestTimeDct()
     println(list_dims)
     x = range(list_dims[1], list_dims[end], length=1000)
     #x = range(0.00001, 0.1, length=1000)
-    time_theoretical_custom = []
-    time_theoretical_library = []
+    time_theoretical_custom = Float32[]
+    time_theoretical_library = Float32[]
     for i in collect(x)
         push!(time_theoretical_custom, i^3)
         push!(time_theoretical_library, i^2 * log10(i))
     end
+    tcmax = maximum(time_theoretical_custom)
+    tlmax = maximum(time_theoretical_library)
+    pcmax = maximum(time_dct)
+    plmax = maximum(time_fft)
+    time_theoretical_custom /= tcmax
+    time_theoretical_custom *= pcmax
+    time_theoretical_library /= tlmax
+    time_theoretical_library *= plmax
     p = plot(list_dims, time_dct, label="dct2 custom", lc=:blue)
     plot!(p, x, time_theoretical_custom, label="dct2 custom theoretical time ", lc=:blue, linestyle=:dash)
     plot!(p, list_dims, time_fft, label="dct2 library", lc=:orange)

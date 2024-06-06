@@ -11,7 +11,7 @@ using LinearAlgebra
 using JSON
 using Statistics
 
-function test_methods(method::Function, A::SparseMatrixCSC, b::Vector{Float64}, xe::Vector{Float64}, tol::Float64)::Dict
+function test_methods(method::Function, A::SparseMatrixCSC, b::Vector{Float64}, tol::Float64)::Dict
     maxIter = UInt16.(20000)
     x0 = zeros(size(b))
 
@@ -37,14 +37,14 @@ function test_methods(method::Function, A::SparseMatrixCSC, b::Vector{Float64}, 
         "iterations" => mean(iterations), "std_iterations" => std(iterations))
 end
 
-function test_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, xe::Vector{Float64}, tollerance::Vector{Float64})::Dict
+function test_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, tollerance::Vector{Float64})::Dict
     results = Dict()
     methods = [IterativeMethods2.JacobiMethod, IterativeMethods2.GaussSeidelMethod, IterativeMethods2.Gradient, IterativeMethods2.ConjugateGradient]
 
     for tol in tollerance
         results["$tol"] = Dict()
         for method in methods
-            results["$tol"]["$method"] = test_methods(method, A, b, xe, tol)
+            results["$tol"]["$method"] = test_methods(method, A, b, tol)
         end
     end
 
@@ -56,7 +56,7 @@ tol = [1e-5, 1e-7, 1e-9, 1e-11]
 
 total_results = Dict()
 
-# Read the sparse matrix from the file.
+# Read the sparse matrix from the file
 for path in path_to_matrix
     A = Utils.read_sparse_matrix(path)
     eig = eigvals(Matrix(A))
