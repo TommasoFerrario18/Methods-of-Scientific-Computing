@@ -249,13 +249,140 @@ ciascuno di essi. In particolare, sono stati eseguiti degli esperimenti sulle
 matrici precedentemente descritte, utilizzando come vettore dei termini noti il
 risultato della moltiplicazione tra la matrice e un vettore di 1 di dimensione
 pari al numero di righe della matrice. Oltre a questo, i metodi sono stati testati
-al variare della tolleranza, utilizzando i valori $10^{-4}$, $10^{-6}$, $10^{-8}$
-e $10^{-10}$.
+al variare della tolleranza, utilizzando i valori $1e^{-5}$, $1e^{-7}$, $1e^{-9}$
+e $1e^{-11}$.
 
 Per quanto riguarda le misurazioni dei tempi di esecuzione e l'occupazione di
 memoria, sono state utilizzate la funzione \textbf{time}, invocata prima e dopo
 l'esecuzione del codice, e la macro \textbf{@allocated} per misurare l'occupazione
 di memoria. Quest'ultima restituisce la quantità di memoria allocata in byte.
+
+Ogni metodo è stato eseguito 10 volte per ciascuna matrice e livello di tolleranza,
+al fine di valutare la consistenza dei risultati. Una volta ottenuti i dati, si è
+proceduto con la loro visualizzazione mediante grafici. In particolare, sono stati
+realizzati grafici che mostrano i tempi di esecuzione e l'occupazione di memoria
+in funzione della tolleranza per ciascuna matrice, consentendo un confronto tra
+i diversi metodi.
+
+Nei grafici l'andamento dei metodi è stato rappresentato attraverso la media delle
+esecuzione e un'ombra che rappresenta la deviazione standard delle misurazioni.
+
+Iniziamo analizzando i risultati ottenuti per il tempo di esecuzione dei metodi
+sono riportati nelle figure \ref{fig:time_spa1}, \ref{fig:time_spa2}, \ref{fig:time_vem1}
+e \ref{fig:time_vem2}.
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/error_spa1.png}
+        \caption{Matrice spa1}
+        \label{fig:time_spa1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/error_spa1.png}
+        \caption{Matrice spa2}
+        \label{fig:time_spa2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/error_spa1.png}
+        \caption{Matrice vem1}
+        \label{fig:time_vem1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/error_spa1.png}
+        \caption{Matrice vem2}
+        \label{fig:time_vem2}
+    \end{subfigure}
+    \caption{Tempi di esecuzione dei metodi iterativi}
+    \label{fig:time}
+\end{figure}
+
+In questi grafici, possiamo notare che il metodo di Gauß-Seidel risulta essere
+il più lento per le matrici vem1 e vem2, mentre per le matrici spa1 e spa2
+il metodo che richiede più tempo è il metodo del gradiente.
+
+Per quanto riguarda l'occupazione di memoria, i risultati ottenuti sono riportati
+nelle figure \ref{fig:mem_spa1}, \ref{fig:mem_spa2}, \ref{fig:mem_vem1} e \ref{fig:mem_vem2}.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/mem_spa1.png}
+        \caption{Matrice spa1}
+        \label{fig:mem_spa1}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/mem_spa2.png}
+        \caption{Matrice spa2}
+        \label{fig:mem_spa2}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/mem_vem1.png}
+        \caption{Matrice vem1}
+        \label{fig:mem_vem1}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/mem_vem2.png}
+        \caption{Matrice vem2}
+        \label{fig:mem_vem2}
+    \end{subfigure}
+    \caption{Memoria occupata dei metodi iterativi}
+    \label{fig:memory}
+\end{figure}
+
+In questi grafici, possiamo notare che il metodo di Gauß-Seidel risulta essere....
+
+
+Infine, presentiamo i grafici che illustrano la variazione dell'errore medio in
+funzione della tolleranza per ciascuna matrice, come mostrato nelle figure \ref{fig:error_spa1},
+\ref{fig:error_spa2}, \ref{fig:error_vem1} e \ref{fig:error_vem2}.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/error_spa1.png}
+        \caption{Matrice spa1}
+        \label{fig:error_spa1}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/error_spa2.png}
+        \caption{Matrice spa2}
+        \label{fig:error_spa2}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/error_vem1.png}
+        \caption{Matrice vem1}
+        \label{fig:error_vem1}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./img/error_vem2.png}
+        \caption{Matrice vem2}
+        \label{fig:error_vem2}
+    \end{subfigure}
+    \caption{Errore dei metodi iterativi}
+    \label{fig:error}
+\end{figure}
+
+In questi grafici possiamo osservare un andamento che decresce più la tolleranza
+si avvicina a zero. Questo è legato al fatto che tutti i metodi implementati
+convergono prima di raggiungere il numero di iterazioni massimo (20000). Inoltre,
+non si riesce a notare una differenza significativa tra i metodi implementati.
+
+
 
 
 \end{document}
