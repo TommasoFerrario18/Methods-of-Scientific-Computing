@@ -64,13 +64,12 @@ con la libreria.
 
 La complessità della DCT2 custom è la seguente:
 \begin{itemize}
-    \item \textbf{generazione della base dei coseni}: \textcolor{blue}{questa operazione} \st{la generazione} richiede
+    \item \textbf{generazione della base dei coseni}: questa operazione richiede
           un numero costante di operazioni tra scalari e un calcolo del coseno per ogni
-          entry della matrice. \textcolor{blue}{Avremo quindi}\st{Questo richiede} un totale $\mathcal{O}(N^2)$ per generare
+          entry della matrice. Avremo quindi un totale $\mathcal{O}(N^2)$ per generare
           la matrice, quando $N\times N$ è la dimensione della matrice (dimensione dello
           spazio vettoriale per numero di coefficienti).
-    \item \textbf{applicazione della DCT1 su un vettore}: \st{l'applicazione della DCT1
-              su un generico vettore} richiede di effettuare un prodotto matrice-vettore e
+    \item \textbf{applicazione della DCT1 su un vettore}: richiede di effettuare un prodotto matrice-vettore e
           successivamente di normalizzare i coefficienti. Il prodotto matrice-vettore
           ha una complessità asintotica di $\mathcal{O}(N^2)$, dove $N$ è la dimensione
           del vettore. Mentre per normalizzare i coefficienti si richiede una scansione

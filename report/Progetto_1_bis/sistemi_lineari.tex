@@ -4,7 +4,7 @@ Per la realizzazione della libreria contenente i metodi per la risoluzione di
 sistemi lineari, è stato scelto di utilizzare \href{https://julialang.org/}{\textbf{Julia}},
 un linguaggio di programmazione open-source, sviluppato per ottenere prestazioni
 elevate e con una sintassi simile a quella di Python e MATLAB. Essendo concepito
-per la manipolazione efficace del calcolo scientifico, offre una vasta gamma di
+per \textcolor{blue}{risolvere task relativi al } \st{la manipolazione efficace} calcolo scientifico, \textcolor{blue}{infatti,} offre una vasta gamma di
 librerie per la gestione di matrici e vettori.
 
 In particolare, per lo sviluppo di questo progetto sono state utilizzate due
@@ -57,9 +57,12 @@ utilità. Tra queste troviamo:
           una matrice e del vettore dei termini noti.
 \end{itemize}
 \subsection{DirectMethods}
-Nel modulo \textbf{DirectMethods} è presente il metodo che effettua la risoluzione
+Nel modulo \textbf{DirectMethods} è presente il metodo \textcolor{blue}{che implementa
+la risoluzione di sisitemi lineari tramite la sostituzione in avanti. Il metodo 
+è applicabile solo a matrici trangolari inferiori.} 
+\st{che effettua la risoluzione
 di un sistema lineare in cui la matrice è triangolare inferiore, tramite il
-metodo di sostituzione in avanti.
+metodo di sostituzione in avanti.}
 
 Di seguito riportiamo lo pseudocodice del metodo \textbf{forward\_substitution}:
 \begin{verbatim}
@@ -73,14 +76,18 @@ function forward_substitution(A, b)
     return x
 end
 \end{verbatim}
-Questo metodo è stato implementato poiché nel metodo di risoluzione di Gauß-Seidel,
+\st{Questo metodo è stato implementato poiché} \textcolor{blue}{L'implementazione del metodo è risultato 
+necessario dal momento che viene utilizzato dal} metodo di risoluzione di Gauß-Seidel,
 per cui la regola di aggiornamento è la seguente:
 \begin{equation}
     x^{(k+1)} = x^{(k)} + P^{-1}(b - Ax^{(k)})
 \end{equation}
-con $P$ è una matrice triangolare inferiore, prevede il calcolo di una matrice
-inversa. Dato che tale operazione è computazionalmente costosa, possiamo evitare
-di calcolare la matrice inversa e al suo posto risolvere il seguente sistema
+\st{con} \textcolor{blue}{dove} $P$ è una matrice triangolare inferiore
+\st{, prevede il calcolo di una matrice
+inversa}. Dato \textcolor{blue}{che in Gauß-Seidel si richiede di calcolare $P^{-1}$, per semplificare 
+il conto dell'inversa,} 
+\st{che tale operazione è computazionalmente costosa} \st{possiamo evitare
+di calcolare la matrice inversa e al suo posto} \textcolor{blue}{si } risolve\st{re} il seguente sistema
 lineare:
 \begin{equation}
     Py = b - Ax^{(k)}
@@ -96,25 +103,26 @@ Nel modulo \textbf{IterativeMethods} sono presenti i metodi iterativi per la
 risoluzione di sistemi lineari. In particolare, sono stati implementati i seguenti
 metodi:
 \begin{itemize}
-    \item \textbf{Jacobi}: metodo di Jacobi per la risoluzione di sistemi lineari.
-    \item \textbf{GaussSeidel}: metodo di Gauß-Seidel per la risoluzione di
-          sistemi lineari.
-    \item \textbf{Gradient}: metodo del gradiente per la risoluzione di sistemi
-          lineari.
-    \item \textbf{ConjugateGradient}: metodo del gradiente coniugato per la
-          risoluzione di sistemi lineari.
+    \item \textbf{Jacobi}\st{: metodo di Jacobi per la risoluzione di sistemi lineari}.
+    \item \textbf{GaussSeidel}\st{: metodo di Gauß-Seidel per la risoluzione di
+          sistemi lineari}.
+    \item \textbf{Gradient}\st{: metodo del gradiente per la risoluzione di sistemi
+          lineari.}
+    \item \textbf{ConjugateGradient}\st{: metodo del gradiente coniugato per la
+          risoluzione di sistemi lineari.}
 \end{itemize}
 
+% ! non ho capito, hai detto risoluzione di sistemi lineari?
+
 Tutti i metodi implementati utilizzano come criterio di arresto il confronto del
-residuo riscalato, calcolato come:
+residuo riscalato\st{,} \textcolor{blue}{che viene} calcolato come:
 \begin{equation}
     \frac{\|b - Ax^{(k)}\|}{\|b\|}
 \end{equation}
 dove $x^{(k)}$ è la soluzione al passo $k$ e $b$ è il vettore dei termini noti.
-La tolleranza per questo confronto è un valore fornito dall'utente.
-
+La tolleranza per questo confronto è un valore fornito dall'utente. 
 Inoltre, per evitare cicli infiniti, è possibile specificare un numero massimo
-di iterazioni. Il valore predefinito è fissato a 20000 iterazioni.
+di iterazioni\st{. Il valore predefinito} \textcolor{blue}{che, per default,} è fissato a 20000 iterazioni.
 
 La libreria è stata progettata a partire dalla definizione di una funzione generica
 \textbf{GenericIterativeMethod}, la quale prende in input la matrice $A$, il
@@ -144,13 +152,16 @@ end
 
 Per ciascun metodo iterativo richiesto, è stato definito un metodo specifico che
 implementa la regola di aggiornamento della soluzione. Questo metodo restituisce
-la soluzione aggiornata al passo $k+1$ e, dato che il criterio di arresto è basato
-sul residuo riscalato, tutti i metodi richiedono il calcolo del residuo. Pertanto,
-è stato deciso di restituire anche il residuo calcolato, per evitare di ricalcolarlo
-ogni volta. La logica di aggiornamento della soluzione sfrutta le funzioni per
+la soluzione aggiornata al passo $k+1$ e \textcolor{blue}{ il residuo}, dato che il criterio di arresto è basato
+sul residuo riscalato\st{,} \textcolor{blue}{ e che } tutti i metodi richiedono il calcolo del residuo
+. \st{Pertanto,
+è stato deciso di restituire anche il residuo calcolato, per} \textcolor{blue}{si 
+evita } di ricalcolarlo
+ogni volta\textcolor{blue}{, riducendo il numero di operazioni ridondanti }. 
+La logica di aggiornamento della soluzione sfrutta le funzioni per
 la manipolazione di matrici e vettori fornite dalla libreria \textbf{LinearAlgebra}.
 
-In aggiunta, la libreria contiene metodi di interfaccia che richiamano direttamente
+In aggiunta, la libreria \textcolor{blue}{sviluppata} contiene metodi di interfaccia che richiamano direttamente
 la funzione generica, passando il metodo di aggiornamento corrispondente al metodo
 iterativo richiesto.
 
@@ -161,7 +172,7 @@ Per il metodo di Jacobi, la regola di aggiornamento della soluzione è la seguen
 \begin{equation}
     x^{(k+1)} = x^{(k)} + P^{-1}(b - Ax^{(k)})
 \end{equation}
-In questo caso, il calcolo della matrice inversa $P^{-1}$ è efficiente poiché $P$
+In questo caso, il calcolo della matrice inversa $P^{-1}$ è \st{efficiente} \textcolor{blue}{leggero} poiché $P$
 è una matrice diagonale; di conseguenza, basta calcolare il reciproco degli
 elementi sulla diagonale.
 
@@ -176,9 +187,9 @@ Per il metodo di Gauß-Seidel, la regola di aggiornamento della soluzione è la 
     x^{(k+1)} = x^{(k)} + y
 \end{equation}
 dove $y$ è il vettore ottenuto risolvendo il sistema lineare $Py = b - Ax^{(k)}$.
-Questo è possibile poiché la matrice $P$ è una matrice triangolare inferiore,
+\st{Questo è possibile poiché la matrice $P$ è una matrice triangolare inferiore,
 quindi possiamo utilizzare il metodo della sostituzione in avanti per risolvere
-il sistema lineare, evitando il calcolo della matrice inversa.
+il sistema lineare, evitando il calcolo della matrice inversa.}
 
 Anche per questo metodo è stata prevista l'implementazione dei metodi \textbf{SOR}
 e \textbf{Richardson}, introducendo i parametri $\omega$ e $\alpha$, con i relativi
@@ -215,14 +226,14 @@ dove $\beta$ è il fattore di scala calcolato come:
 \begin{equation}
     \beta_k = \frac{\langle d^{(k)T}, (Ar^{(k + 1)})\rangle}{\langle d^{(k)T}, (Ad^{(k)})\rangle}
 \end{equation}
-con $\langle \cdot, \cdot \rangle$ è il prodotto scalare tra due vettori.
+\st{con} \textcolor{blue}{dove} $\langle \cdot, \cdot \rangle$ è il prodotto scalare tra due vettori.
 
 \section{Risultati sperimentali}
 Implementati i metodi, si è proceduto alla valutazione delle loro prestazioni.
-In particolare, sono stati condotti esperimenti sulle matrici descritte nella ù
+In particolare, sono stati condotti esperimenti sulle matrici descritte nella 
 sezione \ref{sec:intro}, utilizzando come vettore dei termini noti il risultato
 della moltiplicazione tra la matrice di input e un vettore di dimensione pari al
-numero di righe della matrice, composto esclusivamente da elementi pari a 1.
+numero di righe della matrice\st{,} composto esclusivamente da elementi pari a 1.
 Inoltre, i metodi sono stati testati variando la tolleranza, con i valori $1e^{-5}$,
 $1e^{-7}$, $1e^{-9}$ e $1e^{-11}$.
 
