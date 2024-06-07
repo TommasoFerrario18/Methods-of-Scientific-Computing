@@ -1,0 +1,202 @@
+{
+    "spa1": {
+        "1.0e-7": {
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 4.697462397722017e-8,
+                "iterations": 21.0,
+                "std_time": 0.012649115332379718,
+                "std_errors": 6.975399392002227e-24,
+                "memory": 63.624016,
+                "times": 0.3239999771118164,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-5": {
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 3.5654235192007206e-6,
+                "iterations": 14.0,
+                "std_time": 0.08633147693689604,
+                "std_errors": 4.4642556108814255e-22,
+                "memory": 43.16352,
+                "times": 0.2493000030517578,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-11": {
+            "GaussSeidelMethod": {
+                "std_memory": 1.4979556132593925e-14,
+                "errors": 4.374691778861194e-12,
+                "iterations": 36.0,
+                "std_time": 0.017186895661392136,
+                "std_errors": 0.0,
+                "memory": 107.46793599999998,
+                "times": 0.5475000143051147,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-9": {
+            "GaussSeidelMethod": {
+                "std_memory": 1.4979556132593925e-14,
+                "errors": 3.327175611781577e-10,
+                "iterations": 29.0,
+                "std_time": 0.006864527179512973,
+                "std_errors": 5.44953077500174e-26,
+                "memory": 87.00743999999999,
+                "times": 0.44069998264312743,
+                "std_iterations": 0.0
+            }
+        }
+    },
+    "vem1": {
+        "1.0e-7": {
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 9.893776099493793e-8,
+                "iterations": 1499.0,
+                "std_time": 0.1354609274441214,
+                "std_errors": 1.3950798784004455e-23,
+                "memory": 767.545776,
+                "times": 7.583100032806397,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-5": {
+            "GaussSeidelMethod": {
+                "std_memory": 1.198364490607514e-13,
+                "errors": 9.838475857267584e-6,
+                "iterations": 940.0,
+                "std_time": 0.07996998427532333,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 481.4093119999999,
+                "times": 4.7499000310897825,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-11": {
+            "GaussSeidelMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.842007999188188e-12,
+                "iterations": 2619.0,
+                "std_time": 0.07043994224430049,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 1340.8424159999997,
+                "times": 13.179699993133545,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-9": {
+            "GaussSeidelMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.867854512823922e-10,
+                "iterations": 2059.0,
+                "std_time": 0.026283886472247556,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 1054.1940959999997,
+                "times": 10.337199997901916,
+                "std_iterations": 0.0
+            }
+        }
+    },
+    "spa2": {
+        "1.0e-7": {
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 1.578293213208425e-8,
+                "iterations": 11.0,
+                "std_time": 0.10829537217174232,
+                "std_errors": 3.487699696001114e-24,
+                "memory": 309.781696,
+                "times": 2.0081000089645387,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-5": {
+            "GaussSeidelMethod": {
+                "std_memory": 2.995911226518785e-14,
+                "errors": 7.847282780990096e-7,
+                "iterations": 8.0,
+                "std_time": 0.07583491366470059,
+                "std_errors": 0.0,
+                "memory": 230.68393599999996,
+                "times": 1.455400037765503,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-11": {
+            "GaussSeidelMethod": {
+                "std_memory": 5.99182245303757e-14,
+                "errors": 1.6980096981823366e-12,
+                "iterations": 18.0,
+                "std_time": 0.10775077335431878,
+                "std_errors": 2.1287229589850547e-28,
+                "memory": 494.3431360000001,
+                "times": 3.1592999935150146,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-9": {
+            "GaussSeidelMethod": {
+                "std_memory": 5.99182245303757e-14,
+                "errors": 8.522253478405783e-11,
+                "iterations": 15.0,
+                "std_time": 0.14517174944736091,
+                "std_errors": 1.362382693750435e-26,
+                "memory": 415.24537599999996,
+                "times": 2.7038000345230104,
+                "std_iterations": 0.0
+            }
+        }
+    },
+    "vem2": {
+        "1.0e-7": {
+            "GaussSeidelMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.924123327061589e-8,
+                "iterations": 2278.0,
+                "std_time": 1.5740355495761333,
+                "std_errors": 0.0,
+                "memory": 1802.4532960000001,
+                "times": 28.26710002422333,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-5": {
+            "GaussSeidelMethod": {
+                "std_memory": 2.396728981215028e-13,
+                "errors": 9.943093886214076e-6,
+                "iterations": 1403.0,
+                "std_time": 0.11404868038358563,
+                "std_errors": 1.7857022443525702e-21,
+                "memory": 1110.2652959999998,
+                "times": 16.680999994277954,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-11": {
+            "GaussSeidelMethod": {
+                "std_memory": 0.0,
+                "errors": 9.938460463294245e-12,
+                "iterations": 4027.0,
+                "std_time": 0.9213112209130829,
+                "std_errors": 1.7029783671880438e-27,
+                "memory": 3186.038224,
+                "times": 59.93470003604889,
+                "std_iterations": 0.0
+            }
+        },
+        "1.0e-9": {
+            "GaussSeidelMethod": {
+                "std_memory": 4.793457962430056e-13,
+                "errors": 9.905185793230967e-10,
+                "iterations": 3153.0,
+                "std_time": 1.0380008484125818,
+                "std_errors": 2.179812310000696e-25,
+                "memory": 2494.6412960000002,
+                "times": 45.129400038719176,
+                "std_iterations": 0.0
+            }
+        }
+    }
+}
