@@ -319,7 +319,12 @@ Confrontando i vari metodi iterativi, il metodo di Gauß-Seidel risulta essere i
 più lento per le matrici vem1 e vem2, nonostante il numero di iterazioni sia
 inferiore rispetto ad altri metodi, come si può vedere nella tabella \ref{tab:iterazioni}.
 Invece, per le matrici spa1 e spa2, il metodo che richiede più tempo è il metodo
-del gradiente.
+del gradiente. Questo comportamento può essere attribuito al fatto che la convergenza 
+del metodo presenta un andamento a zig-zag. A supporto di questa ipotesi, si 
+osserva che il numero di condizionamento delle matrici spa1 e spa2 è molto elevato, 
+pari rispettivamente a 2048 e 1411. Pertanto, è plausibile che la combinazione 
+di un numero di condizionamento elevato e il punto di partenza scelto per il 
+metodo, ovvero il vettore nullo, conduca a un andamento a zig-zag nella convergenza.
 
 \begin{table}[!ht]
     \centering

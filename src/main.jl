@@ -61,7 +61,7 @@ total_results = Dict()
 for path in path_to_matrix
     A = Utils.read_sparse_matrix(path)
     eig = eigvals(Matrix(A))
-
+    println("Matrix: ", path)
     println("Matrix is symmetric: ", issymmetric(A))
     println("Matrix is positive definite: ", all(eig .> 0))
     println("Condition number: ", maximum(eig) / minimum(eig))
