@@ -2,11 +2,8 @@
 
 \section{Introduzione}
 Per la realizzazione della compressione di immagini, è stato scelto di utilizzare
-\href{https://julialang.org/}{\textbf{Julia}}, un linguaggio di programmazione open-source,
-sviluppato per ottenere prestazioni elevate e con una sintassi ad alto livello simile
-a quella di Python e MATLAB. Essendo concepito per la manipolazione efficace del
-calcolo scientifico, offre una vasta gamma di librerie per la gestione di matrici,
-vettori e le loro trasformazioni.
+\href{https://julialang.org/}{\textbf{Julia}}, per i medesimi motivi del progetto 
+precedente.
 
 In questo progetto è stata implementata l'equazione della discrete cosine transform $2$ (DCT2).
 La sua implementazione è stata realizzata applicando sequenzialmente sulla matrice
@@ -14,13 +11,20 @@ la discrete cosine transform $1$ (DCT) prima per righe e poi
 per colonne. In questo modo, è stata aumentata la riutilizzabilità del codice
 e ridotto il rischio di introdurre errori.
 
-Per effettuare il confronto è stata utilizzata la libreria Julia
-\href{https://github.com/JuliaMath/FFTW.jl}{FTTW}
-che implementa un binding con la libreria di C, entrambe le librerie sono open source.
+In particolare per lo sviluppo sono state utilizzate le librerie:
+\begin{itemize}
+    \item \textbf{LinearAlgebra}
+    \item \textbf{FileIO}: fornisce funzioni per la lettura e scrittura di file.
+    \item \textbf{Images}: fornisce funzioni per la trattazione di immagini.
+    \item \textbf{\href{https://github.com/JuliaMath/FFTW.jl}{FTTW}}: fornisce funzioni che implementano la FTT.
+\end{itemize} 
+
+Tutte le librerie sono open source, più precisamente FTTW implementa un binding 
+con la libreria di C.
 
 \section{DCT2 custom}
-Come detto in precedenza, è stato necessario concentrarsi solo in una implementazione
-efficiente della DCT, la cui sua formula è stata riportata nell'equazione \ref{eq:dct}.
+Per prima cosa è stata implementata DCT1, 
+la cui sua formula è stata riportata nell'equazione \ref{eq:dct}.
 
 \begin{equation}
     X_k = \begin{cases}
@@ -30,13 +34,13 @@ efficiente della DCT, la cui sua formula è stata riportata nell'equazione \ref{
     \label{eq:dct}
 \end{equation}
 
-Per prima cosa si è pensato di utilizzare un approccio basato su operazioni
-tra vettori e matrici, più precisamente si è pensato di pre-calcolare la matrice
+Per l'implementazione, si è pensato di utilizzare un approccio basato su operazioni
+tra vettori e matrici, più precisamente si pre-calcola la matrice
 della base dei coseni (per righe) prima di effettuare il calcolo dei coefficienti.
 Successivamente si effettua un prodotto matrice-vettore per ottenere il vettore
-dei coefficienti, infine è stato normalizzato il vettore.
+dei coefficienti, infine si normalizza il vettore dei coefficienti.
 
-Dato un generico vettore $X_k$, per applicare la dct si effettua:
+Dato un generico vettore $X_k$, per applicare la DCT si effettua:
 \begin{equation*}
     dct(X_k) = norm(B_{\cos}\cdot X_k )
 \end{equation*}
@@ -55,14 +59,18 @@ L'implementazione della DCT2 si articola nel seguente modo:
     \item si applica inplace la DCT1 per righe
     \item si applica inplace la DCT1 per colonne
 \end{itemize}
+
 Utilizzando questa strategia si riesce ad ottenere dei tempi di esecuzione
 comparabili alla DCT2 implementata dalla libreria usando la FFT.
 
-\subsection{Studio di complessità}
-L'algoritmo custom che è stato sviluppato ha dei tempi di esecuzione comparabili
-con la libreria.
+Il codice della DCT è all'interno del file \textbf{Dct2.jl}, mentre il codice dei 
+test della dct e il codice per generare il grafico di complessità è nella catella
+\textbf{test\_dct.jl}.
 
-La complessità della DCT2 custom è la seguente:
+
+\subsection{Studio di complessità}
+
+La complessità della DCT2 custom viene analizzata per passi nei seguenti punti:
 \begin{itemize}
     \item \textbf{generazione della base dei coseni}: questa operazione richiede
           un numero costante di operazioni tra scalari e un calcolo del coseno per ogni
@@ -90,14 +98,26 @@ L'implementazione custom della DCT2 è stata confronta anche con quella ottimizz
 dalla libreria usando la FFT e nell'immagine \ref{fig:analisi_complex} si
 può vedere il confronto.
 
-% \begin{figure}[!h]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{Progetto_2/img/times_plot.png}
-%     \caption{Grafico dei tempi al variare della dimensione della matrice. Le linee
-%         continue rappresentano i dati empirici, le linee tratteggiate rappresentano
-%         l'andamento teorico dei metodi.}
-%     \label{fig:analisi_complex}
-% \end{figure}
+Per generare il grafico è stata utilizzata la libreria standard \textbf{Plot} ed 
+è stata utilizzata la macro \textbf{@elapsed} per ottenere i tempi di esecuzione 
+delle funzioni.
+
+Tutti i test sono stati realizzati su una macchina con:
+\begin{itemize}
+    \item Windows $11$
+    \item Ryzen $7$ $4800H$
+    \item $16Gb$ di RAM
+\end{itemize}
+
+\newpage
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Progetto_2/img/times_plot.png}
+    \caption{Grafico dei tempi al variare della dimensione della matrice. Le linee
+        continue rappresentano i dati empirici, le linee tratteggiate rappresentano
+        l'andamento teorico dei metodi.}
+    \label{fig:analisi_complex}
+\end{figure}
 
 Come si può notare dal grafico, l'andamento empirico segue quello teorico, ovvero
 la DCT custom segue $\mathcal{O}(N^3)$, mentre la DCT della libreria segue $\mathcal{O}(N^2\log N)$.
@@ -122,14 +142,17 @@ e i parametri di compressione ($f$ e $d$), in output restituisce il l'immagine c
 Nell'interfaccia vengono mostrate entrambe le immagini, sia quella di input sia quella
 compressa, in modo da confrontare la qualità delle immagini.
 
+Il sorgente dell'interfaccia è contenuto all'interno del file \textbf{gui.jl}.
+
 Una volta che il server web è in esecuzione, per accedere all'interfaccia basta 
 digitare sul browser il seguente link: \href{http://localhost:8050}{http://localhost:8050}.
 
 \subsection{Implementazione della compressione}
 Dopo l'implementazione della GUI che si occupa di prendere in input l'immagine e
 i due parametri, è stato sviluppato l'algoritmo di compressione dell'immagine.
+L'algoritmo è all'interno del file \textbf{Dct2.jl} sotto la funzione \textbf{ApplyDct2OnImage}.
 
-L'implementazione della compressione si è articolata nel seguente modo:
+L'implementazione della compressione si articola nei seguenti passi:
 \begin{itemize}
     \item \textbf{ridimensionamento dell'immagine in input}: l'immagine è stata
           ridimensionata in modo tale da avere altezza e larghezza multiple del
