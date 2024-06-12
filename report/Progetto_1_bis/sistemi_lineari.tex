@@ -1,10 +1,10 @@
 \chapter{Progetto 1 bis: Mini libreria per sistemi lineari}
-\section{Introduzione}
+\section{Introduzione}\label{sec:intro}
 Per la realizzazione della libreria contenente i metodi per la risoluzione di
 sistemi lineari, è stato scelto di utilizzare \href{https://julialang.org/}{\textbf{Julia}},
 un linguaggio di programmazione open-source, sviluppato per ottenere prestazioni
 elevate e con una sintassi simile a quella di Python e MATLAB. Essendo concepito
-per la manipolazione efficace del calcolo scientifico, offre una vasta gamma di
+per risolvere task relativi al calcolo scientifico, offre una vasta gamma di
 librerie per la gestione di matrici e vettori.
 
 In particolare, per lo sviluppo di questo progetto sono state utilizzate due
@@ -57,11 +57,10 @@ utilità. Tra queste troviamo:
           una matrice e del vettore dei termini noti.
 \end{itemize}
 \subsection{DirectMethods}
-Nel modulo \textbf{DirectMethods} è presente il metodo che effettua la risoluzione
-di un sistema lineare in cui la matrice è triangolare inferiore, tramite il
-metodo di sostituzione in avanti.
-
-Di seguito riportiamo lo pseudocodice del metodo \textbf{forward\_substitution}:
+Nel modulo \textbf{DirectMethods} è presente il metodo che implementa
+la risoluzione di sistemi lineari tramite la sostituzione in avanti. Il metodo
+è applicabile solo a matrici triangolari inferiori. Di seguito riportiamo lo
+pseudocodice del metodo \textbf{forward\_substitution}:
 \begin{verbatim}
 function forward_substitution(A, b)
     n = size(A, 1)
@@ -73,14 +72,14 @@ function forward_substitution(A, b)
     return x
 end
 \end{verbatim}
-Questo metodo è stato implementato poiché nel metodo di risoluzione di Gauß-Seidel,
-per cui la regola di aggiornamento è la seguente:
+L'implementazione del metodo è risultata necessaria dal momento che viene
+utilizzato dal metodo di risoluzione di Gauß-Seidel, per cui la regola di
+aggiornamento è la seguente:
 \begin{equation}
     x^{(k+1)} = x^{(k)} + P^{-1}(b - Ax^{(k)})
 \end{equation}
-con $P$ è una matrice triangolare inferiore, prevede il calcolo di una matrice
-inversa. Dato che tale operazione è computazionalmente costosa, possiamo evitare
-di calcolare la matrice inversa e al suo posto risolvere il seguente sistema
+dove $P$ è una matrice triangolare inferiore. Dato che in Gauß-Seidel si richiede
+di calcolare $P^{-1}$, per semplificare il tale conto si risolve il seguente sistema
 lineare:
 \begin{equation}
     Py = b - Ax^{(k)}
@@ -96,25 +95,21 @@ Nel modulo \textbf{IterativeMethods} sono presenti i metodi iterativi per la
 risoluzione di sistemi lineari. In particolare, sono stati implementati i seguenti
 metodi:
 \begin{itemize}
-    \item \textbf{Jacobi}: metodo di Jacobi per la risoluzione di sistemi lineari.
-    \item \textbf{GaussSeidel}: metodo di Gauß-Seidel per la risoluzione di
-          sistemi lineari.
-    \item \textbf{Gradient}: metodo del gradiente per la risoluzione di sistemi
-          lineari.
-    \item \textbf{ConjugateGradient}: metodo del gradiente coniugato per la
-          risoluzione di sistemi lineari.
+    \item \textbf{Jacobi}
+    \item \textbf{GaussSeidel}
+    \item \textbf{Gradient}
+    \item \textbf{ConjugateGradient}
 \end{itemize}
 
 Tutti i metodi implementati utilizzano come criterio di arresto il confronto del
-residuo riscalato, calcolato come:
+residuo riscalato che viene calcolato come:
 \begin{equation}
     \frac{\|b - Ax^{(k)}\|}{\|b\|}
 \end{equation}
 dove $x^{(k)}$ è la soluzione al passo $k$ e $b$ è il vettore dei termini noti.
 La tolleranza per questo confronto è un valore fornito dall'utente.
-
 Inoltre, per evitare cicli infiniti, è possibile specificare un numero massimo
-di iterazioni. Il valore predefinito è fissato a 20000 iterazioni.
+di iterazioni che, per default, è fissato a 20000 iterazioni.
 
 La libreria è stata progettata a partire dalla definizione di una funzione generica
 \textbf{GenericIterativeMethod}, la quale prende in input la matrice $A$, il
@@ -144,24 +139,23 @@ end
 
 Per ciascun metodo iterativo richiesto, è stato definito un metodo specifico che
 implementa la regola di aggiornamento della soluzione. Questo metodo restituisce
-la soluzione aggiornata al passo $k+1$ e, dato che il criterio di arresto è basato
-sul residuo riscalato, tutti i metodi richiedono il calcolo del residuo. Pertanto,
-è stato deciso di restituire anche il residuo calcolato, per evitare di ricalcolarlo
-ogni volta. La logica di aggiornamento della soluzione sfrutta le funzioni per
-la manipolazione di matrici e vettori fornite dalla libreria \textbf{LinearAlgebra}.
+la soluzione aggiornata al passo $k+1$ e il residuo, dato che il criterio di 
+arresto è basato su quest'ultimo e che tutti i metodi ne richiedono il calcolo. 
+Si evita di ricalcolarlo ogni volta, riducendo il numero di operazioni ridondanti.
+La logica di aggiornamento della soluzione sfrutta le funzioni per la manipolazione 
+di matrici e vettori fornite dalla libreria \textbf{LinearAlgebra}.
 
-In aggiunta, la libreria contiene metodi di interfaccia che richiamano direttamente
-la funzione generica, passando il metodo di aggiornamento corrispondente al metodo
-iterativo richiesto.
+In aggiunta, la libreria sviluppata contiene metodi di interfaccia che richiamano 
+direttamente la funzione generica, passando il metodo di aggiornamento corrispondente 
+al metodo iterativo richiesto.
 
 Di seguito sono presentate le implementazioni dei metodi iterativi richiesti.
-
 \subsubsection{Metodo di Jacobi}
 Per il metodo di Jacobi, la regola di aggiornamento della soluzione è la seguente:
 \begin{equation}
     x^{(k+1)} = x^{(k)} + P^{-1}(b - Ax^{(k)})
 \end{equation}
-In questo caso, il calcolo della matrice inversa $P^{-1}$ è efficiente poiché $P$
+In questo caso, il calcolo della matrice inversa $P^{-1}$ è ``leggero" poiché $P$
 è una matrice diagonale; di conseguenza, basta calcolare il reciproco degli
 elementi sulla diagonale.
 
@@ -169,16 +163,12 @@ Durante la definizione di questo metodo, è stata prevista l'implementazione dei
 metodi \textbf{JOR} e \textbf{Richardson}, introducendo i parametri $\omega$ e
 $\alpha$, con i relativi controlli per verificarne la presenza e gli intervalli
 di valori ammissibili.
-
 \subsubsection{Metodo di Gauß-Seidel}
 Per il metodo di Gauß-Seidel, la regola di aggiornamento della soluzione è la seguente:
 \begin{equation}
     x^{(k+1)} = x^{(k)} + y
 \end{equation}
 dove $y$ è il vettore ottenuto risolvendo il sistema lineare $Py = b - Ax^{(k)}$.
-Questo è possibile poiché la matrice $P$ è una matrice triangolare inferiore,
-quindi possiamo utilizzare il metodo della sostituzione in avanti per risolvere
-il sistema lineare, evitando il calcolo della matrice inversa.
 
 Anche per questo metodo è stata prevista l'implementazione dei metodi \textbf{SOR}
 e \textbf{Richardson}, introducendo i parametri $\omega$ e $\alpha$, con i relativi
@@ -215,16 +205,16 @@ dove $\beta$ è il fattore di scala calcolato come:
 \begin{equation}
     \beta_k = \frac{\langle d^{(k)T}, (Ar^{(k + 1)})\rangle}{\langle d^{(k)T}, (Ad^{(k)})\rangle}
 \end{equation}
-con $\langle \cdot, \cdot \rangle$ è il prodotto scalare tra due vettori.
+dove $\langle \cdot, \cdot \rangle$ è il prodotto scalare tra due vettori.
 
 \section{Risultati sperimentali}
-Implementati i metodi, si è proceduto con la valutazione delle prestazioni di
-ciascuno di essi. In particolare, sono stati eseguiti degli esperimenti sulle
-matrici precedentemente descritte, utilizzando come vettore dei termini noti il
-risultato della moltiplicazione tra la matrice e un vettore di 1 di dimensione
-pari al numero di righe della matrice. Oltre a questo, i metodi sono stati testati
-al variare della tolleranza, utilizzando i valori $1e^{-5}$, $1e^{-7}$, $1e^{-9}$
-e $1e^{-11}$.
+Implementati i metodi, si è proceduto alla valutazione delle loro prestazioni.
+In particolare, sono stati condotti esperimenti sulle matrici descritte nella
+sezione \ref{sec:intro}, utilizzando come vettore dei termini noti il risultato
+della moltiplicazione tra la matrice di input e un vettore di dimensione pari al
+numero di righe della matrice\st{,} composto esclusivamente da elementi pari a 1.
+Inoltre, i metodi sono stati testati variando la tolleranza, con i valori $1e^{-5}$,
+$1e^{-7}$, $1e^{-9}$ e $1e^{-11}$.
 
 Per quanto riguarda le misurazioni dei tempi di esecuzione e l'occupazione di
 memoria, sono state utilizzate la funzione \textbf{time}, invocata prima e dopo
@@ -238,120 +228,285 @@ realizzati grafici che mostrano i tempi di esecuzione e l'occupazione di memoria
 in funzione della tolleranza per ciascuna matrice, consentendo un confronto tra
 i diversi metodi.
 
-Nei grafici l'andamento dei metodi è stato rappresentato attraverso la media delle
-esecuzione e un'ombra che rappresenta la deviazione standard delle misurazioni.
+Nei grafici presentati, l'andamento dei metodi è rappresentato tramite la media
+delle esecuzioni effettuate. Inoltre, per fornire una metrica di confronto, è
+stato riportato l'andamento teorico, calcolato come $O(n^2)$, dove $n$ è la
+dimensione della matrice, moltiplicato per il numero di iterazioni effettuate.
+
+Tutti i grafici utilizzano una scala logaritmica sia per l'asse delle ordinate
+che per l'asse delle ascisse. Questa scelta è stata adottata per migliorare la
+visualizzazione dei dati, data la grande differenza tra i valori ottenuti.
 
 Iniziamo analizzando i risultati ottenuti per il tempo di esecuzione dei metodi
 sono riportati nelle figure \ref{fig:time_spa1}, \ref{fig:time_spa2}, \ref{fig:time_vem1}
 e \ref{fig:time_vem2}.
-% \begin{figure}[!ht]
-%     \centering
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/error_spa1.png}
-%         \caption{Matrice spa1}
-%         \label{fig:time_spa1}
-%     \end{subfigure}
-%     \hfill
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/error_spa1.png}
-%         \caption{Matrice spa2}
-%         \label{fig:time_spa2}
-%     \end{subfigure}
-%     \hfill
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/error_spa1.png}
-%         \caption{Matrice vem1}
-%         \label{fig:time_vem1}
-%     \end{subfigure}
-%     \hfill
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/error_spa1.png}
-%         \caption{Matrice vem2}
-%         \label{fig:time_vem2}
-%     \end{subfigure}
-%     \caption{Tempi di esecuzione dei metodi iterativi}
-%     \label{fig:time}
-% \end{figure}
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/time_spa1.png}
+        \caption{Matrice spa1}
+        \label{fig:time_spa1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/time_spa2.png}
+        \caption{Matrice spa2}
+        \label{fig:time_spa2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/time_vem1.png}
+        \caption{Matrice vem1}
+        \label{fig:time_vem1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/time_vem2.png}
+        \caption{Matrice vem2}
+        \label{fig:time_vem2}
+    \end{subfigure}
+    \caption{Tempi di esecuzione dei metodi iterativi}
+    \label{fig:time}
+\end{figure}
 
-In questi grafici, possiamo notare che il metodo di Gauß-Seidel risulta essere
-il più lento per le matrici vem1 e vem2, mentre per le matrici spa1 e spa2
-il metodo che richiede più tempo è il metodo del gradiente.
+In questi grafici, si può osservare che per tutte le implementazioni il tempo di
+esecuzione aumenta man mano che la tolleranza si avvicina allo zero. Questo
+comportamento è prevedibile, poiché il numero di iterazioni necessarie per
+raggiungere la tolleranza aumenta, come evidenziato nella tabella \ref{tab:iterazioni}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{subtable}[!ht]{1\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \textbf{matrice}    & \textbf{spa1}     & \textbf{spa1}     & \textbf{spa1} & \textbf{spa1} & \textbf{spa2}     & \textbf{spa2}     & \textbf{spa2} & \textbf{spa2} \\ \hline
+                \textbf{metodo}     & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  \\
+                \textbf{tolleranza} & ~                 & ~                 & ~             & ~             & ~                 & ~                 & ~             & ~             \\
+                \textbf{1e-05}      & 99                & 14                & 1332          & 149           & 90                & 8                 & 664           & 48            \\
+                \textbf{1e-07}      & 147               & 21                & 5896          & 215           & 168               & 11                & 3508          & 68            \\
+                \textbf{1e-09}      & 188               & 29                & 10576         & 281           & 220               & 15                & 6682          & 89            \\
+                \textbf{1e-11}      & 211               & 36                & 15264         & 347           & 270               & 18                & 9894          & 110           \\
+            \end{tabular}}
+        \caption{Spa 1 e Spa 2}
+        \label{tab:spa}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[!ht]{1\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \textbf{matrice}    & \textbf{vem1}     & \textbf{vem1}     & \textbf{vem1} & \textbf{vem1} & \textbf{vem2}     & \textbf{vem2}     & \textbf{vem2} & \textbf{vem2} \\ \hline
+                \textbf{metodo}     & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  \\
+                \textbf{tolleranza} & ~                 & ~                 & ~             & ~             & ~                 & ~                 & ~             & ~             \\
+                \textbf{1e-05}      & 42                & 940               & 1253          & 1875          & 52                & 1403              & 1873          & 2803          \\
+                \textbf{1e-07}      & 49                & 1499              & 1975          & 2994          & 60                & 2278              & 3003          & 4552          \\
+                \textbf{1e-09}      & 56                & 2059              & 2697          & 4113          & 70                & 3153              & 4131          & 6300          \\
+                \textbf{1e-11}      & 62                & 2619              & 3421          & 5232          & 77                & 4027              & 5261          & 8049          \\
+            \end{tabular}}
+        \caption{Vem 1 e Vem 2}
+        \label{tab:vem}
+    \end{subtable}
+    \caption{Iterazioni}
+    \label{tab:iterazioni}
+\end{table}
+Inoltre, si nota che tutti i metodi tendono ad avere un andamento simile a quello
+teorico.
+
+Confrontando i vari metodi iterativi, il metodo di Gauß-Seidel risulta essere il
+più lento per le matrici vem1 e vem2, nonostante il numero di iterazioni sia
+inferiore rispetto ad altri metodi, come si può vedere nella tabella \ref{tab:iterazioni}.
+Invece, per le matrici spa1 e spa2, il metodo che richiede più tempo è il metodo
+del gradiente. Questo comportamento può essere attribuito al fatto che la convergenza 
+del metodo presenta un andamento a zig-zag. A supporto di questa ipotesi, si 
+osserva che il numero di condizionamento delle matrici spa1 e spa2 è molto elevato, 
+pari rispettivamente a 2048 e 1411. Pertanto, è plausibile che la combinazione 
+di un numero di condizionamento elevato e il punto di partenza scelto per il 
+metodo, ovvero il vettore nullo, conduca a un andamento a zig-zag nella convergenza.
+
+\begin{table}[!ht]
+    \centering
+    \begin{subtable}[!ht]{1\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \textbf{matrice}    & \textbf{spa1}     & \textbf{spa1}     & \textbf{spa1} & \textbf{spa1} & \textbf{spa2}     & \textbf{spa2}     & \textbf{spa2} & \textbf{spa2} \\ \hline
+                \textbf{metodo}     & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  \\
+                \textbf{tolleranza} & ~                 & ~                 & ~             & ~             & ~                 & ~                 & ~             & ~             \\
+                \textbf{1e-05}      & 0.0488            & 0.2493            & 0.2652        & 0.0628        & 0.4021            & 1.4554            & 1.4882        & 0.0625        \\
+                \textbf{1e-07}      & 0.0563            & 0.324             & 1.1214        & 0.0184        & 0.7542            & 2.0081            & 7.8689        & 0.0822        \\
+                \textbf{1e-09}      & 0.0745            & 0.4407            & 1.999         & 0.0326        & 0.982             & 2.7038            & 14.9152       & 0.1058        \\
+                \textbf{1e-11}      & 0.0792            & 0.5475            & 2.8326        & 0.0359        & 1.2048            & 3.1593            & 22.1536       & 0.1311        \\
+            \end{tabular}}
+        \caption{Spa 1 e Spa 2}
+        \label{tab:spa_time}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[!ht]{1\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \textbf{matrice}    & \textbf{vem1}     & \textbf{vem1}     & \textbf{vem1} & \textbf{vem1} & \textbf{vem2}     & \textbf{vem2}     & \textbf{vem2} & \textbf{vem2} \\ \hline
+                \textbf{metodo}     & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  \\
+                \textbf{tolleranza} & ~                 & ~                 & ~             & ~             & ~                 & ~                 & ~             & ~             \\
+                \textbf{1e-05}      & 0.0018            & 4.7499            & 0.0324        & 0.0516        & 0.0051            & 16.681            & 0.0732        & 0.179         \\
+                \textbf{1e-07}      & 0.0033            & 7.5831            & 0.0429        & 0.0707        & 0.0058            & 28.2671           & 0.1472        & 0.1964        \\
+                \textbf{1e-09}      & 0.0023            & 10.3372           & 0.0594        & 0.0887        & 0.0053            & 45.1294           & 0.1924        & 0.337         \\
+                \textbf{1e-11}      & 0.0042            & 13.1797           & 0.0773        & 0.1099        & 0.0076            & 59.9347           & 0.2712        & 0.4434        \\
+            \end{tabular}}
+        \caption{Vem 1 e Vem 2}
+        \label{tab:vem_time}
+    \end{subtable}
+    \caption{Tempo medio di 10 esecuzioni}
+    \label{tab:times}
+\end{table}
 
 Per quanto riguarda l'occupazione di memoria, i risultati ottenuti sono riportati
 nelle figure \ref{fig:mem_spa1}, \ref{fig:mem_spa2}, \ref{fig:mem_vem1} e \ref{fig:mem_vem2}.
 
-% \begin{figure}[!ht]
-%     \centering
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/mem_spa1.png}
-%         \caption{Matrice spa1}
-%         \label{fig:mem_spa1}
-%     \end{subfigure}
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/mem_spa2.png}
-%         \caption{Matrice spa2}
-%         \label{fig:mem_spa2}
-%     \end{subfigure}
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/mem_vem1.png}
-%         \caption{Matrice vem1}
-%         \label{fig:mem_vem1}
-%     \end{subfigure}
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/mem_vem2.png}
-%         \caption{Matrice vem2}
-%         \label{fig:mem_vem2}
-%     \end{subfigure}
-%     \caption{Memoria occupata dei metodi iterativi}
-%     \label{fig:memory}
-% \end{figure}
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/mem_spa1.png}
+        \caption{Matrice spa1}
+        \label{fig:mem_spa1}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/mem_spa2.png}
+        \caption{Matrice spa2}
+        \label{fig:mem_spa2}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/mem_vem1.png}
+        \caption{Matrice vem1}
+        \label{fig:mem_vem1}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/mem_vem2.png}
+        \caption{Matrice vem2}
+        \label{fig:mem_vem2}
+    \end{subfigure}
+    \caption{Memoria occupata dei metodi iterativi}
+    \label{fig:memory}
+\end{figure}
 
-In questi grafici, possiamo notare che il metodo di Gauß-Seidel risulta essere....
+In questi grafici, possiamo notare lo spazio richiesto dai vari metodi cresce
+all'aumentare del numero di iterazioni richieste per la convergenza. In generale
+il metodo del gradiente coniugato richiede meno memoria rispetto agli altri metodi.
 
 
 Infine, presentiamo i grafici che illustrano la variazione dell'errore medio in
 funzione della tolleranza per ciascuna matrice, come mostrato nelle figure \ref{fig:error_spa1},
 \ref{fig:error_spa2}, \ref{fig:error_vem1} e \ref{fig:error_vem2}.
 
-% \begin{figure}[!ht]
-%     \centering
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/error_spa1.png}
-%         \caption{Matrice spa1}
-%         \label{fig:error_spa1}
-%     \end{subfigure}
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/error_spa2.png}
-%         \caption{Matrice spa2}
-%         \label{fig:error_spa2}
-%     \end{subfigure}
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/error_vem1.png}
-%         \caption{Matrice vem1}
-%         \label{fig:error_vem1}
-%     \end{subfigure}
-%     \begin{subfigure}{0.45\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{./img/error_vem2.png}
-%         \caption{Matrice vem2}
-%         \label{fig:error_vem2}
-%     \end{subfigure}
-%     \caption{Errore dei metodi iterativi}
-%     \label{fig:error}
-% \end{figure}
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/error_spa1.png}
+        \caption{Matrice spa1}
+        \label{fig:error_spa1}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/error_spa2.png}
+        \caption{Matrice spa2}
+        \label{fig:error_spa2}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/error_vem1.png}
+        \caption{Matrice vem1}
+        \label{fig:error_vem1}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./../report/Progetto_1_bis/img/error_vem2.png}
+        \caption{Matrice vem2}
+        \label{fig:error_vem2}
+    \end{subfigure}
+    \caption{Errore dei metodi iterativi}
+    \label{fig:error}
+\end{figure}
 
 In questi grafici possiamo osservare un andamento che decresce più la tolleranza
 si avvicina a zero. Questo è legato al fatto che tutti i metodi implementati
 convergono prima di raggiungere il numero di iterazioni massimo (20000). Inoltre,
 non si riesce a notare una differenza significativa tra i metodi implementati.
+
+\begin{table}[!ht]
+    \centering
+    \begin{subtable}[!ht]{1\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \textbf{matrice}    & \textbf{spa1}     & \textbf{spa1}     & \textbf{spa1} & \textbf{spa1} & \textbf{spa2}     & \textbf{spa2}     & \textbf{spa2} & \textbf{spa2} \\ \hline
+                \textbf{metodo}     & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  \\
+                \textbf{tolleranza} & ~                 & ~                 & ~             & ~             & ~                 & ~                 & ~             & ~             \\
+                \textbf{1e-05}      & 4.056             & 43.1635           & 32.5122       & 7.4428        & 10.918            & 230.6839          & 48.0          & 7.4304        \\
+                \textbf{1e-07}      & 6.0068            & 63.624            & 143.8008      & 10.6615       & 20.2967           & 309.7817          & 253.1776      & 10.3162       \\
+                \textbf{1e-09}      & 7.673             & 87.0074           & 257.9179      & 13.8802       & 26.5492           & 415.2454          & 482.1626      & 13.3462       \\
+                \textbf{1e-11}      & 8.6077            & 107.4679          & 372.2301      & 17.0989       & 32.5612           & 494.3431          & 713.8892      & 16.3763       \\
+            \end{tabular}
+        }
+        \caption{Spa 1 e Spa 2}
+        \label{tab:spa_mem}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[!ht]{1\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \textbf{matrice}    & \textbf{vem1}     & \textbf{vem1}     & \textbf{vem1} & \textbf{vem1} & \textbf{vem2}     & \textbf{vem2}     & \textbf{vem2} & \textbf{vem2} \\ \hline
+                \textbf{metodo}     & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  \\
+                \textbf{tolleranza} & ~                 & ~                 & ~             & ~             & ~                 & ~                 & ~             & ~             \\
+                \textbf{1e-05}      & 2.9174            & 481.4093          & 51.2975       & 153.6327      & 5.5209            & 1110.2653         & 117.5884      & 352.1476      \\
+                \textbf{1e-07}      & 3.3945            & 767.5458          & 80.8244       & 245.1579      & 6.3574            & 1802.4533         & 188.4801      & 571.5982      \\
+                \textbf{1e-09}      & 3.8716            & 1054.1941         & 110.3513      & 336.6832      & 7.403             & 2494.6413         & 259.2463      & 790.9232      \\
+                \textbf{1e-11}      & 4.2806            & 1340.8424         & 139.96        & 428.2084      & 8.1349            & 3186.0382         & 330.138       & 1010.3737     \\
+            \end{tabular}
+        }
+        \caption{Vem 1 e Vem 2}
+        \label{tab:vem_mem}
+    \end{subtable}
+    \caption{Memoria utilizzata in MB}
+    \label{tab:memory}
+\end{table}
+
+
+\begin{table}[!ht]
+    \centering
+    \begin{subtable}[!ht]{1\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \textbf{matrice}    & \textbf{spa1}     & \textbf{spa1}     & \textbf{spa1} & \textbf{spa1} & \textbf{spa2}     & \textbf{spa2}     & \textbf{spa2} & \textbf{spa2} \\ \hline
+                \textbf{metodo}     & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  \\
+                \textbf{tolleranza} & ~                 & ~                 & ~             & ~             & ~                 & ~                 & ~             & ~             \\
+                \textbf{1e-05}      & 9.348493e-06      & 3.565424e-06      & 1.0781389e-05 & 8.906615e-06  & 9.819377e-06      & 7.84728e-07       & 1.0782452e-05 & 6.639894e-06  \\
+                \textbf{1e-07}      & 8.9837e-08        & 4.6975e-08        & 1.07936e-07   & 9.0406e-08    & 9.9676e-08        & 1.5783e-08        & 1.08016e-07   & 7.8238e-08    \\
+                \textbf{1e-09}      & 9.53e-10          & 3.33e-10          & 1.08e-09      & 9.18e-10      & 9e-10             & 8.5e-11           & 1.082e-09     & 7.38e-10      \\
+                \textbf{1e-11}      & 9e-12             & 4e-12             & 1.1e-11       & 9e-12         & 9e-12             & 2e-12             & 1.1e-11       & 7e-12         \\
+            \end{tabular}}
+        \caption{Spa 1 e Spa 2}
+        \label{tab:spa_error}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[!ht]{1\textwidth}
+        \centering
+        \resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \textbf{matrice}    & \textbf{vem1}     & \textbf{vem1}     & \textbf{vem1} & \textbf{vem1} & \textbf{vem2}     & \textbf{vem2}     & \textbf{vem2} & \textbf{vem2} \\ \hline
+                \textbf{metodo}     & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  & ConjugateGradient & GaussSeidelMethod & Gradient      & JacobiMethod  \\
+                \textbf{tolleranza} & ~                 & ~                 & ~             & ~             & ~                 & ~                 & ~             & ~             \\
+                \textbf{1e-05}      & 6.072082e-06      & 9.838476e-06      & 1.177959e-05  & 9.9321e-06    & 7.097885e-06      & 9.943094e-06      & 1.1934282e-05 & 9.951332e-06  \\
+                \textbf{1e-07}      & 6.889e-08         & 9.8938e-08        & 1.18396e-07   & 9.9312e-08    & 9.1069e-08        & 9.9241e-08        & 1.18853e-07   & 9.9485e-08    \\
+                \textbf{1e-09}      & 9.64e-10          & 9.87e-10          & 1.192e-09     & 9.93e-10      & 9.49e-10          & 9.91e-10          & 1.195e-09     & 9.97e-10      \\
+                \textbf{1e-11}      & 4e-12             & 1e-11             & 1.2e-11       & 1e-11         & 6e-12             & 1e-11             & 1.2e-11       & 1e-11         \\
+            \end{tabular}}
+        \caption{Vem 1 e Vem 2}
+        \label{tab:vem_error}
+    \end{subtable}
+    \caption{Errore medio dei metodi iterativi}
+    \label{tab:erors}
+\end{table}

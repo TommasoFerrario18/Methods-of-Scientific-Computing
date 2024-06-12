@@ -2,27 +2,29 @@
 
 \section{Introduzione}
 Per la realizzazione della compressione di immagini, è stato scelto di utilizzare
-\href{https://julialang.org/}{\textbf{Julia}}, un linguaggio di programmazione open-source,
-sviluppato per ottenere prestazioni elevate e con una sintassi ad alto livello simile
-a quella di Python e MATLAB. Essendo concepito per la manipolazione efficace del
-calcolo scientifico, offre una vasta gamma di librerie per la gestione di matrici,
-vettori e le loro trasformazioni.
+\href{https://julialang.org/}{\textbf{Julia}}, per i medesimi motivi del progetto 
+precedente.
 
 In questo progetto è stata implementata l'equazione della discrete cosine transform $2$ (DCT2).
 La sua implementazione è stata realizzata applicando sequenzialmente sulla matrice
-la discrete cosine transform $1$ (DCT) \textcolor{blue}{prima} per righe e poi
-per colonne. \st{In questo modo è stato possibile riutilizzare più efficacemente il
-    codice senza introdurre code smells}. % Dubito che sappiano cosa siano gli smell codes
-\textcolor{blue}{In questo modo, è stata aumentata la riutilizzabilità del codice
-    e ridotto il rischio di introdurre errori.}
+la discrete cosine transform $1$ (DCT) prima per righe e poi
+per colonne. In questo modo, è stata aumentata la riutilizzabilità del codice
+e ridotto il rischio di introdurre errori.
 
-\textcolor{blue}{Per effettuare il confronto è stata utilizzata la libreria Julia}
-\st{La libreria della FFT di Julia utilizzata è} \href{https://github.com/JuliaMath/FFTW.jl}{FTTW}
-che implementa un binding con la libreria di C, entrambe le librerie sono open source.
+In particolare per lo sviluppo sono state utilizzate le librerie:
+\begin{itemize}
+    \item \textbf{LinearAlgebra}
+    \item \textbf{FileIO}: fornisce funzioni per la lettura e scrittura di file.
+    \item \textbf{Images}: fornisce funzioni per la trattazione di immagini.
+    \item \textbf{\href{https://github.com/JuliaMath/FFTW.jl}{FTTW}}: fornisce funzioni che implementano la FTT.
+\end{itemize} 
+
+Tutte le librerie sono open source, più precisamente FTTW implementa un binding 
+con la libreria di C.
 
 \section{DCT2 custom}
-Come \textcolor{blue}{detto} \st{preannunciato} in precedenza, è stato necessario concentrarsi solo in una implementazione
-efficiente della DCT, la \textcolor{blue}{cui} sua formula è stata riportata nell'equazione \ref{eq:dct}.
+Per prima cosa è stata implementata DCT1, 
+la cui sua formula è stata riportata nell'equazione \ref{eq:dct}.
 
 \begin{equation}
     X_k = \begin{cases}
@@ -32,31 +34,24 @@ efficiente della DCT, la \textcolor{blue}{cui} sua formula è stata riportata ne
     \label{eq:dct}
 \end{equation}
 
-Per prima cosa \textcolor{blue}{si} è \st{stato} pensato di utilizzare un approccio basato su operazioni
-tra vettori e matrice, più precisamente \textcolor{blue}{si} è \st{stato} pensato di pre-calcolare la matrice
+Per l'implementazione, si è pensato di utilizzare un approccio basato su operazioni
+tra vettori e matrici, più precisamente si pre-calcola la matrice
 della base dei coseni (per righe) prima di effettuare il calcolo dei coefficienti.
-Successivamente si effettua un prodotto matrice-\textcolor{green}{vettore} per ottenere il vettore
-dei coefficienti, infine \textcolor{blue}{si è} applica la normalizzazione su di essi.
+Successivamente si effettua un prodotto matrice-vettore per ottenere il vettore
+dei coefficienti, infine si normalizza il vettore dei coefficienti.
 
-Dato un generico vettore $X_k$, per applicare la dct si effettua:
+Dato un generico vettore $X_k$, per applicare la DCT si effettua:
 \begin{equation*}
     dct(X_k) = norm(B_{\cos}\cdot X_k )
 \end{equation*}
-\textcolor{blue}{dove $\cdot$ rappresenta il prodotto matrice-vettore, $B_{\cos}$
-    è la base dei coseni creata per riga e $X_k$ è il vettore colonna iniziale.
-    I coefficienti così ottenuti vengono normalizzati nel seguente modo:
-    \begin{itemize}
-        \item Il primo coefficiente viene moltiplicato per $\sqrt{\frac{1}{N}}$
-        \item I restanti vengono moltiplicati per $\sqrt{\frac{2}{N}}$
-    \end{itemize}
-}
 
-\st{Dove $\cdot$ è il prodotto vettore matrice e $B_{\cos}$ è la base dei coseni creata
-    per riga, mentre $X_k$ è il vettore colonna iniziale. La funzione di normalizzazione
-    normalizza i coefficienti del vettore risultante nel seguente modo, normalizza
-    per $\sqrt{\frac{1}{N}}$ il primo coefficiente, mentre gli altri li normalizza
-    per $\sqrt{\frac{2}{N}}$.
-}% ! Non ho capito, normalizza per caso?
+dove $\cdot$ rappresenta il prodotto matrice-vettore, $B_{\cos}$
+è la base dei coseni creata per riga e $X_k$ è il vettore colonna iniziale.
+I coefficienti così ottenuti vengono normalizzati nel seguente modo:
+\begin{itemize}
+    \item Il primo coefficiente viene moltiplicato per $\sqrt{\frac{1}{N}}$
+    \item I restanti vengono moltiplicati per $\sqrt{\frac{2}{N}}$
+\end{itemize}
 
 L'implementazione della DCT2 si articola nel seguente modo:
 \begin{itemize}
@@ -64,23 +59,25 @@ L'implementazione della DCT2 si articola nel seguente modo:
     \item si applica inplace la DCT1 per righe
     \item si applica inplace la DCT1 per colonne
 \end{itemize}
-\textcolor{blue}{Utilizzando questa strategia si riesce ad ottenere dei tempi di esecuzione}
-\st{In questo modo si riescono ad ottenere dei tempi} comparabili alla DCT2 implementata
-dalla libreria usando la FFT.
+
+Utilizzando questa strategia si riesce ad ottenere dei tempi di esecuzione
+comparabili alla DCT2 implementata dalla libreria usando la FFT.
+
+Il codice della DCT è all'interno del file \textbf{Dct2.jl}, mentre il codice dei 
+test della dct e il codice per generare il grafico di complessità è nella catella
+\textbf{test\_dct.jl}.
+
 
 \subsection{Studio di complessità}
-L'algoritmo custom che è stato sviluppato ha dei tempi di esecuzione comparabili
-con la libreria.
 
-La complessità della DCT2 custom è la seguente:
+La complessità della DCT2 custom viene analizzata per passi nei seguenti punti:
 \begin{itemize}
-    \item \textbf{generazione della base dei coseni}: \textcolor{blue}{questa operazione} \st{la generazione} richiede
+    \item \textbf{generazione della base dei coseni}: questa operazione richiede
           un numero costante di operazioni tra scalari e un calcolo del coseno per ogni
-          entry della matrice. \textcolor{blue}{Avremo quindi}\st{Questo richiede} un totale $\mathcal{O}(N^2)$ per generare
+          entry della matrice. Avremo quindi un totale $\mathcal{O}(N^2)$ per generare
           la matrice, quando $N\times N$ è la dimensione della matrice (dimensione dello
           spazio vettoriale per numero di coefficienti).
-    \item \textbf{applicazione della DCT1 su un vettore}: \st{l'applicazione della DCT1
-              su un generico vettore} richiede di effettuare un prodotto matrice-vettore e
+    \item \textbf{applicazione della DCT1 su un vettore}: richiede di effettuare un prodotto matrice-vettore e
           successivamente di normalizzare i coefficienti. Il prodotto matrice-vettore
           ha una complessità asintotica di $\mathcal{O}(N^2)$, dove $N$ è la dimensione
           del vettore. Mentre per normalizzare i coefficienti si richiede una scansione
@@ -101,14 +98,26 @@ L'implementazione custom della DCT2 è stata confronta anche con quella ottimizz
 dalla libreria usando la FFT e nell'immagine \ref{fig:analisi_complex} si
 può vedere il confronto.
 
-% \begin{figure}[!h]
-%     \centering
-%     \includegraphics[width=0.5\textwidth]{Progetto_2/img/times_plot.png}
-%     \caption{Grafico dei tempi al variare della dimensione della matrice. Le linee
-%         continue rappresentano i dati empirici, le linee tratteggiate rappresentano
-%         l'andamento teorico dei metodi.}
-%     \label{fig:analisi_complex}
-% \end{figure}
+Per generare il grafico è stata utilizzata la libreria standard \textbf{Plot} ed 
+è stata utilizzata la macro \textbf{@elapsed} per ottenere i tempi di esecuzione 
+delle funzioni.
+
+Tutti i test sono stati realizzati su una macchina con:
+\begin{itemize}
+    \item Windows $11$
+    \item Ryzen $7$ $4800H$
+    \item $16Gb$ di RAM
+\end{itemize}
+
+\newpage
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Progetto_2/img/times_plot.png}
+    \caption{Grafico dei tempi al variare della dimensione della matrice. Le linee
+        continue rappresentano i dati empirici, le linee tratteggiate rappresentano
+        l'andamento teorico dei metodi.}
+    \label{fig:analisi_complex}
+\end{figure}
 
 Come si può notare dal grafico, l'andamento empirico segue quello teorico, ovvero
 la DCT custom segue $\mathcal{O}(N^3)$, mentre la DCT della libreria segue $\mathcal{O}(N^2\log N)$.
@@ -120,12 +129,11 @@ i coefficienti, quindi si ottiene una complessità spaziale di $\mathcal{O}(N^2)
 Si può ridurre la complessità spaziale effettuando tutte le operazioni inplace.
 
 \section{Compressione}
-\textcolor{blue}{Per facilitare l'uso del software che comprime l'immagine in scala di
-    grigi, si è pensato}
-\st{Per l'implementazione del software che comprime l'immagine in scala di grigi, è stato
-    pensato}, di sviluppare un'interfaccia mediante l'utilizzo di un framework \st{per effettuare
-    data visualizzation}. Il framework scelto è un binding di \href{https://github.com/plotly/dash}{Dash} per Julia. Dash
-è un framework di Python per data visualizzation interamente open source.
+Per facilitare l'uso del software che comprime l'immagine in scala di grigi, si è pensato
+di sviluppare un'interfaccia mediante l'utilizzo di un framework open source 
+chiamato \href{https://github.com/plotly/dash}{Dash}.
+Il quale è un binding in Julia della sua controparte in Python, generalmente utilizzato 
+per data visualizzation.
 
 \subsection{Implementazione dell'interfaccia}
 L'interfaccia consiste in una pagina web che chiede in input l'immagine da comprimere
@@ -134,11 +142,17 @@ e i parametri di compressione ($f$ e $d$), in output restituisce il l'immagine c
 Nell'interfaccia vengono mostrate entrambe le immagini, sia quella di input sia quella
 compressa, in modo da confrontare la qualità delle immagini.
 
+Il sorgente dell'interfaccia è contenuto all'interno del file \textbf{gui.jl}.
+
+Una volta che il server web è in esecuzione, per accedere all'interfaccia basta 
+digitare sul browser il seguente link: \href{http://localhost:8050}{http://localhost:8050}.
+
 \subsection{Implementazione della compressione}
 Dopo l'implementazione della GUI che si occupa di prendere in input l'immagine e
 i due parametri, è stato sviluppato l'algoritmo di compressione dell'immagine.
+L'algoritmo è all'interno del file \textbf{Dct2.jl} sotto la funzione \textbf{ApplyDct2OnImage}.
 
-L'implementazione della compressione si è articolata nel seguente modo:
+L'implementazione della compressione si articola nei seguenti passi:
 \begin{itemize}
     \item \textbf{ridimensionamento dell'immagine in input}: l'immagine è stata
           ridimensionata in modo tale da avere altezza e larghezza multiple del
@@ -146,7 +160,7 @@ L'implementazione della compressione si è articolata nel seguente modo:
     \item \textbf{implementazione della compressione}: la compressione è stata
           implementata applicando sui sotto-quadrati $f\times f$ dell'immagine
           la DCT2 della libreria, successivamente sono state azzerate le entry
-          $M[k,l]$ tali che $k+l\ge d$, infine si applica IDCT2 della libreria e
+          $M_{k,l}$ tali che $k+l\ge d$, infine si applica IDCT2 della libreria e
           si normalizzano i valori.
     \item \textbf{visualizzazione output}: infine viene visualizzato l'output
           messo a confronto con l'input.
@@ -158,10 +172,10 @@ multiple di $f$.
 
 Mentre, l'\textbf{implementazione della compressione} si articola nell'allocazione
 di una matrice di appoggio $C\in \mathbb{R}^{f\times f}$ che viene inizializzata
-con una sotto matrice $f\times f$ dell'immagine che si vuole elaborare. Successivamente
+con una sotto-matrice $f\times f$ dell'immagine che si vuole elaborare. Successivamente
 si applica la DCT2 della libreria, si azzerano i coefficienti $C_{kl}$ tali che
-$k+1\ge d$, in seguito si applica la IDCT2 della libreria, infine si arrotondano
+$k+l\ge d$, in seguito si applica la IDCT2 della libreria, infine si arrotondano
 all'intero più vicino i coefficienti e si riportano i valori superiori a $255$
-e inferiori a $0$ nell'intervallo $[0,255]$. Infine, si copia la sotto-matrice di
+e inferiori a $0$ rispettivamente ai valori $255$ e $0$. Infine, si copia la sotto-matrice di
 appoggio nell'immagine. Questo passo viene ripetuto in tutta l'immagine suddividendola
 in blocchi $f\times f$ disgiunti.

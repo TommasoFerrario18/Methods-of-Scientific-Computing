@@ -40,8 +40,8 @@ end
 
 function test_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, tollerance::Vector{Float64})::Dict
     results = Dict()
-    methods = [IterativeMethods.JacobiMethod, IterativeMethods.GaussSeidelMethod, IterativeMethods.Gradient, IterativeMethods.ConjugateGradient]
-
+    # methods = [IterativeMethods.JacobiMethod, IterativeMethods.GaussSeidelMethod, IterativeMethods.Gradient, IterativeMethods.ConjugateGradient]
+    methods = [IterativeMethods.GaussSeidelMethod]
     for tol in tollerance
         results["$tol"] = Dict()
         for method in methods
@@ -61,7 +61,7 @@ total_results = Dict()
 for path in path_to_matrix
     A = Utils.read_sparse_matrix(path)
     eig = eigvals(Matrix(A))
-
+    println("Matrix: ", path)
     println("Matrix is symmetric: ", issymmetric(A))
     println("Matrix is positive definite: ", all(eig .> 0))
     println("Condition number: ", maximum(eig) / minimum(eig))
@@ -70,24 +70,24 @@ for path in path_to_matrix
     x = ones(size(A)[1])
     b = A * x
 
-    # total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, x, tol)
+    total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, tol)
 end
 
-# open("./results/results_2.json", "w") do f
-#     JSON.print(f, total_results)
-# end
+open("./results/results_gauss.json", "w") do f
+    JSON.print(f, total_results)
+end
 
-A = Utils.read_sparse_matrix("./data/vem1.mtx")
-xe = ones(size(A)[1])
-b = A * xe
-x = zeros(size(b))
-println("GaussSeidelMethod")
-start = time()
-gauss_seidel!(x, A::SparseMatrixCSC, b; maxiter=10)
-println(time() - start, "\nGaussSeidelMethod")
-start = time()
-my_x, k = IterativeMethods.GenericIterativeMethod(A, b, zeros(size(b)), 1e-100, UInt16.(10), IterativeMethods.GaussSeidelMethod, 1.0, 1.0)
-println(time() - start)
+# A = Utils.read_sparse_matrix("./data/vem1.mtx")
+# xe = ones(size(A)[1])
+# b = A * xe
+# x = zeros(size(b))
+# println("GaussSeidelMethod")
+# start = time()
+# gauss_seidel!(x, A::SparseMatrixCSC, b; maxiter=10)
+# println(time() - start, "\nGaussSeidelMethod")
+# start = time()
+# my_x, k = IterativeMethods.GenericIterativeMethod(A, b, zeros(size(b)), 1e-100, UInt16.(10), IterativeMethods.GaussSeidelMethod, 1.0, 1.0)
+# println(time() - start)
 
-println("My x: ", norm(b - A * my_x) / norm(b))
-println("x: ", norm(b - A * x) / norm(b))
+# println("My x: ", norm(b - A * my_x) / norm(b))
+# println("x: ", norm(b - A * x) / norm(b))
