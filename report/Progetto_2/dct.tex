@@ -2,7 +2,7 @@
 
 \section{Introduzione}
 Per la realizzazione della compressione di immagini, è stato scelto di utilizzare
-\href{https://julialang.org/}{\textbf{Julia}}, per i medesimi motivi del progetto 
+\href{https://julialang.org/}{\textbf{Julia}}, per i medesimi motivi del progetto
 precedente.
 
 In questo progetto è stata implementata l'equazione della discrete cosine transform $2$ (DCT2).
@@ -17,13 +17,13 @@ In particolare per lo sviluppo sono state utilizzate le librerie:
     \item \textbf{FileIO}: fornisce funzioni per la lettura e scrittura di file.
     \item \textbf{Images}: fornisce funzioni per la trattazione di immagini.
     \item \textbf{\href{https://github.com/JuliaMath/FFTW.jl}{FTTW}}: fornisce funzioni che implementano la FTT.
-\end{itemize} 
+\end{itemize}
 
-Tutte le librerie sono open source, più precisamente FTTW implementa un binding 
+Tutte le librerie sono open source, più precisamente FTTW implementa un binding
 con la libreria di C.
 
 \section{DCT2 custom}
-Per prima cosa è stata implementata DCT1, 
+Per prima cosa è stata implementata DCT1,
 la cui sua formula è stata riportata nell'equazione \ref{eq:dct}.
 
 \begin{equation}
@@ -63,8 +63,8 @@ L'implementazione della DCT2 si articola nel seguente modo:
 Utilizzando questa strategia si riesce ad ottenere dei tempi di esecuzione
 comparabili alla DCT2 implementata dalla libreria usando la FFT.
 
-Il codice della DCT è all'interno del file \textbf{Dct2.jl}, mentre il codice dei 
-test della dct e il codice per generare il grafico di complessità è nella catella
+Il codice della DCT è all'interno del file \textbf{Dct2.jl}, mentre il codice dei
+test della dct e il codice per generare il grafico di complessità è nella cartella
 \textbf{test\_dct.jl}.
 
 
@@ -98,19 +98,20 @@ L'implementazione custom della DCT2 è stata confronta anche con quella ottimizz
 dalla libreria usando la FFT e nell'immagine \ref{fig:analisi_complex} si
 può vedere il confronto.
 
-Per generare il grafico è stata utilizzata la libreria standard \textbf{Plot} ed 
-è stata utilizzata la macro \textbf{@elapsed} per ottenere i tempi di esecuzione 
+Per generare il grafico è stata utilizzata la libreria standard \textbf{Plot} ed
+è stata utilizzata la macro \textbf{@elapsed} per ottenere i tempi di esecuzione
 delle funzioni.
 
 Tutti i test sono stati realizzati su una macchina con:
 \begin{itemize}
-    \item Windows $11$
-    \item Ryzen $7$ $4800H$
-    \item $16Gb$ di RAM
+    \item Sistema Operativo: Windows $11$
+    \item CPU: Ryzen $7$ $4800H$
+    \item RAM: $16GB$
+    \item Julia: versione 1.10.2
 \end{itemize}
 
 \newpage
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.5\textwidth]{Progetto_2/img/times_plot.png}
     \caption{Grafico dei tempi al variare della dimensione della matrice. Le linee
@@ -129,11 +130,11 @@ i coefficienti, quindi si ottiene una complessità spaziale di $\mathcal{O}(N^2)
 Si può ridurre la complessità spaziale effettuando tutte le operazioni inplace.
 
 \section{Compressione}
-Per facilitare l'uso del software che comprime l'immagine in scala di grigi, si è pensato
-di sviluppare un'interfaccia mediante l'utilizzo di un framework open source 
-chiamato \href{https://github.com/plotly/dash}{Dash}.
-Il quale è un binding in Julia della sua controparte in Python, generalmente utilizzato 
-per data visualizzation.
+Per facilitare l'uso del software che comprime l'immagine in scala di grigi, si
+è pensato di sviluppare un'interfaccia mediante l'utilizzo di un framework open
+source chiamato \href{https://github.com/plotly/dash}{Dash}. Il quale è un binding
+in Julia della sua controparte in Python, generalmente utilizzato per data
+visualizzation.
 
 \subsection{Implementazione dell'interfaccia}
 L'interfaccia consiste in una pagina web che chiede in input l'immagine da comprimere
@@ -144,7 +145,7 @@ compressa, in modo da confrontare la qualità delle immagini.
 
 Il sorgente dell'interfaccia è contenuto all'interno del file \textbf{gui.jl}.
 
-Una volta che il server web è in esecuzione, per accedere all'interfaccia basta 
+Una volta che il server web è in esecuzione, per accedere all'interfaccia basta
 digitare sul browser il seguente link: \href{http://localhost:8050}{http://localhost:8050}.
 
 \subsection{Implementazione della compressione}
@@ -176,6 +177,6 @@ con una sotto-matrice $f\times f$ dell'immagine che si vuole elaborare. Successi
 si applica la DCT2 della libreria, si azzerano i coefficienti $C_{kl}$ tali che
 $k+l\ge d$, in seguito si applica la IDCT2 della libreria, infine si arrotondano
 all'intero più vicino i coefficienti e si riportano i valori superiori a $255$
-e inferiori a $0$ rispettivamente ai valori $255$ e $0$. Infine, si copia la sotto-matrice di
-appoggio nell'immagine. Questo passo viene ripetuto in tutta l'immagine suddividendola
-in blocchi $f\times f$ disgiunti.
+e inferiori a $0$ rispettivamente ai valori $255$ e $0$. Infine, si copia la
+sotto-matrice di appoggio nell'immagine. Questo passo viene ripetuto in tutta
+l'immagine suddividendola in blocchi $f \times f$ disgiunti.
