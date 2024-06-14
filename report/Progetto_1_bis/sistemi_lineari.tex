@@ -117,6 +117,8 @@ La tolleranza per questo confronto è un valore fornito dall'utente.
 Inoltre, per evitare cicli infiniti, è possibile specificare un numero massimo
 di iterazioni che, per default, è fissato a 20000 iterazioni.
 
+Ogni metodo parte dalla soluzione iniziale $x^{(0)}$ composta dal vettore nullo. 
+
 La libreria è stata progettata a partire dalla definizione di una funzione generica
 \textbf{GenericIterativeMethod}, la quale prende in input la matrice $A$, il
 vettore dei termini noti $b$, la tolleranza, il numero massimo di iterazioni, e
@@ -191,6 +193,9 @@ come:
     \alpha = \frac{\langle r^{(k)}, r^{(k)}\rangle}{\langle r^{(k)}, Ar^{(k)}\rangle}
 \end{equation}
 
+dove $\langle \cdot, \cdot \rangle$ è il prodotto scalare e $r^{(k)}$ è la direzione 
+verso la soluzione reale del sistema.
+
 \subsubsection{Metodo del Gradiente Coniugato}
 Questo metodo rappresenta una versione migliorata del metodo del gradiente, in
 cui si evita il problema della convergenza a "zig-zag". La regola di aggiornamento
@@ -202,7 +207,7 @@ dove $\alpha$ è il fattore di scala calcolato come:
 \begin{equation}
     \alpha = \frac{\langle d^{(k)}, r^{(k)}\rangle}{\langle d^{(k)}, Ad^{(k)}\rangle}
 \end{equation}
-e $d^{(k)}$ è la direzione di discesa al passo $k$, calcolata ad ogni iterazione
+e $d^{(k)}$ è la direzione verso la soluzione reale, aggiornata ad ogni iterazione
 con la formula:
 \begin{equation}
     d^{(k)} = r^{(k)} + \beta_{k-1} d^{(k-1)}
@@ -230,14 +235,17 @@ di memoria. Quest'ultima restituisce la quantità di memoria allocata in byte.
 Ogni metodo è stato eseguito 10 volte per ciascuna matrice e livello di tolleranza,
 al fine di valutare la consistenza dei risultati. Una volta ottenuti i dati, si è
 proceduto con la loro visualizzazione mediante grafici. In particolare, sono stati
-realizzati grafici che mostrano i tempi di esecuzione e l'occupazione di memoria
-in funzione della tolleranza per ciascuna matrice, consentendo un confronto tra
-i diversi metodi.
+realizzati grafici che mostrano i tempi di esecuzione, l'occupazione di memoria
+e l'errore in funzione della tolleranza per ciascuna matrice, consentendo un confronto tra
+i diversi metodi. 
 
 Nei grafici presentati, l'andamento dei metodi è rappresentato tramite la media
 delle esecuzioni effettuate. Inoltre, per fornire una metrica di confronto, è
 stato riportato l'andamento teorico, calcolato come $O(n^2)$, dove $n$ è la
 dimensione della matrice, moltiplicato per il numero di iterazioni effettuate.
+In realtà il calcolo delle metriche medie ha senso solo per il 
+tempo, in quanto, essendo tutti algoritmi deterministici, la memoria occupata e 
+l'errore medio non variano o la varianza è in insignificativa tra le $10$ esecuzioni.
 
 Tutti i grafici utilizzano una scala logaritmica sia per l'asse delle ordinate
 che per l'asse delle ascisse. Questa scelta è stata adottata per migliorare la
@@ -321,9 +329,11 @@ raggiungere la tolleranza aumenta, come evidenziato nella tabella \ref{tab:itera
 Inoltre, si nota che tutti i metodi tendono ad avere un andamento simile a quello
 teorico.
 
-Confrontando i vari metodi iterativi, il metodo di Gauß-Seidel risulta essere il
+Confrontando i vari metodi iterativi in base al tempo, il metodo di Gauß-Seidel risulta essere il
 più lento per le matrici vem1 e vem2, nonostante il numero di iterazioni sia
 inferiore rispetto ad altri metodi, come si può vedere nella tabella \ref{tab:iterazioni}.
+Questo è dovuto dal fatto che si richiede di risolvere un sistema lineare solo 
+per calcolare di quanto aggiornare la soluzione attuale. 
 Invece, per le matrici spa1 e spa2, il metodo che richiede più tempo è il metodo
 del gradiente. Questo comportamento può essere attribuito al fatto che la convergenza
 del metodo presenta un andamento a zig-zag. A supporto di questa ipotesi, si
@@ -331,6 +341,11 @@ osserva che il numero di condizionamento delle matrici spa1 e spa2 è molto elev
 pari rispettivamente a 2048 e 1411. Pertanto, è plausibile che la combinazione
 di un numero di condizionamento elevato e il punto di partenza scelto per il
 metodo, ovvero il vettore nullo, conduca a un andamento a zig-zag nella convergenza.
+Al contrario, il metodo di Jacobi risulta esserre il più veloce per le matrici spa1
+e spa2, mentre per le matrici vem1 e vem2 il più veloce è il gradiente coniugato.
+Questo comportamento è dovuto principalmente dal numero di condizionamento che,
+essendo alto per le matrici spa1 e spa2, rallenta l'esecuzione dei metodi basati 
+sul gradiante. 
 
 \begin{table}[!ht]
     \centering
@@ -401,9 +416,10 @@ nelle figure \ref{fig:mem_spa1}, \ref{fig:mem_spa2}, \ref{fig:mem_vem1} e \ref{f
 \end{figure}
 
 In questi grafici, possiamo notare lo spazio richiesto dai vari metodi cresce
-all'aumentare del numero di iterazioni richieste per la convergenza. In generale
-il metodo del gradiente coniugato richiede meno memoria rispetto agli altri metodi.
-
+all'aumentare del numero di iterazioni e, quindi, alla diminuzione della tolleranza 
+richiesta per la convergenza. In generale il metodo del gradiente coniugato richiede 
+meno memoria rispetto agli altri metodi nelle matrici spa1, vem1 e vem2; mentre per 
+la matrice spa2 il metodo che richiede meno memoria è Jacobi.
 
 Infine, presentiamo i grafici che illustrano la variazione dell'errore medio in
 funzione della tolleranza per ciascuna matrice, come mostrato nelle figure \ref{fig:error_spa1},
@@ -442,7 +458,8 @@ funzione della tolleranza per ciascuna matrice, come mostrato nelle figure \ref{
 In questi grafici possiamo osservare un andamento che decresce più la tolleranza
 si avvicina a zero. Questo è legato al fatto che tutti i metodi implementati
 convergono prima di raggiungere il numero di iterazioni massimo (20000). Inoltre,
-non si riesce a notare una differenza significativa tra i metodi implementati.
+non si riesce a notare una differenza significativa tra i metodi implementati in termini 
+di errore ottenuto.
 
 \begin{table}[!ht]
     \centering
@@ -481,6 +498,10 @@ non si riesce a notare una differenza significativa tra i metodi implementati.
     \label{tab:memory}
 \end{table}
 
+Infine risulta di notevole interesse segnalare che nessuna delle matrici sono a 
+dominanza diagonale, questo comporta che non viene rispettata la condizione sufficiente 
+di convergenza per i metodi Gauß Seidel e Jacobi, ma per tutte le tolleranze i metodi 
+hanno raggiunto la convergenza. 
 
 \begin{table}[!ht]
     \centering
