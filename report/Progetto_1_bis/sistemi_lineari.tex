@@ -1,7 +1,7 @@
 \chapter{Progetto 1 bis: Mini libreria per sistemi lineari}
 \section{Introduzione}\label{sec:intro}
-Per la realizzazione della libreria contenente i metodi per la risoluzione di
-sistemi lineari, è stato scelto di utilizzare \href{https://julialang.org/}{\textbf{Julia}},
+Per la realizzazione della libreria contenente i metodi iterativi per la risoluzione 
+di sistemi lineari, è stato scelto di utilizzare \href{https://julialang.org/}{\textbf{Julia}},
 un linguaggio di programmazione open-source, sviluppato per ottenere prestazioni
 elevate e con una sintassi simile a quella di Python e MATLAB. Essendo concepito
 per risolvere task relativi al calcolo scientifico, offre una vasta gamma di
@@ -18,12 +18,18 @@ librerie della Standard Library di Julia:
 L'impiego di quest'ultima libreria è stato fondamentale per ridurre l'occupazione
 di memoria, in quanto le matrici utilizzate negli esperimenti sono matrici sparse.
 Nello specifico, sono state utilizzate le seguenti matrici sparse:
-\begin{itemize}
-    \item \textbf{spa1}: matrice di dimensione 1000x1000 con 182,434 elementi non nulli.
-    \item \textbf{spa2}: matrice di dimensione 3000x3000 con 1,633,298 elementi non nulli.
-    \item \textbf{vem1}: matrice di dimensione 1681x1681 con 13,385 elementi non nulli.
-    \item \textbf{vem2}: matrice di dimensione 2601x2601 con 21,225 elementi non nulli.
-\end{itemize}
+\begin{table}[!ht]
+    \centering
+    \resizebox{\textwidth}{!}{\begin{tabular}{@{}ccccccc@{}}
+        \toprule
+        \rowcolor[HTML]{EFEFEF}
+        \textbf{}      & \textbf{Dimensione} & \textbf{\# Elementi nulli} & \textbf{Condizionamento} & \textbf{Simmetrica} & \textbf{Definita positiva} & \textbf{Dominanza diagonale} \\ \midrule
+        \textbf{spa 1} & 1000 x 1000         & 182434                     & 2048.15                  & Si                  & Si                         & No                           \\
+        \textbf{spa 2} & 3000 x 3000         & 1633298                    & 1411.97                  & Si                  & Si                         & No                           \\
+        \textbf{vem 1} & 1681 x 1681         & 13385                      & 324.64                   & Si                  & Si                         & No                           \\
+        \textbf{vem 2} & 2601 x 2601         & 21225                      & 507.02                   & Si                  & Si                         & No                           \\ \bottomrule
+    \end{tabular}}
+\end{table}
 
 Per permettere la riproducibilità degli esperimenti, vogliamo riportare di seguito
 le caratteristiche del sistema utilizzato per la realizzazione della libreria e
@@ -139,14 +145,14 @@ end
 
 Per ciascun metodo iterativo richiesto, è stato definito un metodo specifico che
 implementa la regola di aggiornamento della soluzione. Questo metodo restituisce
-la soluzione aggiornata al passo $k+1$ e il residuo, dato che il criterio di 
-arresto è basato su quest'ultimo e che tutti i metodi ne richiedono il calcolo. 
+la soluzione aggiornata al passo $k+1$ e il residuo, dato che il criterio di
+arresto è basato su quest'ultimo e che tutti i metodi ne richiedono il calcolo.
 Si evita di ricalcolarlo ogni volta, riducendo il numero di operazioni ridondanti.
-La logica di aggiornamento della soluzione sfrutta le funzioni per la manipolazione 
+La logica di aggiornamento della soluzione sfrutta le funzioni per la manipolazione
 di matrici e vettori fornite dalla libreria \textbf{LinearAlgebra}.
 
-In aggiunta, la libreria sviluppata contiene metodi di interfaccia che richiamano 
-direttamente la funzione generica, passando il metodo di aggiornamento corrispondente 
+In aggiunta, la libreria sviluppata contiene metodi di interfaccia che richiamano
+direttamente la funzione generica, passando il metodo di aggiornamento corrispondente
 al metodo iterativo richiesto.
 
 Di seguito sono presentate le implementazioni dei metodi iterativi richiesti.
@@ -319,11 +325,11 @@ Confrontando i vari metodi iterativi, il metodo di Gauß-Seidel risulta essere i
 più lento per le matrici vem1 e vem2, nonostante il numero di iterazioni sia
 inferiore rispetto ad altri metodi, come si può vedere nella tabella \ref{tab:iterazioni}.
 Invece, per le matrici spa1 e spa2, il metodo che richiede più tempo è il metodo
-del gradiente. Questo comportamento può essere attribuito al fatto che la convergenza 
-del metodo presenta un andamento a zig-zag. A supporto di questa ipotesi, si 
-osserva che il numero di condizionamento delle matrici spa1 e spa2 è molto elevato, 
-pari rispettivamente a 2048 e 1411. Pertanto, è plausibile che la combinazione 
-di un numero di condizionamento elevato e il punto di partenza scelto per il 
+del gradiente. Questo comportamento può essere attribuito al fatto che la convergenza
+del metodo presenta un andamento a zig-zag. A supporto di questa ipotesi, si
+osserva che il numero di condizionamento delle matrici spa1 e spa2 è molto elevato,
+pari rispettivamente a 2048 e 1411. Pertanto, è plausibile che la combinazione
+di un numero di condizionamento elevato e il punto di partenza scelto per il
 metodo, ovvero il vettore nullo, conduca a un andamento a zig-zag nella convergenza.
 
 \begin{table}[!ht]

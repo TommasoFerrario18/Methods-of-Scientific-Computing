@@ -70,7 +70,7 @@ for path in path_to_matrix
     x = ones(size(A)[1])
     b = A * x
 
-    total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, tol)
+    # total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, tol)
 end
 
 open("./results/results_gauss.json", "w") do f

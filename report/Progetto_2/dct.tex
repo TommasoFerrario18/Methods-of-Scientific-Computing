@@ -16,7 +16,8 @@ In particolare per lo sviluppo sono state utilizzate le librerie:
     \item \textbf{LinearAlgebra}
     \item \textbf{FileIO}: fornisce funzioni per la lettura e scrittura di file.
     \item \textbf{Images}: fornisce funzioni per la trattazione di immagini.
-    \item \textbf{\href{https://github.com/JuliaMath/FFTW.jl}{FTTW}}: fornisce funzioni che implementano la FTT.
+    \item \textbf{\href{https://github.com/JuliaMath/FFTW.jl}{FTTW}}: fornisce
+          funzioni che implementano la FTT.
 \end{itemize}
 
 Tutte le librerie sono open source, più precisamente FTTW implementa un binding
@@ -67,7 +68,6 @@ Il codice della DCT è all'interno del file \textbf{Dct2.jl}, mentre il codice d
 test della dct e il codice per generare il grafico di complessità è nella cartella
 \textbf{test\_dct.jl}.
 
-
 \subsection{Studio di complessità}
 
 La complessità della DCT2 custom viene analizzata per passi nei seguenti punti:
@@ -77,10 +77,11 @@ La complessità della DCT2 custom viene analizzata per passi nei seguenti punti:
           entry della matrice. Avremo quindi un totale $\mathcal{O}(N^2)$ per generare
           la matrice, quando $N\times N$ è la dimensione della matrice (dimensione dello
           spazio vettoriale per numero di coefficienti).
-    \item \textbf{applicazione della DCT1 su un vettore}: richiede di effettuare un prodotto matrice-vettore e
-          successivamente di normalizzare i coefficienti. Il prodotto matrice-vettore
-          ha una complessità asintotica di $\mathcal{O}(N^2)$, dove $N$ è la dimensione
-          del vettore. Mentre per normalizzare i coefficienti si richiede una scansione
+    \item \textbf{applicazione della DCT1 su un vettore}: richiede di effettuare
+          un prodotto matrice-vettore e successivamente di normalizzare i coefficienti.
+          Il prodotto matrice-vettore ha una complessità asintotica di
+          $\mathcal{O}(N^2)$, dove $N$ è la dimensione del vettore. Mentre per
+          normalizzare i coefficienti si richiede una scansione
           lineare del vettore che richiede $\mathcal{O}(N)$, dove $N$ è la dimensione
           del vettore. Quindi complessivamente si ha una complessità di $\mathcal{O}(N^2 + N) = \mathcal{O}(N^2)$.
     \item \textbf{applicazione della DCT2 sull'intera matrice}: l'applicazione della DCT2
@@ -124,7 +125,7 @@ Come si può notare dal grafico, l'andamento empirico segue quello teorico, ovve
 la DCT custom segue $\mathcal{O}(N^3)$, mentre la DCT della libreria segue $\mathcal{O}(N^2\log N)$.
 
 In aggiunta, parlando dello spazio occupato, la DCT custom necessita di una matrice
-$N\times N$ della base dei coseni e alloca un array di dimensione $N$ per salvare
+$N \times N$ della base dei coseni e alloca un array di dimensione $N$ per salvare
 i coefficienti, quindi si ottiene una complessità spaziale di $\mathcal{O}(N^2)$.
 
 Si può ridurre la complessità spaziale effettuando tutte le operazioni inplace.
