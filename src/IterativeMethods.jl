@@ -103,6 +103,7 @@ function GenericIterativeMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Fl
         else
             x, r = method(A, b, x)
         end
+        # println("Residual: ", norm(r) / norm(b))
         # r = b - (A * x)
         number_of_iterations += 1
         if number_of_iterations >= max_iter

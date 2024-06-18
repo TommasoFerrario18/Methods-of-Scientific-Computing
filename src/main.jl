@@ -40,8 +40,8 @@ end
 
 function test_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, tollerance::Vector{Float64})::Dict
     results = Dict()
-    # methods = [IterativeMethods.JacobiMethod, IterativeMethods.GaussSeidelMethod, IterativeMethods.Gradient, IterativeMethods.ConjugateGradient]
-    methods = [IterativeMethods.GaussSeidelMethod]
+    methods = [IterativeMethods.JacobiMethod, IterativeMethods.GaussSeidelMethod, IterativeMethods.Gradient, IterativeMethods.ConjugateGradient]
+    # methods = [IterativeMethods.GaussSeidelMethod]
     for tol in tollerance
         results["$tol"] = Dict()
         for method in methods
@@ -53,7 +53,7 @@ function test_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, toller
 end
 
 path_to_matrix = ["./data/spa1.mtx", "./data/spa2.mtx", "./data/vem1.mtx", "./data/vem2.mtx"]
-tol = [1e-5, 1e-7, 1e-9, 1e-11]
+tol = [10e-4, 10e-6, 10e-8, 10e-10]
 
 total_results = Dict()
 
@@ -70,23 +70,23 @@ for path in path_to_matrix
     x = ones(size(A)[1])
     b = A * x
 
-    # total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, tol)
+    total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, tol)
 end
 
-open("./results/results_gauss.json", "w") do f
+open("./results/results_no_gauss.json", "w") do f
     JSON.print(f, total_results)
 end
 
-# A = Utils.read_sparse_matrix("./data/vem1.mtx")
+# A = Utils.read_sparse_matrix("./data/spa1.mtx")
 # xe = ones(size(A)[1])
 # b = A * xe
 # x = zeros(size(b))
 # println("GaussSeidelMethod")
 # start = time()
-# gauss_seidel!(x, A::SparseMatrixCSC, b; maxiter=10)
-# println(time() - start, "\nGaussSeidelMethod")
-# start = time()
-# my_x, k = IterativeMethods.GenericIterativeMethod(A, b, zeros(size(b)), 1e-100, UInt16.(10), IterativeMethods.GaussSeidelMethod, 1.0, 1.0)
+# # gauss_seidel!(x, A::SparseMatrixCSC, b; maxiter=10)
+# # println(time() - start, "\nGaussSeidelMethod")
+# # start = time()
+# my_x, k = IterativeMethods.GenericIterativeMethod(A, b, zeros(size(b)), 1e-4, UInt16.(20000), IterativeMethods.ConjugateGradient, 1.0, 1.0)
 # println(time() - start)
 
 # println("My x: ", norm(b - A * my_x) / norm(b))
