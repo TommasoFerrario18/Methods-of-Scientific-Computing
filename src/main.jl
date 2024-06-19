@@ -53,7 +53,7 @@ function test_all(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, toller
 end
 
 path_to_matrix = ["./data/spa1.mtx", "./data/spa2.mtx", "./data/vem1.mtx", "./data/vem2.mtx"]
-tol = [10e-4, 10e-6, 10e-8, 10e-10]
+tol = [10^(-4), 10^(-6), 10^(-8), 10^(-10)]
 
 total_results = Dict()
 
@@ -73,7 +73,7 @@ for path in path_to_matrix
     total_results[String.(chop(split(path, "/")[end], tail=4))] = test_all(A, b, tol)
 end
 
-open("./results/results_no_gauss.json", "w") do f
+open("./results/results.json", "w") do f
     JSON.print(f, total_results)
 end
 
