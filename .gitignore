@@ -382,7 +382,7 @@ TSWLatexianTemp*
 *.glstex
 
 # images
-*.png
+# *.png
 *.pdf
 *.bmp
 # CSV

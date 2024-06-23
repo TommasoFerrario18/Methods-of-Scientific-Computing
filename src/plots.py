@@ -8,7 +8,7 @@ plt.style.use("ggplot")
 
 
 def read_data():
-    with open("./results/results.json") as f:
+    with open("./results/results_no_gauss.json") as f:
         data = json.load(f)
 
     return data

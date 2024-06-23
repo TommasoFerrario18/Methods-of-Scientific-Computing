@@ -2,6 +2,8 @@
 \usepackage[italian]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2cm,right=2cm]{geometry}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{booktabs}
 \usepackage{pdfpages}
 \usepackage{pgfplots}
 \usepackage{fancyhdr}
@@ -10,14 +12,19 @@
 \usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{soul}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
 \pagestyle{fancy}
 \fancyhead[L,RO]{\slshape \rightmark}
 \fancyfoot[C]{\thepage}
 
 \title{Progetto Calcolo scientifico}
 \author{
-    Telemaco Terzi (\href{https://github.com/Tezze2001}{@Tezze2001}) \\\\
-    Tommaso Ferrario (\href{https://github.com/TommasoFerrario18}{@TommasoFerrario18})
+    Telemaco Terzi (865981) (\href{https://github.com/Tezze2001}{@Tezze2001}) \\\\
+    Tommaso Ferrario (869005) (\href{https://github.com/TommasoFerrario18}{@TommasoFerrario18})
     }
 \date{\today}
 
@@ -30,6 +37,7 @@
 \newtheorem{dimostrazione}{Dimostrazione}
 \newtheorem{definizione}{Definizione}
 \newtheorem{esempio}{Esempio}
+\newtheorem{nota}{Nota}
 
 \tableofcontents
 

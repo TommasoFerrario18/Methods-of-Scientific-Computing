@@ -222,8 +222,8 @@ function is_diagonally_dominant(A::AbstractMatrix)
     n = size(A, 1)
 
     for i in 1:n
-        sum_off_diagonal = sum(abs(A[i, j]) for j in 1:n if j != i)
-        if abs(A[i, i]) <= sum_off_diagonal
+        sum_off_diagonal = sum(broadcast(abs, A[i, :])) - abs(A[i, i])
+        if abs(A[i, i]) < sum_off_diagonal
             return false
         end
     end
