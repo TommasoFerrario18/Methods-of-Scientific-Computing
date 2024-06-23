@@ -66,7 +66,7 @@ Solve a linear system using an iterative method.
 
 """
 function GenericIterativeMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64},
-    x0::Vector{Float64}, tol::Float64, max_iter::UInt16, method::Function, w::Float64, alpha::Float64)::Tuple{Vector{Float64},UInt16}
+    x0::Vector{Float64}, tol::Float64, max_iter::UInt16, method::Function, w::Float64, alpha::Float64, relax::Bool=false)::Tuple{Vector{Float64},UInt16}
     n = size(A)[1]
     number_of_iterations = UInt16.(0)
 
@@ -97,7 +97,7 @@ function GenericIterativeMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Fl
 
     while !RemainingStoppingCriteria(r, b, tol)
         if method == IterativeMethods.JacobiMethod || method == IterativeMethods.GaussSeidelMethod
-            x, r = method(A, b, x, P, w, alpha)
+            x, r = method(A, b, x, P, w, alpha, relax)
         elseif method == IterativeMethods.ConjugateGradient
             x, r, d = method(A, b, x, r, d)
         else
@@ -132,7 +132,7 @@ Solve a linear system using the Jacobi method.
 - `Tuple{Vector{Float64},Vector{Float64}}`: The updated solution vector and the residual vector.
 
 """
-function JacobiMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x::Vector{Float64}, P::SparseMatrixCSC, w::Float64, alpha::Float64=1.0)::Tuple{Vector{Float64},Vector{Float64}}
+function JacobiMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x::Vector{Float64}, P::SparseMatrixCSC, w::Float64, alpha::Float64=1.0, jor::Bool=false)::Tuple{Vector{Float64},Vector{Float64}}
     # Update the solution vector using relaxation:
     # xk = x + alpha * P * (b - A * x) + (1 - w) * x
     r = similar(b)
@@ -140,6 +140,11 @@ function JacobiMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x:
     r = b - r
     xk = similar(x)
     mul!(xk, P, r)
+    # if jor
+    #     xk = (1 - w) .* x + alpha .* xk
+    # else
+    #     xk = x + alpha .* xk
+    # end
     xk = x + alpha .* xk + (1 - w) .* x
     return xk, r
 end
@@ -161,14 +166,19 @@ Solve a linear system using the Gauss-Seidel method.
 - `Tuple{Vector{Float64},Vector{Float64}}`: The updated solution vector and the residual vector.
 
 """
-function GaussSeidelMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x::Vector{Float64}, P::SparseMatrixCSC, w::Float64, alpha::Float64=1.0)::Tuple{Vector{Float64},Vector{Float64}}
+function GaussSeidelMethod(A::SparseMatrixCSC{Float64,UInt32}, b::Vector{Float64}, x::Vector{Float64}, P::SparseMatrixCSC, w::Float64, alpha::Float64=1.0, sor::Bool=false)::Tuple{Vector{Float64},Vector{Float64}}
     r = similar(b)
     mul!(r, A, x)
     r = b - r
     y = DirectMethods.ForwardSubstitution(P, r)
 
     # Update the solution vector using relaxation:
-    # xk = x + alpha * y + (1 - w) * x
+    # xk = (1 - w) * x + alpha * y
+    # if sor
+    #     xk = (1 - w) .* x + alpha .* y
+    # else
+    #     xk = x + alpha .* y
+    # end
     xk = x + alpha .* y + (1 - w) .* x
     return xk, r
 end
@@ -264,7 +274,7 @@ Solve a linear system using the Jacobi method.
 
 """
 function jacobi(A::SparseMatrixCSC, b::Vector{Float64}, x0::Vector{Float64}, tol::Float64, maxIter::UInt16)::Tuple{Vector{Float64},UInt16}
-    return GenericIterativeMethod(A, b, x0, tol, maxIter, IterativeMethods.JacobiMethod, 1.0, 1.0)
+    return GenericIterativeMethod(A, b, x0, tol, maxIter, IterativeMethods.JacobiMethod, 1.0, 1.0, jor)
 end
 
 """
@@ -283,8 +293,8 @@ Solve a linear system using the Gauss-Seidel method.
 - `Tuple{Vector{Float64},UInt16}`: The solution vector and the number of iterations.
 
 """
-function gauss_seidel(A::SparseMatrixCSC, b::Vector{Float64}, x0::Vector{Float64}, tol::Float64, maxIter::UInt16)::Tuple{Vector{Float64},UInt16}
-    return GenericIterativeMethod(A, b, x0, tol, maxIter, IterativeMethods.GaussSeidelMethod, 1.0, 1.0)
+function gauss_seidel(A::SparseMatrixCSC, b::Vector{Float64}, x0::Vector{Float64}, tol::Float64, maxIter::UInt16, sor::Bool=false)::Tuple{Vector{Float64},UInt16}
+    return GenericIterativeMethod(A, b, x0, tol, maxIter, IterativeMethods.GaussSeidelMethod, 1.0, 1.0, sor)
 end
 
 """
